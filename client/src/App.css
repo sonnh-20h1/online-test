@@ -1,0 +1,462 @@
+p,span,ul,li,h3,h4,.col-md-3,.col-md-4,.col-md-9,.col-md-8,.col-md-12{
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+.footer.online-test{
+  background-image: linear-gradient(71deg, #0f345d, #0f7ee9);
+  padding:10px;
+  text-align: center;
+  color: #fff;
+}
+.header.test-online{
+  background-image: linear-gradient(88deg, #d3dae0, #f1f4f7);
+}
+.container{
+  padding:0;
+}
+.row{
+  margin: 0;
+}
+.hotline-mail p{
+  display: inline-block;
+  float: right;
+  padding-left:20px;
+}
+.hotline-mail{
+  padding:10px 0;
+}
+/* .menu.test-online{
+  background-image: linear-gradient(88deg, #1062b4, #58a0e9);
+} */
+.menu-main ul li{
+  display: inline-block;
+  padding:20px; 
+}
+.menu-main li a{
+  color:#333;
+  font-size: 18px;
+}
+.menu-logo h3{
+  padding: 15px 0;
+  color: #333;
+  font-size: 26px;
+    font-family: 'Pacifico', cursive;
+}
+.menu-main ul{
+  text-align: right;
+  position: relative;
+  padding-right:30px;
+}
+.menu-main>ul>li>a{
+    padding-top: 20px;
+    padding-bottom: 21px;
+    font-size: 15px;
+    text-transform: uppercase;
+    font-weight: 100;
+    font-family: inherit;
+}
+.menu-main>ul>li:last-child{
+  padding:0;
+}
+.menu-main>ul>li:last-child li{
+  padding: 0;
+}
+.menu-main ul li a:hover{
+  text-decoration: none;
+}
+.menu-main ul li a{
+
+}
+.menu-main>ul>.active>a {
+  /* border-bottom: #faa959 solid 3px; */
+  color: #faa959;
+  text-decoration: none;
+}
+.menu-main>ul>li>a:hover{
+  color: #faa959;
+}
+.menu-main li>.action-tool>li{
+  border: #fff solid 1px;
+  border-radius: 3px;
+  padding: 5px 10px!important;
+}
+.menu-main li>.action-tool>li a{
+  font-size: 15px!important;
+  font-weight: 600;
+
+}
+.login-user{
+  position: absolute;
+  right: 0;
+  box-shadow: 2px 1px 1px 1px #a8c6e2;
+  display: none;
+}
+.box-login::before{
+  position: absolute;
+  content: "";
+  width: 0;
+  height: 0;
+  top: -23px;
+  left: 51%;
+  border: 10px solid transparent;
+  border-bottom: 14px solid #efefef;
+}
+.login-user .box-login{
+  width: 300px;
+  background: #efefef;
+  padding: 15px;
+}
+.login-user .item-login{
+  padding:5px 0;
+}
+.item-login input,.item-login button{
+  width: 100%;
+}
+.item-login button{
+  border-radius:3px;
+  color: #fff;
+  background: #f3983d;
+  box-shadow: 1px 1px 1px #f0dbc6;
+  border: #f7ab5e solid 1px;
+  padding: 5px;
+  font-weight: 600;
+}
+.item-login input{
+  padding: 5px;
+  border-radius:3px;
+  border: #d3dae0 solid 1px; 
+}
+.item-login input:focus{
+  outline: none;
+}
+
+.menu-main li>.action-tool>.action{
+  background: #f0b67c;
+  box-shadow: 1px 1px 1px #004776;
+  border:#f0b67c solid 1px;
+}
+.menu-main li>.action-tool>li:hover{
+  background: #f0b67c;
+  box-shadow: 1px 1px 1px #004776;
+  border:#f0b67c solid 1px;
+}
+.slide-background img{
+  width: 100%;
+}
+
+/*-----------------------------------------Dề thi -------------------------*/
+
+.the_exam.online-test{
+  /* background-image: linear-gradient(88deg, #f5f5f5,#fff ); */
+}
+.the_exam.online-test>.container>.row{
+  min-height: 550px;
+}
+.the_exam.online-test .search-exam input{
+  width: 300px;
+  padding: 5px;
+  border: #cac6c6 solid 1px;
+  border-radius: 4px;
+}
+.the_exam.online-test .search-exam button{
+  padding: 5px 10px;
+  border-radius: 2px;
+  background-color: #f6f6f6;
+  border: solid 1px #c59b41;
+  font-size: 14px;
+  color: #c59b41;
+}
+.the_exam.online-test .search-exam button:hover{
+  color: #fff;
+  background: #1578c9;
+  border:#1578c9 solid 1px;
+  box-shadow: 2px 2px 1px #004776;
+}
+.title-exam h4{
+  padding: 10px 10px;
+  background: #1578c9;
+  color: #fff;
+}
+.exam-time{
+  padding-bottom: 11px;
+  margin-bottom: 10px;
+  border-bottom: 1px solid #31ADD1;
+}
+.exam-time p{
+  font-size: 24px;
+}
+.exam-time p span{
+  font-size: 35px;
+  padding:5px;
+  background: #091674;
+  color: #fff;
+}
+.content-menu-exam{
+  padding:10px;
+  position: fixed;
+  top: 160px;
+  width: 300px;
+}
+.over-question{
+  max-height: 400px;
+  overflow: auto;
+  margin-bottom: 15px;
+}
+.answered {
+  background: #028C87 !important;
+}
+.wrap-finish button{
+  border-radius:0!important; 
+}
+.item-question-shortcut{
+  width: calc(100% / 6 - 10px);
+  height: 30px;
+  display: inline-block;
+  text-align: center;
+  margin: 5px;
+  height: 30px;
+  line-height: 30px;
+  background: #888;
+  color: #fff;
+}
+.the_exam.online-test .menu-exam{
+  border: #1578c9 solid 1px;
+}
+.name-exam>ul>li{
+  padding:8px;
+}
+.name-exam>ul>li>a{
+  font-size: 16px;
+}
+.name-exam>ul>li>a:hover{
+  text-decoration: none;
+
+}
+.name-exam>ul>li:hover{
+  background: #eee;
+}
+.name-exam>ul>li:hover a{
+  color: #1578c9;
+}
+.quiz-name img{
+  width: 20px;
+  height: 20px;
+}
+.title-all-exam>p{
+  font-size: 17px;
+  padding: 10px;
+  padding: 10px 10px;
+  background: #1578c9;
+  color: #fff;
+}
+.summary-quiz p{
+  display: inline-block;
+}
+.quiz-detail{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+.detial-exam-test{
+  padding-left:30px;
+}
+.activity.exam-item{
+  padding:10px;
+}
+ul.exam-list li:nth-child(2n+1) {
+  background-color: #ededed;
+}
+.next-page-exam ul>li{
+  display: inline-block;
+  text-align: center;
+  padding: 5px 10px;
+  border: #ededed solid 1px;
+}
+.next-page-exam ul>li:hover{
+  background: #f0c66b;
+}
+.next-page-exam ul>li:hover a{
+  color: #fff;
+}
+.next-page-exam .active{
+  background: #f0c66b;
+}
+.next-page-exam{
+  padding:30px;
+}
+/*----------------------------------------- Chi tiet de thi  ---------------------------------*/
+
+
+.next-start.online-test{
+  min-height: 530px;
+}
+
+.next-start .detail-exam h3{
+  padding: 30px;
+}
+.next-start .detail-exam p{
+  padding: 15px;
+}
+
+/*-------------------------------------------------    ket qua            -------------*/
+
+.review-result{
+  width: 600px;
+  margin: auto;
+  padding-top: 50px;
+}
+.panel-result{
+  box-shadow: 2px 2px 1px #004776;
+  background-image: linear-gradient(88deg, #1062b4, #58a0e9);
+}
+.panel-result h3{
+  color: #fff;
+}
+table.table-result-exam{
+  width: 100%;
+}
+.result-exam.online-test{
+  min-height: 530px;
+}
+.content-result{
+  background: #f5f5f5;
+  box-shadow:1px 1px 2px 1px #81a9d6;
+  padding: 15px;
+  border-top: none;
+}
+.content-result table>tbody>tr>td{
+  padding:10px 5px;
+  font-size: 16px;
+}
+.content-result table>tbody>tr>td button{
+  border-radius: 2px;
+  background-color: #f6f6f6;
+  border: solid 1px #c59b41;
+  font-size: 14px;
+  padding: 5px 10px;
+  color: #c59b41;
+}
+.content-result table>tbody>tr>td button:hover{
+  color: #f6f6f6;
+  background-color: #c59b41;
+  border: solid 1px #c59b41;
+  box-shadow: 2px 2px 4px 2px #e0e9f3;
+}
+.content-result table>tbody>tr:nth-child(even) {
+  background-color: #f1efef;
+}
+/*------------------------------------ thi luon   -----------------------------*/
+
+.question-test.online-test .box-wrapper{
+  min-height: 530px;
+  max-width: 100%;
+  padding:0;
+  padding-bottom: 30px;
+  margin: 0;
+}
+.box-wrapper{
+  padding-top:70px; 
+  max-width: 800px;
+  margin: auto;
+}
+.exam-grid{
+  display: grid;
+  grid-template-columns: 300px 1fr;
+}
+.question-test .number-q{
+  border-top: 1px solid #31ADD1;
+}
+.question-test .number-q:first-child{
+  border-top:none!important;
+}
+.question-test .name-q{
+  border-bottom: 1px dashed #31ADD1;
+  padding:10px 0;
+}
+.question-test .name-q p{
+  font-size: 15px;
+  line-height: 25px;
+}
+.question-test .name-q h3{
+  font-size: 18px;
+  font-weight: 600;
+}
+.question-test .number-q{
+  padding:15px;
+}
+.answer-q>table>tbody>tr>td{
+  padding: 5px 10px;
+  font-size: 15px;
+}
+.the-questions{
+  /* border: #f1efef solid 2px; */
+}
+
+/*--------------*/
+.login_content{
+  width: 350px;
+  margin: auto; 
+}
+
+.timer-question p{
+  font-size:20px
+}
+.box-wrapper{
+  position: relative;
+}
+.get-time{
+  /* position: absolute;
+    right: 0;
+    top: 18px; */
+}
+.mrg-100{
+  margin-top:100px;
+}
+.home-page h2{
+  color:#fff;
+}
+.home-page h3{
+  color:#fff;
+}
+
+.pd-cl-10{
+    border: rgb(209, 205, 205,0.2) solid 1px;
+    box-shadow: none;
+    background: rgb(209, 205, 205,0.2);
+    border-radius: 0px;
+    padding: 20px;
+    color: #333;
+}
+input.pd-cl-10:focus{
+  border: rgb(209, 205, 205) solid 1px;
+  box-shadow: none;
+  background: rgba(209, 208, 208, 0.521);
+}
+.pad-10{
+  padding:10px;
+}
+.mag-20{
+  margin-top: 20px; 
+}
+.mag-70{
+  margin-top:70px; 
+}
+.btn-10 button:hover{
+  background: #e65626;
+  color:#fff;
+}
+.btn-10 button:focus{
+  outline: none;
+}
+.btn-10 button{
+  width: 100%;
+  border-radius: 0px;
+  padding: 10px 20px;
+  color: #fff;
+  background: #f96332;
+  font-size: 16px;
+  border: none;
+}
+.menu.test-online > .container{
+  border-bottom: #ddd solid 1px;
+}

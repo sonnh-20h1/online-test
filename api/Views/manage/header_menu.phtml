@@ -1,0 +1,51 @@
+
+<div class="top_nav">
+    <div class="the_header_admin">
+        <div class="nav_menu">
+            <ul class="nav navbar-nav navbar-right">
+                <a class="user-profile dropdown-toggle" id="user-profile">Đăng xuất</a>
+            </ul>
+        </div>
+        <div class="the_notification">
+            <div class="max_notification">
+                <div class="insert_successfuly" id="insert_successfuly"></div>
+                <div class="update_successfuly">
+                    <p><i class="fa fa-edit"></i> Bạn đã cập nhật thành công. </p>
+                </div>
+                <div class="delete_successfuly">
+                    <p><i class="fa fa-trash-o"></i> Bạn đã xóa thành công. </p>
+                </div>
+                <div class="error_notification" id="error_notification"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .user-profile:hover{
+        text-decoration: none;
+    }
+    .error_notification{
+        display:none;
+        text-align: center;
+        background: red;
+        padding: 7px 0;
+        border-radius: 10px;
+    }
+</style>
+<script>
+    var SignClick = document.getElementById('user-profile');
+    SignClick.addEventListener('click', function (e) {
+        fetch(`/LogoutAdmin`, {
+            method: "POST"
+        }).then(response => response.json())
+            .then(data => {
+                if(data['success']){
+                    location.reload();
+                }
+            })
+            .catch(err => {
+                console.error(err)
+            })
+        e.preventDefault();
+    })
+</script>

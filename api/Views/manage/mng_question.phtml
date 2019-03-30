@@ -1,0 +1,97 @@
+<?php require('mng_header.phtml'); mng_header('Questions management')?>
+
+<body>
+
+    <body class="mng_home">
+        <div class="body container">
+            <div class="main_container">
+                <?php require('mng_menu.phtml') ?>
+                <?php require('header_menu.phtml') ?>
+                <div class="right_col mng_user">
+                    <div class="table_right">
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <div class="x_panel">
+                                    <div class="x_content">
+                                        <div class="x_title">
+                                            <h2>New a question</h2>
+                                        </div>
+                                        <div class="box_que">
+                                            <div class="que_content">
+                                                <form action="" id="get_question" method="post">
+                                                    <div class="box_que_con">
+                                                        <input type="text" id="que_name" name="que_name" placeholder="Question name">
+                                                    </div>
+                                                    <div class="box_answer">
+                                                        <div id="text_answer"></div>
+                                                        <div class="new_answer">
+                                                            <button id="btn_answer">New answer</button>
+                                                            <button id="btn_question">Add question</button>
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="x_panel">
+                                    <div class="x_content">
+                                        <div class="x_title">
+                                            <h2>All question</h2>
+                                        </div>
+                                        <div class="table-responsive">
+                                            <table class="table table-striped jambo_table bulk_action">
+                                                <thead>
+                                                    <tr class="headings">
+                                                        <th class="column-title"><input type="checkbox" name="check_que"></th>
+                                                        <th class="column-title">STT</th>
+                                                        <th class="column-title">Question name</th>
+                                                        <th class="column-title">Features</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="display_subject">
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="view_question">
+                        <div class="box_wapper">
+                            <div class="box_width_max">
+                                <div class="box_background">
+                                    <section class="text_title">
+                                        <h4>Subject details</h4>
+                                    </section>
+                                    <section class="box_content">
+                                        <table class="table table-striped jambo_table bulk_action">
+                                            <thead>
+                                                <tr class="headings">
+                                                    <th class="column-title">STT</th>
+                                                    <th class="column-title">Answer name</th>
+                                                    <th class="column-title">Correct</th>
+                                                    <th class="column-title">Features</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="display_answer">
+
+                                            </tbody>
+                                        </table>
+                                    </section>
+                                    <section class="btn_footer text-right">
+                                        <button class="btn_oke" type="submit">Oke</button>
+                                    </section>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+    <script src="<?=PATH?>/public/js/QuestionHanding.js"></script>
+    </html>

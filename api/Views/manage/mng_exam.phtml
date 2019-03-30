@@ -1,0 +1,124 @@
+<?php require('mng_header.phtml'); mng_header('Exams management')?>
+
+<body>
+
+    <body class="mng_home">
+        <div class="body container">
+            <div class="main_container">
+                <?php require('mng_menu.phtml') ?>
+                <?php require('header_menu.phtml') ?>
+                <div class="right_col mng_user">
+                    <div class="table_right">
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <div class="x_panel">
+                                    <div class="x_content">
+                                        <div class="x_title">
+                                            <h2>New a exam</h2>
+                                        </div>
+                                        <div class="box_que">
+                                            <form action="" method="post" id="get_exam_que">
+                                                <div class="que_content">
+                                                    <div class="box_que_con">
+                                                        <input type="text" id="Exam_id" name="Exam_id" placeholder="Exam ID">
+                                                        <input type="text" id="Exam_name" name="Exam_name" placeholder="Exam name">
+                                                        <input type="number" id="study_time"name="study_time" placeholder="study time">
+                                                        <select id="new_subject" name="choose_subject"></select>
+                                                    </div>
+                                                    <div class="box_answer">
+                                                        <div class="new_answer">
+                                                            <button id="choose_question" class="btn btn-primary">Choose
+                                                                a question</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="list_question">
+                                                    <table class="table table_list">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>QuestionID</th>
+                                                                <th>Question Name</th>
+                                                                <th>Subject</th>
+                                                                <th>Features</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody id="show_choose_question"></tbody>
+                                                    </table>
+                                                </div>
+                                                <div class="create_exam text-right">
+                                                    <button type="reset" class="btn btn-primary" id="btn_reset">Reset</button>
+                                                    <button type="submit" class="btn btn-success" id="btn_create_exam">Create exam</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="x_panel">
+                                    <div class="x_content">
+                                        <div class="x_title">
+                                            <h2>All exams</h2>
+                                        </div>
+                                        <div class="table-responsive">
+                                            <table class="table table-striped jambo_table bulk_action">
+                                                <thead>
+                                                    <tr class="headings">
+                                                        <th class="column-title"><input type="checkbox" name="check_que"></th>
+                                                        <th class="column-title">STT</th>
+                                                        <th class="column-title">Exam name</th>
+                                                        <th class="column-title">Study time</th>
+                                                        <th class="column-title">Num of question</th>
+                                                        <th class="column-title">Subject</th>
+                                                        <th class="column-title">Features</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="display_exams"></tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="choose_question">
+                        <div class="box_wapper">
+                            <div class="box_width_max">
+                                <div class="box_background">
+                                    <section class="text_title">
+                                        <h4>Choose questions</h4>
+                                    </section>
+                                    <section class="choose_subject">
+                                        <div class="choose_max_width">
+                                            <select name="search_que" id="search_que"></select>
+                                            <button id="choose_sub" class="btn btn-primary">Choose subject</button>
+                                        </div>
+                                    </section>
+                                    <section class="box_content">
+                                        <table class="table table-striped jambo_table bulk_action">
+                                            <thead>
+                                                <tr class="headings">
+                                                    <th class="column-title">STT</th>
+                                                    <th class="column-title">Question ID</th>
+                                                    <th class="column-title">Question name</th>
+                                                    <th class="column-title">Subject</th>
+                                                    <th class="column-title"><input type="checkbox" name="check" class="check_que"></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="display_questions"></tbody>
+                                        </table>
+                                    </section>
+                                    <section class="btn_footer text-right">
+                                        <button class="btn_oke btn btn-success" type="submit">Oke</button>
+                                        <button class="btn_canel btn btn-danger" type="submit">Canel</button>
+                                    </section>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+    <script src="<?=PATH?>/public/js/ExamHanding.js"></script>
+
+    </html>

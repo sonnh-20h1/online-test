@@ -1,0 +1,65 @@
+<?php require('mng_header.phtml'); mng_header('subjects management')?>
+
+<body>
+    <body class="mng_home">
+        <div class="body container">
+            <div class="main_container">
+                <?php require('mng_menu.phtml') ?>
+                <?php require('header_menu.phtml') ?>
+                <div class="right_col mng_user">
+                    <div class="table_right">
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                            <div class="x_panel">
+                                    <div class="x_content">
+                                        <div class="x_title">
+                                            <h2>New a subject</h2>
+                                        </div>
+                                        <div class="box_que">
+                                            <div class="que_content">
+                                                <form action="" id="get_subject" method="post">
+                                                    <div>
+                                                        <input type="text" id="sub_id" name="sub_id" placeholder="Subject ID">
+                                                    </div>
+                                                    <div>
+                                                        <input type="text" id="sub_name" name="sub_name" placeholder="Subject name">
+                                                    </div>
+                                                    <div class="box_btn">
+                                                        <button class="btn btn-success create_sub">Create</button>
+                                                        <button class="btn btn-warning edit_sub">Edit</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="x_panel">
+                                    <div class="x_content">
+                                        <div class="x_title">
+                                            <h2>All subjects</h2>
+                                        </div>
+                                        <div class="table-responsive">
+                                            <table class="table table-striped jambo_table bulk_action">
+                                                <thead>
+                                                    <tr class="headings">
+                                                        <th class="column-title">STT</th>
+                                                        <th class="column-title">Subject ID</th>
+                                                        <th class="column-title">Subject name</th>
+                                                        <th class="column-title">Features</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="display_subject">
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+    <script src="<?=PATH?>/public/js/SubHanding.js"></script>
+</html>
