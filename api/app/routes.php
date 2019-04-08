@@ -18,17 +18,17 @@ $app->post('/get_answer','App\Controllers\QuestionController:get_answer');
 
 $app->post('/display_exam','App\Controllers\ExamController:display_exam');
 $app->post('/add_exam','App\Controllers\ExamController:add_exam');
+$app->get('/GetResultRequest/{id}','App\Controllers\ExamController:GetResultRequest');
 $app->get('/detail-exam/{id}','App\Controllers\ExamController:DetailExam');
-$app->post('/exam-question','App\Controllers\ExamController:GetExam');
 $app->post('/get-exam-question','App\Controllers\ExamController:RequestExam');
 $app->post('/GetAnswerQuestionId','App\Controllers\ExamController:GetAnswerQuestionId');
 $app->post('/RequestAnswerQuestionId','App\Controllers\ExamController:RequestAnswerQuestionId');
 $app->post('/GetUserExam','App\Controllers\ExamController:GetUserExam');
 $app->post('/GetQuestionUser','App\Controllers\ExamController:GetQuestionUser');
-$app->get('/GetResultRequest/{id}','App\Controllers\ExamController:GetResultRequest');
 $app->post('/GetUserExamId','App\Controllers\ExamController:GetUserExamId');
 $app->post('/GetHistoryExamUser','App\Controllers\ExamController:GetHistoryExamUser');
 $app->post('/GetExamMinuteId','App\Controllers\ExamController:GetExamMinuteId');
+$app->post('/exam-question','App\Controllers\ExamController:GetExam');
 $app->post('/GetExamSubjectId','App\Controllers\ExamController:GetExamSubjectId');
 $app->post('/SaveFeedBack','App\Controllers\ExamController:SaveFeedBack');
 

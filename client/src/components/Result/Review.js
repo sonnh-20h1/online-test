@@ -110,7 +110,7 @@ class Question extends Component {
   }
   sendFeedback = (e) => {
     const { valueFeedback, question } = this.state;
-    const {exam_id } = this.props;
+    const { exam_id } = this.props;
     var user = JSON.parse(localStorage.getItem('user'));
     if (this.state.valueFeedback == "") {
       this.setState({ validated: true });
@@ -118,12 +118,12 @@ class Question extends Component {
       var data = {
         id: "",
         user_id: user.IDUSER,
-        exam_id:exam_id,
+        exam_id: exam_id,
         valueFeedback,
         question_id: question.ID_QUE,
         time: this.getTime()
       }
-      
+
       axios({
         method: 'POST',
         url: `${API}/SaveFeedBack`,
@@ -212,9 +212,9 @@ class ReviewQuestions extends Component {
   state = {
     ListQuestions: {},
     status: true,
-    exam_id:''
+    exam_id: ''
   }
-  ShowQuestions = (ListQuestions,exam_id) => {
+  ShowQuestions = (ListQuestions, exam_id) => {
     var result = null;
     if (ListQuestions.length > 0) {
       result = ListQuestions.map((question, index) => {
@@ -240,27 +240,25 @@ class ReviewQuestions extends Component {
       idux: idux
     }
     this.setState({
-      exam_id:id
+      exam_id: id
     })
     this.getQuestionData(data);
   }
 
   getQuestionData = (data) => {
-    return fetch(`${API}/get-exam-question`, {
-      method: "POST",
-      body: JSON.stringify(data),
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    }).then(res => res.json())
+    return axios({
+      method: 'POST',
+      url: `${API}/get-exam-question`,
+      data: data
+    })
       .then(data => {
-        if (data.error) {
-          console.log(data);
+        if (data.data.error) {
+          console.log(data.data);
         } else {
           this.props.dispatch(
             updateStateData({
               Questions: [
-                ...data
+                ...data.data
               ]
             })
           )
@@ -275,7 +273,7 @@ class ReviewQuestions extends Component {
   }
   render() {
     const { Questions } = this.props.mainState;
-    const { status,exam_id } = this.state;
+    const { status, exam_id } = this.state;
     return (
       <div className="question-test online-test">
         <div className="ol-content">
@@ -287,7 +285,7 @@ class ReviewQuestions extends Component {
               <div className="the-questions Review-exam">
                 {status ? <ReactLoading className="loadingggg" type={"spinningBubbles"} color="#333" /> : ''}
                 {
-                  Questions ? this.ShowQuestions(Questions,exam_id) : ''
+                  Questions ? this.ShowQuestions(Questions, exam_id) : ''
                 }
               </div>
             </div>

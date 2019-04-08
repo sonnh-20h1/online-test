@@ -32,5 +32,6 @@
     "not ie <= 11",
     "not op_mini all"
   ],
-  "proxy": "http://localhost/TO"
+  "proxy":"http://localhost/TO"
+
 }

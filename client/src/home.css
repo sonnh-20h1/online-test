@@ -89,7 +89,6 @@
 }
 .login_wrapper{
   min-height: 700px;
-  background: url("./img/loginBanner.jpg") no-repeat;
   position: relative;
   background-size: cover;
   padding-top: 50px;
