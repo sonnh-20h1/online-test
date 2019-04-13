@@ -22,7 +22,7 @@ export const Loading = () => {
   );
 };
 
-class DetailExam extends Component {
+class DetailExams extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -163,4 +163,4 @@ const mapDispatchToProps = dispatch => {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(DetailExam);
+)(DetailExams);

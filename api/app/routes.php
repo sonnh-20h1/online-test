@@ -26,11 +26,18 @@ $app->post('/RequestAnswerQuestionId','App\Controllers\ExamController:RequestAns
 $app->post('/GetUserExam','App\Controllers\ExamController:GetUserExam');
 $app->post('/GetQuestionUser','App\Controllers\ExamController:GetQuestionUser');
 $app->post('/GetUserExamId','App\Controllers\ExamController:GetUserExamId');
+$app->post('/GetQuestionUserId','App\Controllers\ExamController:GetQuestionUserId');
+
 $app->post('/GetHistoryExamUser','App\Controllers\ExamController:GetHistoryExamUser');
 $app->post('/GetExamMinuteId','App\Controllers\ExamController:GetExamMinuteId');
 $app->post('/exam-question','App\Controllers\ExamController:GetExam');
 $app->post('/GetExamSubjectId','App\Controllers\ExamController:GetExamSubjectId');
 $app->post('/SaveFeedBack','App\Controllers\ExamController:SaveFeedBack');
+//Random the exams
+$app->post('/ChooseRandomExam','App\Controllers\ExamController:ChooseRandomExam');
+$app->post('/GetExamRequestId','App\Controllers\ExamController:GetExamRequestId');
+
+
 
 
 $app->post('/HanldingImportFileExcel','App\Controllers\ImportExamController:HanldingImportFileExcel');

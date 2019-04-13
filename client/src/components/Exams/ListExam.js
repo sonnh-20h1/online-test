@@ -10,7 +10,7 @@ class ItemExam extends Component {
             <li className="activity exam-item">
                 <div className="quiz-detail">
                     <div className="quiz-name quiz">
-                        <Link to={`/detail-exam/${Exam.IDEXAM}`}>{Exam.EXAMTEXT}</Link>
+                        <a href={`/detail-exam/${Exam.IDEXAM}`}>{Exam.EXAMTEXT}</a>
                     </div>
                     <div className="quiz quiz-detail-right">
                         <div className="summary-quiz">

@@ -185,20 +185,7 @@ class ImportExamController extends Controller{
             echo json_encode($message);
         }
     }
-    public function RandomTestExam($request,$response){
-        $id = $request->getParam('idExam');
-        $idUser = $request->getParam('idUser');
-        $timeNow = $request->getParam('timeNow');
-        $dateNow = $request->getParam('dateNow');
-        $this->GetUserExam($id,$idUser,$timeNow,$dateNow);
-        $idUX = $this->database->select('user_exam','ID_UX',[
-            'IDUSER' => $idUser,
-            'IDEXAM' => $id,
-            "ORDER"  => ["ID_UX" => "DESC"],
-            "LIMIT"  => 1
-        ]);
-        echo json_encode($idUX[0]);
-    }
+    
     
     private function RandomQuestionId($arrExam,$idExam,$idux){
         $questions = [];
@@ -264,6 +251,21 @@ class ImportExamController extends Controller{
             }
         }
     }
+    public function RandomTestExam($request,$response){
+        $id = $request->getParam('idExam');
+        $idUser = $request->getParam('idUser');
+        $timeNow = $request->getParam('timeNow');
+        $dateNow = $request->getParam('dateNow');
+        $this->GetUserExam($id,$idUser,$timeNow,$dateNow);
+        $idUX = $this->database->select('user_exam','ID_UX',[
+            'IDUSER' => $idUser,
+            'IDEXAM' => $id,
+            "ORDER"  => ["ID_UX" => "DESC"],
+            "LIMIT"  => 1
+        ]);
+        echo json_encode($idUX[0]);
+    }
+    
     private function RandomUserExam($id,$idux){
         $random = $this->database->select('exam','RANDOMEXAM',['IDEXAM' => $id]);
         $arrExam = $this->RequestExamId($id);

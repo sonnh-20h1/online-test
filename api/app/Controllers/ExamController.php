@@ -446,4 +446,164 @@ class ExamController extends Controller{
         }
         echo json_encode($rsData);
     }
+    private function RequestExamById($id){
+        if($id){
+            $sql = "SELECT detail_exam.IDEXAM,detail_exam.ID_QUE 
+                    FROM detail_exam INNER JOIN exam ON exam.IDEXAM = detail_exam.IDEXAM 
+                    WHERE exam.IDEXAM = '$id'";
+            $result = $this->database->query($sql)->fetchAll();
+            return $result;
+        }
+        return [];
+    }
+    public function ChooseRandomExam($request,$response){
+        $rsData = array(
+            'status' => 'error',
+            'message' => 'Xin lỗi! Dữ liệu chưa được cập nhật thành công!'
+        );
+        $idExam = $request->getParam('idExam');
+        $idUser = $request->getParam('idUser');
+        $timeNow = $request->getParam('timeNow');
+        $dateNow = $request->getParam('dateNow');
+
+        if(!empty($idExam) && !empty($idUser) ){
+            $date = new \DateTime();
+            $id = $date->format('mdhis');
+            $result = $this->database->insert('user_exam',[
+                'ID_UX'     => $id,
+                'IDUSER'    => $idUser,
+                'IDEXAM'    => $idExam,
+                'TIMESTART' => $timeNow,
+                'DATEEXAM'  => $dateNow
+            ]);
+            if($result->rowCount()){
+                $listQuestions = $this->RequestExamById($idExam);
+                $rdNumber = $this->database->select('exam','RANDOMEXAM',['IDEXAM' => $idExam]);
+                $rand_keys = array_rand($listQuestions, $rdNumber[0]);
+                $ListRandom = [];
+                for($i = 0;$i < count($rand_keys);$i++){
+                    $ListRandom[] = $listQuestions[$rand_keys[$i]];
+                }
+                if(!empty($ListRandom)){
+                    foreach($ListRandom as $item ){
+                        $this->database->insert('random_exam',[
+                            'ID_UX'     => $id,
+                            'IDEXAM'    => $item['IDEXAM'],
+                            'ID_QUE'    => $item['ID_QUE']
+                        ]);
+                    }
+                    $checkListRandom = $this->database->select('random_exam','*',['ID_UX' => $id]);
+                    if(!empty($checkListRandom)){
+                        $rsData['status'] = 'success';
+                        $rsData['message'] = 'Đã tạo đề thi thành công!';
+                        $rsData['data'] = $id;
+                    }else{
+                        $rsData['message'] = 'Chưa tạo đề random!';
+                    }
+                    
+                }else{
+                    $rsData['message'] = 'Có lỗi sảy ra vui lòng reload lại!';
+                }
+            }else {
+				$rsData['message'] = "Có lỗi sảy ra, chưa tạo được đề thi!";
+            }
+        }else {
+            $rsData['message'] = 'Chưa nhận được dữ liệu!';
+        }
+        // sleep(5);
+        echo json_encode($rsData);
+        return;
+    }
+    public function ListQuestion($id,$idux){
+        $result = $this->RequestExamRandomId($id,$idux);
+        $questions = [];
+        for($i = 0;$i < count($result);$i++){
+            $answer = $this->RequestQuestionId($result[$i]['ID_QUE']);
+            $answerRandom = $this->RandomAnserId($answer);
+            $questions[] = [
+                'ID_QUE'       => $result[$i]['ID_QUE'],
+                'QUE_TEXT'     => $result[$i]['QUE_TEXT'],
+                'Answer'       => $answerRandom
+            ];
+        }
+        return $questions;
+    }
+
+    public function GetExamRequestId($request,$response){
+        $rsData = array(
+            'status' => 'error',
+            'message' => 'Xin lỗi! Dữ liệu chưa được cập nhật thành công!'
+        );
+        $id = $request->getParam('id');
+        $idux = $request->getParam('idux');
+        if(!empty($id) && !empty($idux)){
+            $result = $this->database->select('exam','*',['IDEXAM' => $id]);
+            if(!empty($result)){
+                $rsData['status'] = 'success';
+                $rsData['message'] = 'cập nhật thành công';
+                $rsData['data'] = $result[0];
+                $rsData['Questions'] = $this->ListQuestion($id,$idux);
+            }else{
+                $rsData['message'] = 'Dữ liệu trống!';
+            }
+        }else{
+            $rsData['message'] = 'Chưa nhận được yêu cầu!';
+        }
+        echo json_encode($rsData);
+        return;
+    }
+    public function GetQuestionUserId($request, $response){
+        $rsData = array(
+            'status' => 'error',
+            'message' => 'Xin lỗi! Dữ liệu chưa được cập nhật thành công!'
+        );
+        $idExam     = $request->getParam('idExam');
+        $idux     = $request->getParam('idux');
+        $idUser     = $request->getParam('idUser');
+        $timeNow    = $request->getParam('timeNow');
+        $QueID  = $request->getParam('questions');
+        $number     = count($QueID);
+        $sqlAns = "SELECT question.ID_QUE,answer.ID_ANS FROM question INNER JOIN detail_exam ON detail_exam.ID_QUE = question.ID_QUE INNER JOIN answer ON answer.ID_QUE = question.ID_QUE WHERE detail_exam.IDEXAM = '$idExam' AND answer.CORRECT = 'true'";
+        $resultAns = $this->database->query($sqlAns)->fetchAll();
+        $m = count($resultAns);
+        if(!empty($idExam) && !empty($idUser)){
+            $checkConfirm = $this->database->select('user_exam','*',['ID_UX ' => $idux]);
+            $arr = $checkConfirm[0];
+            if($arr['CONFIRM'] == null){
+                $dem = 0;
+                for($i = 0;$i < $m; $i++){
+                    for($j = 0;$j < $number;$j++){
+                        if($QueID[$j]['idQue'] == $resultAns[$i]['ID_QUE'] && $QueID[$j]['idAns'] == $resultAns[$i]['ID_ANS']){
+                            $dem += 1;
+                        }
+                    }
+                }  
+                $this->database->update('user_exam',[
+                    'TIMEEND'   => $timeNow,
+                    'CONFIRM'   => 'true',
+                    'SCORE'     => $dem
+                ],[
+                    'ID_UX' => $idux
+                ]);   
+                        
+                for($i = 0; $i < $number; $i++){
+                    if(!empty($QueID[$i])){
+                        $this->database->insert('detail_user_exam',[
+                            'ID_UX'     => $idux,
+                            'ID_ANS'    => $QueID[$i]['idAns'],
+                            'ID_QUE'    => $QueID[$i]['idQue']
+                        ]);
+                    }
+                }
+                $rsData['status'] = 'success';
+                $rsData['message'] = 'ok roi nha';
+            }else{
+                $message['message'] = 'Đề này đã thi xong rồi nhé!';
+            }
+        }else{
+            $message['message'] = 'Chưa lấy được dữ liệu!';
+        }
+        echo json_encode($rsData);
+        return;
+    }
 }

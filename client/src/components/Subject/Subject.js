@@ -63,7 +63,8 @@ class ItemSubject extends Component {
                         
                         <div className="item__brief-wrapper">
                             <h3>{SubName}</h3>
-                            <Link to={`/chu-de-trac-nghiem/${id}`}>Chi tiết</Link>
+                            {/* <Link to={`/chu-de-trac-nghiem/${id}`}>Chi tiết</Link> */}
+                            <a href={`/chu-de-trac-nghiem/${id}`} >Chi tiết</a>
                         </div>
                         <div className="item_img__cover">
                             <img src={item_img} alt="" />

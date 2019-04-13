@@ -1,6 +1,13 @@
 import * as types from './../constants/config';
 var initialState = {
     Questions:[],
+    Exam:{
+        id:"",
+        name:"",
+        time:0,
+        random:0,
+        List:[]
+    },
     status:false
 }
 

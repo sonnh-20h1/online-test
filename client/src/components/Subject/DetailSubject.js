@@ -111,7 +111,7 @@ class ItemExam extends Component {
               <span>Phút</span>
             </div>
             <div className="start_thi btn-primary">
-              <Link to={`/detail-exam/${exam.IDEXAM}`}>Vào thi</Link>
+              <a href={`/detail-exam/${exam.IDEXAM}`}>Vào thi</a>
             </div>
           </div>
         </div>

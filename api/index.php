@@ -15,7 +15,7 @@ $container['view'] = new \Slim\Views\PhpRenderer('Views/manage');
 $container['database'] = function () {
 	return new Medoo([
 		'database_type' => 'mysql',
-		'database_name' => 'que_ans',
+		'database_name' => 'son_tnol',
 		'server' => 'localhost',
 		'username' => 'root',
         'password' => '',
