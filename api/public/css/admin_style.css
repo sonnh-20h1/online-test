@@ -685,7 +685,8 @@ body.login{
     height: 15px;
     width: 15px;
     transition: all 0.15s ease-out 0s;
-    border: #cbd1d8 solid 1px;
+    border: #ddd solid 2px;
+    border-radius: 50%;
     color: #fff;
     cursor: pointer;
     display: inline-block;
@@ -704,10 +705,10 @@ body.login{
     height: 15px;
     width: 15px;
     position: absolute;
-    content: '✔';
+    content: '';
     display: inline-block;
     font-size: 14px;
-    color: #028C87;
+    background: #028C87;
     text-align: center;
     line-height: 15px;
   }

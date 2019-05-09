@@ -6,8 +6,8 @@ import { LoginUserRequest } from './../../actions/index';
 
 class Login extends Component {
 
-  constructor(props) {
-    super(props);
+  constructor() {
+    super();
     this.state = {
       RedirectToRender: false,
       errors: '',
@@ -80,9 +80,9 @@ class Login extends Component {
               <div className="background_image MinHeight">
                 <div className="background_border">
                   <div className="left-text text-position padTopLogin">
-                    <h3>Don't have an account?</h3>
-                    <p>create an account you have to click below on big register button. Then it will open sign page </p>
-                    <button><Link to='/sign-in'> Register</Link></button>
+                    <h3>Chưa có tài khoản?</h3>
+                    <p>Tạo một tài khoản bạn phải nhấp vào bên dưới vào nút đăng ký lớn. Sau đó, nó sẽ mở trang đăng kí </p>
+                    <button><Link to='/sign-in'> Đăng kí</Link></button>
                   </div>
                 </div>
               </div>
@@ -90,7 +90,7 @@ class Login extends Component {
             <div className="background_right col-md-6">
               <section className="login_content MinHeight padTopLogin">
                 <div className="Login_title pad-10">
-                  <h3 className="border-title text_cursive">Sign up</h3>
+                  <h3 className="border-title text_cursive">Đăng nhập</h3>
                 </div>
                 <div className="pad-10">
                   <span className="text_cursive">Username</span>

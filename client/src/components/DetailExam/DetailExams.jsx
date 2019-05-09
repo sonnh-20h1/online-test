@@ -1,10 +1,10 @@
 import React, { Component } from "react";
 import { Redirect } from "react-router-dom";
 import { connect } from "react-redux";
-import { DetailExamRequest, UserExamRequest } from "./../../actions/index";
+import { updateStateData } from "./../../actions/index";
 import { API } from "./../../API/API";
 import ReactLoading from "react-loading";
-import { Modal } from "react-bootstrap";
+import { Modal, Alert } from "react-bootstrap";
 import axios from "axios";
 
 export const Loading = () => {
@@ -22,44 +22,79 @@ export const Loading = () => {
   );
 };
 
+export const MainDetail = ({ DetailExam, GetStart }) => {
+  return (
+    <React.Fragment>
+      <div className="panel-heading text-center bord0">
+        <h3>{DetailExam.name}</h3>
+      </div>
+      <div className="panel-body text-center detail-exam">
+        <h3>Môn học: {DetailExam.subject}</h3>
+        <p>
+          <em>Tổng số câu: {DetailExam.number} </em>
+          <br />
+          <em>Random: {DetailExam.random}</em>
+          <br />
+          <em>Thời gian: {DetailExam.time} phút</em>
+        </p>
+        <button onClick={GetStart} className="btn btn-primary get-start bord0">
+          Bắt đầu
+        </button>
+      </div>
+    </React.Fragment>
+  );
+};
 class DetailExams extends Component {
-  constructor(props) {
-    super(props);
+  constructor() {
+    super();
     this.state = {
-      id: "",
       idux: "",
-      nameExam: "",
-      subject: "",
-      number: 0,
-      random: 0,
-      time: 0,
       payload: false,
-      status: false
+      loading: false
     };
   }
   componentDidMount() {
     var { match } = this.props;
     if (match) {
       var id = match.params.id;
-      this.props.DetailView(id);
+      const { DetailExam } = this.props.mainState;
+      if (DetailExam.id == "") {
+        this.viewDetail(id);
+      }
     }
   }
-  componentWillReceiveProps(nextProps) {
-    if (nextProps) {
-      var { ListExam } = nextProps;
-      this.setState({
-        id: ListExam[0].IDEXAM,
-        nameExam: ListExam[0].EXAMTEXT,
-        subject: ListExam[0].SUBTEXT,
-        number: ListExam[0].EXNUM,
-        time: ListExam[0].EXTIME,
-        random: ListExam[0].RANDOMEXAM
+  viewDetail = id => {
+    return axios({
+      method: "GET",
+      url: `${API}/detail-exam/${id}`
+    })
+      .then(json => {
+        const { status, data, message } = json.data;
+        if (status == "success") {
+          // console.log(data);
+          this.props.dispatch(
+            updateStateData({
+              ...this.props.mainState,
+              DetailExam: {
+                id: data.IDEXAM,
+                name: data.EXAMTEXT,
+                number: data.EXNUM,
+                random: data.RANDOMEXAM,
+                time: data.EXTIME,
+                subject: data.SUBTEXT,
+                status: data.status
+              }
+            })
+          );
+        }
+      })
+      .catch(err => {
+        console.error(err);
       });
-    }
-  }
+  };
   GetStart = () => {
     var data = JSON.parse(localStorage.getItem("user"));
-    const idExam = this.state.id;
+    const {id} = this.props.mainState.DetailExam;
     var currentDate = new Date();
     var timeNow = currentDate.getHours() + ":" + currentDate.getMinutes();
     var dateNow =
@@ -69,14 +104,14 @@ class DetailExams extends Component {
       "-" +
       currentDate.getDate();
     var dataExam = {
-      idExam: idExam,
+      idExam: id,
       idUser: data.IDUSER,
       timeNow: timeNow,
       dateNow: dateNow,
       score: 0
     };
     this.setState({
-      status: true
+      loading: true
     });
     // this.props.GetUserExam(dataExam)
     this.CreateRandomExam(dataExam);
@@ -87,15 +122,17 @@ class DetailExams extends Component {
       url: `${API}/ChooseRandomExam`,
       data: data
     })
-      .then(data => {
-        if (data.status == 200) {
-          if (data.data.data) {
+      .then(json => {
+        if (json.status == 200) {
+          const {data} = json.data;
+          if (data) {
             this.setState({
-              status: false,
-              idux: data.data.data,
+              loading: false,
+              idux: data,
               payload: true
             });
           }
+          console.log(json.data)
         }
       })
       .catch(err => {
@@ -103,12 +140,12 @@ class DetailExams extends Component {
       });
   };
   render() {
-    const ListExams = this.state;
-    const { status } = this.state;
+    const { loading } = this.state;
+    const { DetailExam } = this.props.mainState;
     if (this.state.payload === true) {
       return (
         <Redirect
-          to={`/online-test?id=${this.state.id}&idux=${this.state.idux}`}
+          to={`/online-test?id=${DetailExam.id}&idux=${this.state.idux}`}
         />
       );
     }
@@ -116,27 +153,15 @@ class DetailExams extends Component {
       <div className="next-start online-test">
         <div className="container">
           <div className="box-wrapper">
-            {status ? <Loading /> : ""}
+            {loading ? <Loading /> : ""}
             <div className="panel panel-primary panel-quiz-info">
-              <div className="panel-heading text-center bord0">
-                <h3>{ListExams.nameExam}</h3>
-              </div>
-              <div className="panel-body text-center detail-exam">
-                <h3>Môn học: {ListExams.subject}</h3>
-                <p>
-                  <em>Tổng số câu: {ListExams.number} </em>
-                  <br />
-                  <em>Random: {ListExams.random} câu</em>
-                  <br />
-                  <em>Thời gian: {ListExams.time} phút</em>
-                </p>
-                <button
-                  onClick={this.GetStart}
-                  className="btn btn-primary get-start bord0"
-                >
-                  Bắt đầu
-                </button>
-              </div>
+              {DetailExam.id ? (
+                <MainDetail DetailExam={DetailExam} GetStart={this.GetStart} />
+              ) : (
+                <Alert variant="error">
+                  <i className="fa fa-check-circle" /> Đề thi này không tồn tại!
+                </Alert>
+              )}
             </div>
           </div>
         </div>
@@ -144,23 +169,9 @@ class DetailExams extends Component {
     );
   }
 }
-const mapStateToProps = state => {
-  return {
-    ListExam: state.detailExam
-  };
-};
-const mapDispatchToProps = dispatch => {
-  return {
-    DetailView: id => {
-      dispatch(DetailExamRequest(id));
-    },
-    GetUserExam: data => {
-      dispatch(UserExamRequest(data));
-    }
-  };
-};
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(DetailExams);
+export default connect(state => {
+  return {
+    mainState: state.updateStateData
+  };
+})(DetailExams);

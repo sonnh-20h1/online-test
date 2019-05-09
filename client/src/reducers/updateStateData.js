@@ -8,6 +8,20 @@ var initialState = {
         random:0,
         List:[]
     },
+    DetailExam:{
+        id:"",
+        name:"",
+        random:0,
+        time:0,
+        subject:"",
+        status:0
+    },
+    UserManage:[],
+    SubjectManage:[],
+    ExamManage:[],
+    ListQuestions:[],
+    pageNumber:1,
+    pageList:[],
     status:false
 }
 

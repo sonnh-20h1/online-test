@@ -85,14 +85,26 @@ class ExamController extends Controller{
     }
 
     public function DetailExam($request,$response,$args){
+        $rsData = array(
+            'status' => 'error',
+            'message' => 'Xin lỗi! Dữ liệu chưa được cập nhật thành công!'
+        );
         $id = $args['id'];
         if(!empty($id)){
             $sql = "SELECT * FROM exam JOIN subjects ON exam.SUBID = subjects.SUBID WHERE exam.IDEXAM ='$id'";
             $result = $this->database->query($sql)->fetchAll();
-            echo json_encode($result);
+            if(!empty($result)){
+                $rsData['status'] = 'success';
+                $rsData['message'] = 'Đã lấy dữ liệu thành công!';
+                $rsData['data'] = $result[0];
+            }else{
+                $rsData['message'] = 'Đề thi này không tồn tại!';           
+            }
         }else{
-            echo json_encode('null');
+            $rsData['message'] = 'Không lấy dữ liệu thành công!';           
         }
+        echo json_encode($rsData);
+        return;
     }
     public function GetExam($request,$response,$args){
         $id     = $request->getParam('id');

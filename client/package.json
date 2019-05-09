@@ -9,12 +9,15 @@
     "react-bootstrap": "^1.0.0-beta.5",
     "react-bootstrap-sweetalert": "^4.4.1",
     "react-dom": "^16.6.3",
+    "react-google-login": "^5.0.4",
+    "react-js-pagination": "^3.0.2",
     "react-loading": "^2.0.3",
     "react-redux": "^6.0.0",
     "react-router-dom": "^4.3.1",
     "react-scripts": "2.1.1",
     "redux": "^4.0.1",
-    "redux-thunk": "^2.3.0"
+    "redux-thunk": "^2.3.0",
+    "xlsx": "^0.14.3"
   },
   "homepage": "http://www.son.annhiensmart.com",
   "scripts": {
@@ -32,6 +35,5 @@
     "not ie <= 11",
     "not op_mini all"
   ],
-  "proxy":"http://localhost/TO"
-
+  "proxy": "http://localhost/TO"
 }

@@ -73,6 +73,17 @@ CREATE TABLE feedback_question(
     status int
 );
 
+CREATE TABLE ol_admin(
+    id varchar(100) PRIMARY KEY,
+    username varchar(100),
+    password varchar(100),
+    hash varchar(100),
+    roles varchar(100),
+    is_super int,
+    update_on datetime,
+    status int 
+);
+
 ALTER TABLE user_exam AUTO_INCREMENT = 1000;
 ALTER TABLE detail_exam AUTO_INCREMENT = 2000;
 ALTER TABLE users AUTO_INCREMENT = 500;

@@ -276,7 +276,8 @@
   height: 20px;
   width: 20px;
   transition: all 0.15s ease-out 0s;
-  border: #cbd1d8 solid 1px;
+  border: rgb(184, 180, 180) solid 2px;
+  border-radius: 50%;
   color: #fff;
   cursor: pointer;
   display: inline-block;
@@ -295,10 +296,13 @@
   height: 20px;
   width: 20px;
   position: absolute;
-  content: '✔';
+  top: -2px;
+  left: -2px;
+  content: '';
   display: inline-block;
   font-size: 18px;
-  color: #028C87;
+  background: #028C87;
+  border-radius: 50%;
   text-align: center;
   line-height: 20px;
 }
@@ -306,10 +310,11 @@
   height: 20px;
   width: 20px;
   position: absolute;
-  content: 'x';
+  content: '';
   display: inline-block;
+  border-radius:50%; 
   font-size: 18px;
-  color: #028C87;
+  background: #028C87;
   text-align: center;
   line-height: 20px;
 }

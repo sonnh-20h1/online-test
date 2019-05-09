@@ -17,6 +17,7 @@ import DetailExams from "./components/DetailExam/DetailExams";
 import ListQuestion from "./components/Questions/ListQuestion";
 import ExamQuestion from './components/Questions/ExamQuestion';
 import Login from "./components/Login/Login";
+import Login_google from "./components/Login/SignUp"
 import PrivateRoute from "./components/Login/PrivateRoute";
 import fakeAuth from "./components/Login/fakeAuth";
 import SignIn from "./components/Login/SignIn";
@@ -26,6 +27,7 @@ import Account from "./components/Profile";
 import Home from "./components/Home/Home";
 import Subject from "./components/Subject/Subject";
 import DetailSubject from "./components/Subject/DetailSubject";
+import MainManage from './components/Manage/MainManage';
 
 class MainComponent extends Component {
   RenderMenu = () => {
@@ -123,7 +125,9 @@ class App extends Component {
         <React.Fragment>
           <Switch>
             <Route path="/login" exact render={props => <Login {...props} />} />
+            <Route path="/login-google" component={() => <Login_google />} />
             <Route path="/sign-in" component={() => <SignIn />} />
+            <Route path="/manage" component={MainManage} />
             <Route path="/" component={MainComponent} />
           </Switch>
         </React.Fragment>

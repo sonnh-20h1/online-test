@@ -28,9 +28,10 @@ class ImportExamController extends Controller{
         $NameExam = $request->getParam('NameExam'); 
         $SubjectExam = $request->getParam('SubjectExam');
         $RandomNumber = $request->getParam('RandomNumber'); 
+        $status = $request->getParam('status'); 
         $data = $request->getParam('data');
         $numberExam = count($data);
-        if(empty($idExam) || empty($TimeExam) || empty($NameExam) || empty($SubjectExam)){
+        if(empty($idExam) || empty($TimeExam) || empty($NameExam) || empty($SubjectExam) || empty($status)){
             $message['error'] = 'Chưa nhận được dữ liệu!';
             echo json_encode($message);
         }else{
@@ -42,7 +43,8 @@ class ImportExamController extends Controller{
                     'SUBID'     => $SubjectExam,
                     'EXTIME'    => $TimeExam,
                     'EXNUM'     => $numberExam,
-                    'RANDOMEXAM'  => $RandomNumber
+                    'RANDOMEXAM'  => $RandomNumber,
+                    'status'  => $status
                 ]);
                 $this->InsertQuestionExam($data,$idExam,$SubjectExam);
                 $message['success'] ='Đã thêm đề thi thành công!';
@@ -283,4 +285,5 @@ class ImportExamController extends Controller{
             ]);
         }
     }
+    
 }

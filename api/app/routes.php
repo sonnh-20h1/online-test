@@ -59,4 +59,8 @@ $app->post('/LogoutAdmin','App\Controllers\LoginController:LogoutAdmin');
 $app->get('/mng_noti','App\Controllers\NotiController:index');
 $app->get('/fetch_notification','App\Controllers\NotiController:fetch_notification');
 
+//admin management
+$app->post('/manage/login','App\Controllers\AdminController:login');
+
+
 

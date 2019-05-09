@@ -274,6 +274,7 @@ class ExamQuestion extends Component {
         if(json.data.status=='success'){
           this.props.dispatch(
             updateStateData({
+              ...this.props.mainState,
               Exam: {
                 id: data.EXTIME,
                 name: data.EXAMTEXT,
@@ -357,6 +358,7 @@ class ExamQuestion extends Component {
   }
   render() {
     const { Exam } = this.props.mainState;
+    console.log(this.props.mainState)
     const { loading,isNext,idux } = this.state;
     if (isNext === false) {
       return (

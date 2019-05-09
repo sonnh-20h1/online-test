@@ -2,8 +2,7 @@
     padding:0;
 }
 body{
-    /* background: url('http://bookhunterclub.com/wp-content/uploads/2014/05/game-van-kiem-1024x612.jpg'); */
-    background: url("https://2.bp.blogspot.com/-cLrMCueaCH8/Ubf3TbJPBaI/AAAAAAAAn40/vuPuj9bxkdY/s1600/10071281579925092.jpg");
+    background: url("../img/10071281579925092.jpg");
     background-size: cover;
     background-attachment: fixed;
     background-repeat: no-repeat;
