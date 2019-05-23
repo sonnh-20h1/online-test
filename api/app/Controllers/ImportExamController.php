@@ -4,15 +4,6 @@ namespace App\Controllers;
 
 class ImportExamController extends Controller{
 
-    public function index($request,$response){
-
-        if(isset($_SESSION['success'])){
-            return $this->view->render($response,'import_exam.phtml');            
-        }else{
-            return $response->withRedirect($this->router->pathFor('sign_in'));
-        }
-
-    }
     public function ShowExams($request,$response){
         $sql = "SELECT * FROM exam JOIN subjects ON exam.SUBID = subjects.SUBID";
         $result = $this->database->query($sql)->fetchAll();
@@ -21,6 +12,33 @@ class ImportExamController extends Controller{
         }else{
             echo json_encode($result);
         }  
+    }
+    public function UpdateExamId($request,$response){
+        $idExam = $request->getParam('IdExam'); 
+        $TimeExam = $request->getParam('TimeExam'); 
+        $NameExam = $request->getParam('NameExam'); 
+        $SubjectExam = $request->getParam('SubjectExam');
+        $RandomNumber = $request->getParam('RandomNumber'); 
+        $status = $request->getParam('status'); 
+
+        $rsData = array(
+            'status' => 'error',
+            'message' => 'Xin lỗi! Dữ liệu chưa được cập nhật thành công!'
+        );
+        if(empty($idExam) || empty($TimeExam) || empty($NameExam) || empty($SubjectExam) || empty($status)){
+            $rsData['message'] = 'Chưa nhận được dữ liệu!';
+        }else{
+            $this->database->update('exam',[
+                'EXAMTEXT'  => $NameExam,
+                'SUBID'     => $SubjectExam,
+                'EXTIME'    => $TimeExam,
+                'RANDOMEXAM'  => $RandomNumber,
+                'status'  => $status
+            ],['IDEXAM'    => $idExam]);
+            $rsData['status'] = 'success';
+            $rsData['message'] ='Đã cập nhật đề thi thành công!';
+        }
+        echo json_encode($rsData);
     }
     public function HanldingImportFileExcel($request,$response){
         $idExam = $request->getParam('IdExam'); 
@@ -55,6 +73,33 @@ class ImportExamController extends Controller{
             }
         }
     }
+    public function UpdateQuestionId($request,$response){
+        $rsData = array(
+            'status' => 'error',
+            'message' => 'Xin lỗi! Dữ liệu chưa được cập nhật thành công!'
+        );
+        $idQue = $request->getParam('idQue'); 
+        $idAns = $request->getParam('idAns');
+        
+        if(!empty($idQue) && !empty($idAns)){
+            $allAnswer = $this->database->select('answer','*',[ 'ID_QUE'    => $idQue ] );
+            foreach($allAnswer as $item){
+                if($item['ID_ANS'] == $idAns){
+                    $this->database->update('answer',[
+                        'CORRECT'   => 'true'
+                    ],['ID_ANS' => $idAns]);
+                }else{
+                    $this->database->update('answer',[
+                        'CORRECT'   => 'false'
+                    ],['ID_ANS' => $item['ID_ANS']]);
+                }
+            }
+            $rsData['status'] = 'success';
+            $rsData['message'] = 'Cập nhật đáp án thành công!';
+
+        }
+        echo json_encode($rsData);
+    }
     private function InsertQuestionExam($data,$idExam,$idSubject){
         $result = $this->database->select(
             'question',
@@ -66,15 +111,15 @@ class ImportExamController extends Controller{
         );
         $id_que = $result[0]+1;
         for($i = 0;$i < count($data);$i++){
-            if(!empty($data[$i]['question'])){
+            if(!empty($data[$i]['QUE_TEXT'])){
                 $id_que += 2;
                 $this->database->insert('question',[
                     'ID_QUE'    => $id_que,
-                    'QUE_TEXT'  => $data[$i]['question'],
+                    'QUE_TEXT'  => $data[$i]['QUE_TEXT'],
                     'SUBID'     => $idSubject
                     ]
                 );
-                $this->InsertAnswerExam($data[$i]['answer'],$id_que);
+                $this->InsertAnswerExam($data[$i]['Answer'],$id_que);
                 $this->database->insert('detail_exam',[
                     'IDEXAM'    => $idExam,
                     'ID_QUE'    => $id_que
@@ -85,14 +130,14 @@ class ImportExamController extends Controller{
     }
     private function InsertAnswerExam($dataAnswer,$id_que){
         for($i = 0; $i < count($dataAnswer);$i++){
-            if(!empty($dataAnswer[$i]['ans'])){
+            if(!empty($dataAnswer[$i]['ANS_TEXT'])){
                 $correct = 'false';
-                if($dataAnswer[$i]['correct'] == true){
+                if($dataAnswer[$i]['CORRECT'] == 'true'){
                     $correct = 'true';
                 }
                 $this->database->insert('answer',[
                     'ID_QUE'    => $id_que,
-                    'ANS_TEXT'  => $dataAnswer[$i]['ans'],
+                    'ANS_TEXT'  => $dataAnswer[$i]['ANS_TEXT'],
                     'CORRECT'   => $correct
                     ]
                 );
@@ -106,14 +151,50 @@ class ImportExamController extends Controller{
     }
     public function SelectExamId($request,$response){
         $id = $request->getParam('id');
-        $arrExam = $this->RequestExamId($id);
+        $questions = array();
         if(!empty($id)){
-            echo json_encode($this->HandingGetExam($id,$arrExam));
+            $result = $this->GetExamId($id);
+            $arrExam = $this->GetExamHaveId($id);
+            $answers = [];
+
+            foreach($arrExam as $item){
+                $answers = $this->GetAnswerId($item['ID_QUE']);
+                $questions[] = [
+                    'ID_QUE'        => $item['ID_QUE'],
+                    'QUE_TEXT'      => $item['QUE_TEXT'],
+                    'Answer'        => $answers,
+                ];
+            }
+            $exam[] =[
+                'idExam'        => $result[0]['IDEXAM'] ,
+                'NameExam'      => $result[0]['EXAMTEXT'] ,
+                'SubjectExam'   => $result[0]['SUBID'] ,
+                'TimeExam'      => $result[0]['EXTIME'] ,
+                'RandomQues'    => $result[0]['RANDOMEXAM'] ,
+                'status'        => $result[0]['status'],
+                'questions'     => $questions
+            ];
+            echo json_encode($exam);
         }else{
             $message['error'] = 'Không có dữ liệu!';
             echo json_encode($message);
+        } 
+    }
+    private function GetAnswerId($id){
+        if($id){
+            $sql = "SELECT * FROM `answer` WHERE ID_QUE = '$id'";
+            $result = $this->database->query($sql)->fetchAll();
+            return $result;
         }
-        
+        return [];
+    }
+    private function GetExamHaveId($id){
+        if($id){
+            $sql = "SELECT detail_exam.ID_DE,detail_exam.IDEXAM,question.ID_QUE,question.QUE_TEXT FROM detail_exam JOIN question ON detail_exam.ID_QUE = question.ID_QUE WHERE detail_exam.IDEXAM ='$id'";
+            $result = $this->database->query($sql)->fetchAll();
+            return $result;
+        }
+        return [];
     }
     private function GetQuestionExamId($arrExam){
         $questions = [];
@@ -134,7 +215,7 @@ class ImportExamController extends Controller{
             $questions = [];
             if(!empty($arrExam)){
                 for($i = 0;$i < count($arrExam);$i++){
-                    $answer = $this->RequestQuestionId($arrExam[$i]['ID_QUE']);
+                    $answer = $this->GetAnswerId($arrExam[$i]['ID_QUE']);
                     $questions[] = [
                         'ID_QUE'       => $arrExam[$i]['ID_QUE'],
                         'QUE_TEXT'     => $arrExam[$i]['QUE_TEXT'],
@@ -149,10 +230,12 @@ class ImportExamController extends Controller{
                 'SubjectExam'   => $result[0]['SUBID'] ,
                 'TimeExam'      => $result[0]['EXTIME'] ,
                 'RandomQues'    => $result[0]['RANDOMEXAM'] ,
+                'status'    => $result[0]['status'] ,
                 'questions'     => $questions
             ];
             return $exam;
     }
+    
     private function RequestQuestionId($id){
         if($id){
             $sql = "SELECT * FROM question JOIN answer ON answer.ID_QUE = question.ID_QUE WHERE question.ID_QUE = '$id'";
@@ -161,6 +244,7 @@ class ImportExamController extends Controller{
         }
         return [];
     }
+    
     private function RequestExamId($id){
         if($id){
             $sql = "SELECT * FROM detail_exam INNER JOIN exam ON exam.IDEXAM = detail_exam.IDEXAM INNER JOIN question ON detail_exam.ID_QUE = question.ID_QUE WHERE exam.IDEXAM = '$id'";

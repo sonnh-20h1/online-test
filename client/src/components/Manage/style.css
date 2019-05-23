@@ -13,7 +13,7 @@
     position: fixed;
     overflow: auto;
     height: 100%;
-    padding-left: 200px;
+    padding-left: 150px;
     width: 100%;
     left: 0;
     right: 0;
@@ -115,7 +115,7 @@
 .row-menu{
     border-right: #eee solid 1px;
     position: fixed;
-    width: 200px;
+    width: 150px;
     z-index: 2;
     height: 100%;
     background: #fff;
@@ -201,4 +201,15 @@
 }
 .number-que{
     padding: 10px;
+}
+.edit_{
+    cursor: pointer;
+    color: #1890ff;
+    margin: 0 5px;
+}
+.form-horizontal .form-group{
+    margin: 0!important;
+}
+.table-fx-left.Password{
+    display: grid;
 }

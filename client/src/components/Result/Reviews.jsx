@@ -1,11 +1,19 @@
-import React, { Component } from 'react';
-import checkTrue from '../../img/check-symbol.svg';
-import { API } from './../../API/API';
-import { Button, Form, Container, Row, Col, Alert, Breadcrumb, BreadcrumbItem } from 'react-bootstrap';
-import { connect } from 'react-redux';
-import { updateStateData } from './../../actions/index';
-import axios from 'axios';
-import SweetAlert from 'react-bootstrap-sweetalert';
+import React, { Component } from "react";
+import checkTrue from "../../img/check-symbol.svg";
+import { API } from "./../../API/API";
+import {
+  Button,
+  Form,
+  Container,
+  Row,
+  Col,
+  Alert,
+  Breadcrumb,
+  BreadcrumbItem
+} from "react-bootstrap";
+import { connect } from "react-redux";
+import { updateStateData } from "./../../actions/index";
+import axios from "axios";
 import ReactLoading from "react-loading";
 
 class SecBreadcrumb extends Component {
@@ -16,17 +24,20 @@ class SecBreadcrumb extends Component {
         <Container>
           <Breadcrumb className="breadcrumb__content">
             <BreadcrumbItem href="/home">Trang chủ</BreadcrumbItem>
-            <BreadcrumbItem href="/chu-de-trac-nghiem">Chủ đề trắc nghiệm</BreadcrumbItem>
-            <BreadcrumbItem active>Kết quả bài thi và đóng góp ý kiến</BreadcrumbItem>
+            <BreadcrumbItem href="/chu-de-trac-nghiem">
+              Chủ đề trắc nghiệm
+            </BreadcrumbItem>
+            <BreadcrumbItem active>
+              Kết quả bài thi và đóng góp ý kiến
+            </BreadcrumbItem>
           </Breadcrumb>
         </Container>
       </div>
-    )
+    );
   }
 }
 class Answer extends Component {
-  onChange = (e) => {
-  }
+  onChange = e => {};
   render() {
     const { answer, UserAnswer } = this.props;
     return (
@@ -44,34 +55,37 @@ class Answer extends Component {
             value={answer.ID_ANS}
             checked={answer.ID_ANS === UserAnswer ? true : false}
             className="option_que radio_que"
-
           />
         </td>
         <td>
-          <p className={answer.ID_ANS === UserAnswer ? (answer.CORRECT === "true" ? "true-green" : "false_red") : ""}>{answer.ANS_TEXT}</p>
+          <p
+            className={
+              answer.ID_ANS === UserAnswer
+                ? answer.CORRECT === "true"
+                  ? "true-green"
+                  : "false_red"
+                : ""
+            }
+          >
+            {answer.ANS_TEXT}
+          </p>
         </td>
       </tr>
-    )
+    );
   }
 }
 class ItemQuestion extends Component {
-  ListAnswer = (question) => {
+  ListAnswer = question => {
     var ListAnswer = null;
     var Answers = question.Answer;
     var { UserAnswer } = question;
     if (Answers.length > 0) {
       ListAnswer = Answers.map((answer, index) => {
-        return (
-          <Answer
-            key={index}
-            answer={answer}
-            UserAnswer={UserAnswer}
-          />
-        )
-      })
+        return <Answer key={index} answer={answer} UserAnswer={UserAnswer} />;
+      });
     }
-    return ListAnswer
-  }
+    return ListAnswer;
+  };
   render() {
     const { question } = this.props;
     return (
@@ -88,7 +102,7 @@ class ItemQuestion extends Component {
           </table>
         </div>
       </div>
-    )
+    );
   }
 }
 class Question extends Component {
@@ -97,21 +111,21 @@ class Question extends Component {
     valueFeedback: "",
     validated: false,
     question: {}
-  }
+  };
   componentDidMount() {
     this.setState({
       question: this.props.question
-    })
+    });
   }
   showfeedback = () => {
     this.setState({
       status: !this.state.status
-    })
-  }
-  sendFeedback = (e) => {
+    });
+  };
+  sendFeedback = e => {
     const { valueFeedback, question } = this.state;
     const { exam_id } = this.props;
-    var user = JSON.parse(localStorage.getItem('user'));
+    var user = JSON.parse(localStorage.getItem("user"));
     if (this.state.valueFeedback == "") {
       this.setState({ validated: true });
     } else {
@@ -122,47 +136,46 @@ class Question extends Component {
         valueFeedback,
         question_id: question.ID_QUE,
         time: this.getTime()
-      }
+      };
 
       axios({
-        method: 'POST',
+        method: "POST",
         url: `${API}/SaveFeedBack`,
         data: data
       })
         .then(data => {
-          if (data.data.status == 'success') {
+          if (data.data.status == "success") {
             alert("Đã gửi thành công!");
             this.setState({
               status: false
-            })
+            });
           }
         })
         .catch(err => {
-          console.error(err)
-        })
+          console.error(err);
+        });
     }
     e.preventDefault();
-  }
+  };
   getTime() {
     var date = new Date();
-    var strTime = date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
+    var strTime =
+      date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
     return strTime;
   }
-  handleChange = (e) => {
+  handleChange = e => {
     this.setState({
       valueFeedback: e.target.value
-    })
-  }
+    });
+  };
   render() {
     var { validated } = this.state;
 
     const Feedback = (
-      <Form
-        onSubmit={e => this.sendFeedback(e)}
-      >
+      <Form onSubmit={e => this.sendFeedback(e)}>
         <Form.Row>
           <Form.Group controlId="validationCustom">
-            <Form.Label></Form.Label>
+            <Form.Label />
             <Form.Control
               as="textarea"
               rows="3"
@@ -173,26 +186,35 @@ class Question extends Component {
             />
           </Form.Group>
         </Form.Row>
-        <Button variant="primary" type="submit">Gửi</Button>
+        <Button variant="primary" type="submit">
+          Gửi
+        </Button>
       </Form>
-    )
+    );
     const { question, index } = this.props;
     const { status } = this.state;
     return (
       <div className="number-q">
         <div className="box-question">
-          <div className="info-q"><h3>{index + 1}</h3></div>
+          <div className="info-q">
+            <h3>{index + 1}</h3>
+          </div>
           <div className="content-q review_content">
             <ItemQuestion question={question} />
           </div>
         </div>
         <div className="feedback_question">
-          <Button variant="danger" onClick={this.showfeedback} className="pad_size">Đánh giá</Button>
+          <Button
+            variant="danger"
+            onClick={this.showfeedback}
+            className="pad_size"
+          >
+            Đánh giá
+          </Button>
         </div>
-        {status ? Feedback : ''}
-
-      </div >
-    )
+        {status ? Feedback : ""}
+      </div>
+    );
   }
 }
 
@@ -203,17 +225,16 @@ class Feedback extends Component {
         <Form.Label>Đóng góp ý kiến của bạn</Form.Label>
         <Form.Control as="textarea" rows="3" />
       </Form.Group>
-    )
+    );
   }
 }
-
 
 class ReviewQuestions extends Component {
   state = {
     ListQuestions: {},
     status: true,
-    exam_id: ''
-  }
+    exam_id: ""
+  };
   ShowQuestions = (ListQuestions, exam_id) => {
     var result = null;
     if (ListQuestions.length > 0) {
@@ -225,29 +246,29 @@ class ReviewQuestions extends Component {
             index={index}
             exam_id={exam_id}
           />
-        )
-      })
+        );
+      });
     }
     return result;
-  }
+  };
   componentDidMount() {
     const { location } = this.props.location;
     let params = new URLSearchParams(location.search);
-    let id = params.get('id');
-    let idux = params.get('idux');
+    let id = params.get("id");
+    let idux = params.get("idux");
     let data = {
       id: id,
       idux: idux
-    }
+    };
     this.setState({
       exam_id: id
-    })
+    });
     this.getQuestionData(data);
   }
 
-  getQuestionData = (data) => {
+  getQuestionData = data => {
     return axios({
-      method: 'POST',
+      method: "POST",
       url: `${API}/get-exam-question`,
       data: data
     })
@@ -257,20 +278,19 @@ class ReviewQuestions extends Component {
         } else {
           this.props.dispatch(
             updateStateData({
-              Questions: [
-                ...data.data
-              ]
+              ...this.props.mainState,
+              Questions: [...data.data]
             })
-          )
+          );
           this.setState({
             status: false
-          })
+          });
         }
       })
       .catch(err => {
-        console.error(err)
-      })
-  }
+        console.error(err);
+      });
+  };
   render() {
     const { Questions } = this.props.mainState;
     const { status, exam_id } = this.state;
@@ -283,17 +303,22 @@ class ReviewQuestions extends Component {
           <div className=" page__wrapper">
             <div className="box-wrapper">
               <div className="the-questions Review-exam">
-                {status ? <ReactLoading className="loadingggg" type={"spinningBubbles"} color="#333" /> : ''}
-                {
-                  Questions ? this.ShowQuestions(Questions, exam_id) : ''
-                }
+                {status ? (
+                  <ReactLoading
+                    className="loadingggg"
+                    type={"spinningBubbles"}
+                    color="#333"
+                  />
+                ) : (
+                  ""
+                )}
+                {Questions ? this.ShowQuestions(Questions, exam_id) : ""}
               </div>
             </div>
-            {/* <Feedback /> */}
           </div>
         </div>
       </div>
-    )
+    );
   }
 }
 export default connect(state => {

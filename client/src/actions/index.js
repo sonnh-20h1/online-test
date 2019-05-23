@@ -74,7 +74,40 @@ export const DetailExamRequest = (id) => {
 			})
 	}
 }
-
+// test();
+function test(){
+	try {
+		fetch(`/api/SelectExamId`, {
+			method: "POST",
+			body: JSON.stringify({id:"hpt2_1"}),
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		}).then(response => response.json())
+			.then(data => {
+				console.log(data)
+				
+			})
+			.catch(err => {
+				console.error(err)
+			})
+	  }
+	  catch(err) {
+		console.log(err)
+	  }
+	
+}
+// axios({
+// 	method: "POST",
+// 	url: `/api/SelectExamId`,
+// 	data: {id:"hpt2_1"}
+//   })
+// 	.then(json => {
+// 	  console.log(json.data)
+// 	})
+// 	.catch(err => {
+// 	  console.error(err);
+// 	});
 export const UserExamRequest = (data) => {
 	return (dispatch) => {
 		return fetch(`${API}/GetUserExam`, {

@@ -185,6 +185,7 @@
 .Profile-user{
   background:#f5f5f5;
   min-height: 600px;
+  margin-bottom:50px; 
 }
 .user-page-container{
   padding-top:20px
@@ -233,7 +234,7 @@
 
 .account-section-content .table_list tr{
   display: grid;
-  grid-template-columns: 50px 500px 100px 100px 100px 100px 100px 100px;
+  grid-template-columns: 50px 300px 100px 100px 100px 100px 200px 100px;
 }
 .account-section-content .table_list{
   overflow: auto;

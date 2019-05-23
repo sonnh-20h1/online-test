@@ -4,14 +4,6 @@ namespace App\Controllers;
 
 class SubjectController extends Controller{
 
-    public function index($req,$res){
-
-        if(isset($_SESSION['success'])){
-            return $this->view->render($res,'mng_subject.phtml');       
-        }else{
-            return $res->withRedirect($this->router->pathFor('sign_in'));
-        }
-    }
     public function display_sub($req,$res){
         $result  = $this->database->select('subjects','*');
         echo json_encode($result);

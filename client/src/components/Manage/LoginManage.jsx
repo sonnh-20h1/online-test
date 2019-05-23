@@ -1,13 +1,17 @@
 import React, { Component } from "react";
-import { API } from "./../../API/API";
 import axios from "axios";
+import { API } from "./../../API/API";
+import {
+  Loading
+} from "./BaseManage";
 class LoginManage extends Component {
   constructor() {
     super();
     this.state = {
       username: "",
       password: "",
-      error: {}
+      error: {},
+      loading:false
     };
   }
   handleChange = e => {
@@ -33,6 +37,9 @@ class LoginManage extends Component {
       error
     })
     if (username && password) {
+      this.setState({
+        loading:true
+      })
       var data = this.state;
       axios({
         method: "POST",
@@ -50,6 +57,9 @@ class LoginManage extends Component {
             this.setState({
               error
             })
+            this.setState({
+              loading:false
+            })
           }
         })
         .catch(err => {
@@ -58,9 +68,10 @@ class LoginManage extends Component {
     }
   };
   render() {
-    const { error } = this.state;
+    const { error,loading } = this.state;
     return (
       <div className="login_box">
+        {loading?<Loading />:""}
         <form
           className="form-horizontal"
           onSubmit={this.onSubmit}

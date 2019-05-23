@@ -21,49 +21,72 @@ import {
 
 const ExamManageContext = React.createContext();
 
-const FormAddExam = () => {
+const FormAddExam = ({ readonly }) => {
   return (
     <div className="row">
-      <div className="col-md-4">
-        <Input type="text" placeholder="Mã đề thi ..." name="IdExam" />
-      </div>
-      <div className="col-md-4">
-        <Input type="text" placeholder="Tên đề thi ..." name="NameExam" />
-      </div>
-      <div className="col-md-4">
-        <Input
-          type="number"
-          placeholder="Thời gian làm bài ..."
-          name="TimeExam"
-        />
-      </div>
-      <div className="col-md-4">
-        <Input
-          type="number"
-          placeholder="Số câu chọn ngẫu nhiên ..."
-          name="RandomNumber"
-        />
-      </div>
-      <div className="col-md-4">
-        <ExamManageContext.Consumer>
-          {({ mainState }) => (
-            <Select name="SubjectExam" data={mainState.SubjectManage} />
-          )}
-        </ExamManageContext.Consumer>
-      </div>
-      <div className="col-md-4">
-        <div className="form-group mag15">
-          <select className="form-control" name="StatusExam">
-            <option value="1">Công khai</option>
-            <option value="2">Riêng tư</option>
-          </select>
-        </div>
-      </div>
+      <ExamManageContext.Consumer>
+        {({ mainState }) => (
+          <React.Fragment>
+            <div className="col-md-4">
+              <Input
+                readonly={readonly}
+                type="text"
+                placeholder="Mã đề thi ..."
+                name="IdExam"
+                value={mainState.ItemExamManage.IdExam}
+              />
+            </div>
+            <div className="col-md-4">
+              <Input
+                type="text"
+                placeholder="Tên đề thi ..."
+                name="NameExam"
+                value={mainState.ItemExamManage.NameExam}
+              />
+            </div>
+            <div className="col-md-4">
+              <Input
+                type="number"
+                placeholder="Thời gian làm bài ..."
+                name="TimeExam"
+                value={mainState.ItemExamManage.TimeExam}
+              />
+            </div>
+            <div className="col-md-4">
+              <Input
+                type="number"
+                placeholder="Số câu chọn ngẫu nhiên ..."
+                name="RandomNumber"
+                value={mainState.ItemExamManage.RandomNumber}
+              />
+            </div>
+            <div className="col-md-4">
+              <Select
+                name="SubjectExam"
+                data={mainState.SubjectManage}
+                Value={mainState.ItemExamManage.SubjectExam}
+              />
+            </div>
+            <div className="col-md-4">
+              <div className="form-group mag15">
+                <select
+                  className="form-control"
+                  name="StatusExam"
+                  defaultValue={mainState.ItemExamManage.status}
+                >
+                  <option value="1">Công khai</option>
+                  <option value="2">Riêng tư</option>
+                </select>
+              </div>
+            </div>
+          </React.Fragment>
+        )}
+      </ExamManageContext.Consumer>
     </div>
   );
 };
 
-const TdAnswer = ({ answer, index, id }) => {
+const TdAnswer = ({ answer, index, id, idQue }) => {
   return (
     <tr>
       <ExamManageContext.Consumer>
@@ -73,9 +96,9 @@ const TdAnswer = ({ answer, index, id }) => {
               <input
                 type="radio"
                 className="option_que radio_que"
-                name={index}
-                onChange={() => onChangeQuestion(index, id)}
-                defaultChecked={answer.CORRECT ? true : false}
+                name={idQue ? idQue : index}
+                onChange={() => onChangeQuestion(idQue, answer.ID_ANS)}
+                defaultChecked={answer.CORRECT == "true" ? true : false}
                 value={answer.ID_ANS}
               />
             </td>
@@ -95,7 +118,12 @@ const RowQuestion = ({ question, index }) => {
       {question.Answer
         ? question.Answer.map((answer, id) => {
             return answer.ANS_TEXT ? (
-              <TdAnswer answer={answer} key={id} id={id} index={index} />
+              <TdAnswer
+                answer={answer}
+                key={id}
+                idQue={question.ID_QUE}
+                index={index}
+              />
             ) : null;
           })
         : ""}
@@ -134,30 +162,75 @@ const ModalManage = ({ onClick }) => {
   return (
     <ModalBackground width={1200} onClick={onClick} title="Thêm đề thi">
       <ExamManageContext.Consumer>
-        {({ onChangeReadFile, mainState, handlePageChange,onSaveExam }) => (
-          <form onSubmit={onSaveExam}>
-            <FormAddExam />
-            <FormAddQuestion />
-            {mainState.ListQuestions == "" ? (
-              <ButtonReadFile onChangeReadFile={onChangeReadFile} />
+        {({
+          onChangeReadFile,
+          mainState,
+          handlePageChange,
+          onSaveExam,
+          onUpdateExam
+        }) => (
+          <React.Fragment>
+            {mainState.ShowUpdate ? (
+              <form onSubmit={onUpdateExam}>
+                <FormAddExam readonly={true} />
+                {mainState.ListQuestions == "" ? (
+                  <ButtonReadFile onChangeReadFile={onChangeReadFile} />
+                ) : (
+                  <React.Fragment>
+                    <FormAddQuestion />
+                    <div
+                      className="form-group mag15"
+                      style={{
+                        display: "grid",
+                        gridTemplateColumns: "1fr 1fr"
+                      }}
+                    >
+                      <Pagination
+                        activePage={mainState.pageNumber}
+                        itemsCountPerPage={20}
+                        totalItemsCount={mainState.ListQuestions.length}
+                        pageRangeDisplayed={5}
+                        onChange={handlePageChange}
+                      />
+                      <div className="text-right" style={{ margin: "13px 0" }}>
+                        <ButtonPrimary>Sửa đề thi</ButtonPrimary>
+                      </div>
+                    </div>
+                  </React.Fragment>
+                )}
+              </form>
             ) : (
-              <div
-                className="form-group mag15"
-                style={{ display: "grid", gridTemplateColumns: "1fr 1fr" }}
-              >
-                <Pagination
-                  activePage={mainState.pageNumber}
-                  itemsCountPerPage={20}
-                  totalItemsCount={mainState.ListQuestions.length}
-                  pageRangeDisplayed={2}
-                  onChange={handlePageChange}
-                />
-                <div className="text-right" style={{ margin: "13px 0" }}>
-                  <ButtonPrimary>Tạo đề thi</ButtonPrimary>
-                </div>
-              </div>
+              <form onSubmit={onSaveExam}>
+                <FormAddExam />
+
+                {mainState.ListQuestions == "" ? (
+                  <ButtonReadFile onChangeReadFile={onChangeReadFile} />
+                ) : (
+                  <React.Fragment>
+                    <FormAddQuestion />
+                    <div
+                      className="form-group mag15"
+                      style={{
+                        display: "grid",
+                        gridTemplateColumns: "1fr 1fr"
+                      }}
+                    >
+                      <Pagination
+                        activePage={mainState.pageNumber}
+                        itemsCountPerPage={20}
+                        totalItemsCount={mainState.ListQuestions.length}
+                        pageRangeDisplayed={5}
+                        onChange={handlePageChange}
+                      />
+                      <div className="text-right" style={{ margin: "13px 0" }}>
+                        <ButtonPrimary>Tạo đề thi</ButtonPrimary>
+                      </div>
+                    </div>
+                  </React.Fragment>
+                )}
+              </form>
             )}
-          </form>
+          </React.Fragment>
         )}
       </ExamManageContext.Consumer>
     </ModalBackground>
@@ -165,41 +238,59 @@ const ModalManage = ({ onClick }) => {
 };
 const ContentTable = () => {
   return (
-    <TableWrap
-      columns={[
-        "STT",
-        "Mã đề",
-        "Tên đề",
-        "Môn",
-        "Thời gian",
-        "Tổng số câu",
-        "Random câu",
-        "Actions"
-      ]}
-    >
+    <React.Fragment>
       <ExamManageContext.Consumer>
-        {({ mainState, onDeleteExam }) => (
+        {({ mainState, onDeleteExam, onEditExam, handlePageChangeMain }) => (
           <React.Fragment>
-            {mainState.ExamManage
-              ? mainState.ExamManage.map((exam, index) => {
-                  return (
-                    <RowTable
-                      key={index}
-                      exam={exam}
-                      index={index}
-                      onDeleteExam={onDeleteExam}
-                    />
-                  );
-                })
-              : ""}
+            <TableWrap
+              columns={[
+                "STT",
+                "Mã đề",
+                "Tên đề",
+                "Môn",
+                "Thời gian",
+                "Tổng số câu",
+                "Random câu",
+                "Trạng Thái",
+                "Actions"
+              ]}
+            >
+              <React.Fragment>
+                {mainState.ExamManage
+                  ? mainState.ExamManage.map((exam, index) => {
+                      return (mainState.pageMainNumber - 1) * 20 <= index &&
+                        index < mainState.pageMainNumber * 20 ? (
+                        <RowTable
+                          key={index}
+                          exam={exam}
+                          index={index}
+                          onDeleteExam={onDeleteExam}
+                          onEditExam={onEditExam}
+                        />
+                      ) : null;
+                    })
+                  : ""}
+              </React.Fragment>
+            </TableWrap>
+            {mainState.ExamManage ? (
+              <Pagination
+                activePage={mainState.pageMainNumber}
+                itemsCountPerPage={20}
+                totalItemsCount={mainState.ExamManage.length}
+                pageRangeDisplayed={5}
+                onChange={handlePageChangeMain}
+              />
+            ) : (
+              ""
+            )}
           </React.Fragment>
         )}
       </ExamManageContext.Consumer>
-    </TableWrap>
+    </React.Fragment>
   );
 };
-const RowTable = ({ exam, index, onDeleteExam }) => {
-  const { SUBTEXT, EXAMTEXT, RANDOMEXAM, IDEXAM, EXTIME, EXNUM } = exam;
+const RowTable = ({ exam, index, onDeleteExam, onEditExam }) => {
+  const { SUBTEXT, EXAMTEXT, RANDOMEXAM, IDEXAM, EXTIME, EXNUM, status } = exam;
   return (
     <tr>
       <td>{index + 1}</td>
@@ -209,7 +300,11 @@ const RowTable = ({ exam, index, onDeleteExam }) => {
       <td>{EXTIME}</td>
       <td>{EXNUM}</td>
       <td>{RANDOMEXAM}</td>
+      <td>{status == 1 ? "Công khai" : "Riêng tư"}</td>
       <td>
+        <span className="subject_edit" onClick={() => onEditExam(IDEXAM)}>
+          <i className="fa fa-pencil edit_" />
+        </span>
         <span className="subject_del" onClick={() => onDeleteExam(IDEXAM)}>
           <i className="fa fa-trash-o del_" />
         </span>
@@ -256,7 +351,8 @@ class ExamManage extends Component {
         this.props.dispatch(
           updateStateData({
             ...this.props.mainState,
-            ExamManage: json.data
+            ExamManage: json.data,
+            pageMainNumber: 1
           })
         );
       })
@@ -277,8 +373,8 @@ class ExamManage extends Component {
                 ANS_TEXT: ele.answer_a ? ele.answer_a : "",
                 CORRECT: ele.answer_a
                   ? ele.da.toUpperCase() == "A"
-                    ? true
-                    : false
+                    ? "true"
+                    : "false"
                   : ""
               }
             : "",
@@ -288,8 +384,8 @@ class ExamManage extends Component {
                 ANS_TEXT: ele.answer_b ? ele.answer_b : "",
                 CORRECT: ele.answer_b
                   ? ele.da.toUpperCase() == "B"
-                    ? true
-                    : false
+                    ? "true"
+                    : "false"
                   : ""
               }
             : "",
@@ -299,8 +395,8 @@ class ExamManage extends Component {
                 ANS_TEXT: ele.answer_c ? ele.answer_c : "",
                 CORRECT: ele.answer_c
                   ? ele.da.toUpperCase() == "C"
-                    ? true
-                    : false
+                    ? "true"
+                    : "false"
                   : ""
               }
             : "",
@@ -310,8 +406,8 @@ class ExamManage extends Component {
                 ANS_TEXT: ele.answer_d ? ele.answer_d : "",
                 CORRECT: ele.answer_d
                   ? ele.da.toUpperCase() == "D"
-                    ? true
-                    : false
+                    ? "true"
+                    : "false"
                   : ""
               }
             : "",
@@ -321,8 +417,8 @@ class ExamManage extends Component {
                 ANS_TEXT: ele.answer_e ? ele.answer_e : "",
                 CORRECT: ele.answer_e
                   ? ele.da.toUpperCase() == "E"
-                    ? true
-                    : false
+                    ? "true"
+                    : "false"
                   : ""
               }
             : ""
@@ -352,10 +448,7 @@ class ExamManage extends Component {
       };
     }
   };
-  onChangeQuestion = (id, idAns) => {
-    const { ListQuestions } = this.props.mainState;
-    console.log(ListQuestions[id]);
-  };
+
   handlePageChange = pageNumber => {
     this.props.dispatch(
       updateStateData({
@@ -364,11 +457,19 @@ class ExamManage extends Component {
       })
     );
   };
-  onSaveExam = (e) =>{
+  handlePageChangeMain = pageNumber => {
+    this.props.dispatch(
+      updateStateData({
+        ...this.props.mainState,
+        pageMainNumber: pageNumber
+      })
+    );
+  };
+  onSaveExam = e => {
     e.preventDefault();
     this.setState({
-      loading:true
-    })
+      loading: true
+    });
     const data = new FormData(e.target);
     var dataExams = {
       IdExam: data.get("IdExam"),
@@ -378,22 +479,27 @@ class ExamManage extends Component {
       RandomNumber: data.get("RandomNumber"),
       status: data.get("StatusExam"),
       data: this.props.mainState.ListQuestions
-    }
-    if(dataExams.IdExam && dataExams.TimeExam && dataExams.NameExam && dataExams.RandomNumber){
+    };
+    if (
+      dataExams.IdExam &&
+      dataExams.TimeExam &&
+      dataExams.NameExam &&
+      dataExams.RandomNumber
+    ) {
       axios({
         method: "POST",
         url: `${API}/HanldingImportFileExcel`,
         data: dataExams
       })
         .then(json => {
-          const {data} = json;
-          if(data.error){
-            alert(data.error)
-            this.setState({loading:false });
-          }else{
+          const { data } = json;
+          if (data.error) {
+            alert(data.error);
+            this.setState({ loading: false });
+          } else {
             alert(data.success);
             this.ShowData();
-            this.setState({ status: false,loading:false });
+            this.setState({ status: false, loading: false });
             this.props.dispatch(
               updateStateData({
                 ...this.props.mainState,
@@ -405,35 +511,156 @@ class ExamManage extends Component {
         .catch(err => {
           console.error(err);
         });
-    }else{
-      alert('vui lòng điền đầy đủ thông tin!');
+    } else {
+      alert("vui lòng điền đầy đủ thông tin!");
     }
-  }
-  onDeleteExam = (id) => {
+  };
+  onDeleteExam = id => {
     if (window.confirm("Do you want to delete this exam ?")) {
       var data = { id: id };
       this.setState({
-        loading:true
-      })
+        loading: true
+      });
       axios({
         method: "POST",
         url: `${API}/DeleteExamId`,
-        data:data
+        data: data
       })
         .then(json => {
           this.ShowData();
-          alert(json.data.success)
+          alert(json.data.success);
           this.setState({
-            loading:false
-          })
+            loading: false
+          });
         })
         .catch(err => {
           console.error(err);
         });
     }
   };
+  onEditExam = id => {
+    this.setState({
+      loading: true
+    });
+    if (id) {
+      var data = { id: id };
+      axios({
+        method: "POST",
+        url: `${API}/SelectExamId`,
+        data: data
+      })
+        .then(json => {
+          const {
+            questions,
+            idExam,
+            TimeExam,
+            SubjectExam,
+            RandomQues,
+            NameExam,
+            status
+          } = json.data[0];
+          this.props.dispatch(
+            updateStateData({
+              ...this.props.mainState,
+              ItemExamManage: {
+                IdExam: idExam,
+                NameExam,
+                TimeExam,
+                RandomNumber: RandomQues,
+                SubjectExam,
+                status
+              },
+              ShowUpdate: true,
+              ListQuestions: questions
+            })
+          );
+          this.setState({
+            loading: false,
+            status: true
+          });
+        })
+        .catch(err => {
+          console.error(err);
+          // console.log(id)
+          this.onEditExam(id);
+        });
+    }
+  };
+  onUpdateExam = e => {
+    e.preventDefault();
+    this.setState({
+      loading: true
+    });
+    const data = new FormData(e.target);
+    var dataExams = {
+      IdExam: data.get("IdExam"),
+      TimeExam: data.get("TimeExam"),
+      NameExam: data.get("NameExam"),
+      SubjectExam: data.get("SubjectExam"),
+      RandomNumber: data.get("RandomNumber"),
+      status: data.get("StatusExam")
+    };
+    if (
+      dataExams.IdExam &&
+      dataExams.TimeExam &&
+      dataExams.NameExam &&
+      dataExams.RandomNumber
+    ) {
+      axios({
+        method: "POST",
+        url: `${API}/UpdateExamId`,
+        data: dataExams
+      })
+        .then(json => {
+          const { data } = json;
+          if (data.status.error) {
+            alert(data.message);
+            this.setState({ loading: false });
+          } else {
+            alert(data.message);
+            this.ShowData();
+            this.setState({ status: false, loading: false });
+            this.props.dispatch(
+              updateStateData({
+                ...this.props.mainState,
+                ListQuestions: []
+              })
+            );
+          }
+        })
+        .catch(err => {
+          console.error(err);
+        });
+    } else {
+      alert("vui lòng điền đầy đủ thông tin!");
+    }
+  };
+  onChangeQuestion = (idQue, idAns) => {
+    var data = {
+      idQue,
+      idAns
+    };
+    this.setState({
+      loading: true
+    });
+    axios({
+      method: "POST",
+      url: `${API}/UpdateQuestionId`,
+      data: data
+    })
+      .then(json => {
+        alert(json.data.message);
+        this.setState({
+          loading: false
+        });
+      })
+      .catch(err => {
+        console.error(err);
+      });
+  };
   render() {
     const { status, loading } = this.state;
+    console.log(this.props.mainState);
     return (
       <React.Fragment>
         <ExamManageContext.Provider
@@ -442,8 +669,11 @@ class ExamManage extends Component {
             mainState: this.props.mainState,
             onChangeReadFile: this.onChangeReadFile,
             onDeleteExam: id => this.onDeleteExam(id),
+            onEditExam: id => this.onEditExam(id),
+            onUpdateExam: this.onUpdateExam,
             onChangeQuestion: (id, idAns) => this.onChangeQuestion(id, idAns),
             handlePageChange: this.handlePageChange,
+            handlePageChangeMain: this.handlePageChangeMain,
             onSaveExam: this.onSaveExam
           }}
         >
@@ -462,11 +692,26 @@ class ExamManage extends Component {
               <ContentTable />
             </ContentManage>
           </div>
-          {/* <ModalManage /> */}
           {status ? (
             <ModalManage
               onClick={() => {
                 this.setState({ status: false });
+                this.props.dispatch(
+                  updateStateData({
+                    ...this.props.mainState,
+                    ItemExamManage: {
+                      IdExam: "",
+                      NameExam: "",
+                      TimeExam: "",
+                      RandomNumber: "",
+                      SubjectExam: "",
+                      status: 1
+                    },
+                    pageNumber: 1,
+                    ShowUpdate: false,
+                    ListQuestions: []
+                  })
+                );
               }}
             />
           ) : (

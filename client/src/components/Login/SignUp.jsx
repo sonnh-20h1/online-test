@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 import { GoogleLogin } from "react-google-login";
 import { SignUserRequest } from "./../../actions/index";
+import {API_GOOGLE} from '../../API/API';
 class SignIn extends Component {
   responseGoogle = (response) =>{
     console.log(response)
@@ -20,7 +21,7 @@ class SignIn extends Component {
                   </div>
                   <div className="Sign-name">
                     <GoogleLogin
-                      clientId="886364506765-uanfnejqohmsfu34sajaukpttne1dvj1.apps.googleusercontent.com"
+                      clientId={API_GOOGLE}
                       buttonText="Login"
                       onSuccess={(res) => this.responseGoogle(res)}
                       onFailure={(res) => this.responseGoogle(res)}

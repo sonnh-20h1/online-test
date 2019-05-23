@@ -6,16 +6,25 @@ import { updateStateData } from "./../../actions/index";
 import { API } from "./../../API/API";
 import ReactLoading from "react-loading";
 import axios from "axios";
+import AccountManage from './AccountManage'; 
 import UserManage from "./UserManage";
 import ExamManage from "./ExamManage";
 import SubjectManage from "./SubjectManage";
 import LoginManage from "./LoginManage";
-import {PrivateRoute} from './BaseManage';
+import GroupManage from './GroupManage';
+import MessageManage from './MessageManage';
+import { PrivateRoute } from './BaseManage';
 
 const Menus = [
   {
-    name: "Dashboard",
-    to: "/manage/dashboard",
+    name: "Thông báo",
+    to: "/manage/message",
+    icon: "fa fa-bell-o",
+    exact: false
+  },
+  {
+    name: "Tài khoản",
+    to: "/manage/admin",
     icon: "fa fa-bell-o",
     exact: false
   },
@@ -35,6 +44,12 @@ const Menus = [
     name: "Exams",
     to: "/manage/exams",
     icon: "fa fa-cubes",
+    exact: false
+  },
+  {
+    name: "Groups",
+    to: "/manage/groups",
+    icon: "fa fa-users",
     exact: false
   }
 ];
@@ -76,9 +91,12 @@ export const MenuManages = ({ menus }) => {
 const ComponentManage = () => {
   return (
     <Switch>
+      <PrivateRoute path="/manage/admin" component={AccountManage} />
+      <PrivateRoute path="/manage/message" component={MessageManage} />
       <PrivateRoute path="/manage/users" component={UserManage} />
       <PrivateRoute path="/manage/subjects" component={SubjectManage} />
       <PrivateRoute path="/manage/exams" component={ExamManage} />
+      <PrivateRoute path="/manage/groups" component={GroupManage} />
       <Redirect to="/manage/users" />
     </Switch>
   );

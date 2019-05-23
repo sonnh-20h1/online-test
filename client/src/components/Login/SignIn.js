@@ -9,13 +9,14 @@ class SignIn extends Component {
       LastName: "",
       FirstName: "",
       Email: "",
+      PeopleEmail:"",
       UserName: "",
       PassWord: "",
       errors: {}
     };
   }
   onSignUpUser = () => {
-    const { LastName, FirstName, Email, UserName, PassWord } = this.state;
+    const { LastName, FirstName, Email, UserName,PeopleEmail, PassWord } = this.state;
     let errors = {};
     var user = {};
     if (LastName === "") {
@@ -33,11 +34,15 @@ class SignIn extends Component {
     if (PassWord === "") {
       errors["PassWord"] = false;
     }
-    if (LastName && FirstName && Email && UserName && PassWord) {
+    if(Email === PeopleEmail){
+      errors["err"] = "Người giới thiệu không thể trùng email với bạn!";
+    }
+    if (LastName && FirstName && Email && UserName && PassWord &&Email != PeopleEmail) {
       user = {
         LastName: LastName,
         FirstName: FirstName,
         Email: Email,
+        PeopleEmail:PeopleEmail,
         UserName: UserName,
         PassWord: PassWord
       };
@@ -77,6 +82,7 @@ class SignIn extends Component {
       LastName,
       FirstName,
       Email,
+      PeopleEmail,
       UserName,
       PassWord,
       errors
@@ -86,16 +92,12 @@ class SignIn extends Component {
         <div className="max-wrapper">
           <div className="Login_banner row">
             <div className="background_left col-md-6">
-              <div className="background_image MinHeight">
+              <div className="background_image" style={{minHeight:"630px"}}>
                 <div className="background_border">
                   <div className="left-text text-position padTopLogin">
-                    <h3>Allready have an account?</h3>
-                    <p>
-                      Click the log in button you will see a log in popup window
+                    <h3>Quy định đăng kí tài khoản</h3>
+                    <p>Vui lòng nhập đầy đủ chính xác thông tin của bạn
                     </p>
-                    <button>
-                      <Link to="/login"> Sign up</Link>
-                    </button>
                   </div>
                 </div>
               </div>
@@ -103,7 +105,7 @@ class SignIn extends Component {
             <div className="background_right col-md-6">
               <section className="login_content magTop20">
                 <div className="Login_title pad-10">
-                  <h3 className="border-title text_cursive">Sign in</h3>
+                  <h3 className="border-title text_cursive">Đăng kí</h3>
                 </div>
                 <div className="Sign-name grid-name">
                   <div className="pad-10">
@@ -139,6 +141,7 @@ class SignIn extends Component {
                 </div>
                 <div className="pad-10">
                   <span className="text_cursive">Email</span>
+                  <p><i style={{fontSize:"12px"}}>( Chúng tôi sẽ liên hệ tới bạn qua email, vui lòng nhập chính xác email )</i></p>
                   <input
                     type="email"
                     className={
@@ -147,8 +150,19 @@ class SignIn extends Component {
                         : "form-control pd-cl-10"
                     }
                     name="Email"
-                    placeholder="email"
+                    placeholder="Nhập email"
                     value={Email}
+                    onChange={this.onChange}
+                  />
+                </div>
+                <div className="pad-10">
+                  <span className="text_cursive">Người giới thiệu bạn</span>
+                  <input
+                    type="email"
+                    className="form-control pd-cl-10"
+                    name="PeopleEmail"
+                    placeholder="Nhập email"
+                    value={PeopleEmail}
                     onChange={this.onChange}
                   />
                 </div>
@@ -195,12 +209,12 @@ class SignIn extends Component {
                     onClick={this.onSignUpUser}
                     className="btn btnFocus submit"
                   >
-                    sign in
+                    Đăng kí
                   </button>
                 </div>
                 <div className="text-center pad-10  sign-online">
-                  <p>Allready have an account? </p>
-                  <Link to="/login"> Sign up</Link>
+                  <p>Đã có tài khoản? </p>
+                  <Link to="/login"> Đăng nhập</Link>
                 </div>
               </section>
             </div>

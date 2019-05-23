@@ -13,7 +13,7 @@ import itemImg from "../../img/icon-3.png";
 import axios from "axios";
 import { API } from "./../../API/API";
 
-export const SecBreadcrumb = ({ Title }) => {
+const SecBreadcrumb = ({ Title }) => {
   return (
     <div className="ol-breadcrumb">
       <Container>
@@ -28,7 +28,7 @@ export const SecBreadcrumb = ({ Title }) => {
     </div>
   );
 };
-export const ShowListSubject = ({ Title, Exams }) => {
+const ShowListSubject = ({ Title, Exams }) => {
   return (
     <Container>
       <div className="page__wrapper">
@@ -39,7 +39,7 @@ export const ShowListSubject = ({ Title, Exams }) => {
     </Container>
   );
 };
-export const TitleSubject = ({ Title }) => {
+const TitleSubject = ({ Title }) => {
   return (
     <div className="heading__box ">
       <h1 className="page__heading">Môn {Title.SUBTEXT}</h1>
@@ -47,7 +47,7 @@ export const TitleSubject = ({ Title }) => {
     </div>
   );
 };
-export const SearchExam = () => {
+const SearchExam = () => {
   return (
     <Row className="justify-content-center">
       <Col md={8}>
@@ -69,7 +69,7 @@ export const SearchExam = () => {
   );
 };
 
-export const ListExams = ({ Exams }) => {
+const ListExams = ({ Exams }) => {
   return (
     <Row className="shop__list">
       {Exams.length > 0 ? (
@@ -84,7 +84,7 @@ export const ListExams = ({ Exams }) => {
     </Row>
   );
 };
-export const ItemExam = ({ exam, index }) => {
+const ItemExam = ({ exam, index }) => {
   return (
     <Col md={12} className="_item_subject">
       <div className="item_grid">
@@ -97,7 +97,8 @@ export const ItemExam = ({ exam, index }) => {
               Bài {index + 1}: {exam.EXAMTEXT}
             </h3>
             <p>
-              Số câu: {exam.EXNUM} - chọn ngẫu nhiên: {exam.RANDOMEXAM}
+              Số câu: {exam.RANDOMEXAM} - chế
+              độ: {exam.status == 1 ? "Công khai" : "Riêng tư"}
             </p>
           </div>
         </div>
@@ -108,7 +109,7 @@ export const ItemExam = ({ exam, index }) => {
             <span>Phút</span>
           </div>
           <div className="start_thi btn-primary">
-            <a href={`/detail-exam/${exam.IDEXAM}`}>Vào thi</a>
+            <Link to={`/detail-exam/${exam.IDEXAM}`}>Vào thi</Link>
           </div>
         </div>
       </div>
@@ -125,27 +126,11 @@ class DetailSubject extends Component {
     };
   }
   componentDidMount() {
-    var check = JSON.parse(localStorage.getItem("user"));
+    // var check = localStorage.getItem("user");
     let { match } = this.props.match;
     if (match.params.id) {
       var data = { id: match.params.id };
       this.GetExamSubjectId(data);
-    }
-    if (check != null) {
-      axios({
-        method: "POST",
-        url: `${API}/loading_login`,
-        data: { id: check.IDUSER }
-      })
-        .then(data => {
-          if (data.data.error) {
-            window.localStorage.removeItem("user");
-            window.location.reload();
-          }
-        })
-        .catch(err => {
-          console.error(err);
-        });
     }
   }
   GetExamSubjectId(data) {
@@ -154,10 +139,10 @@ class DetailSubject extends Component {
       url: `${API}/GetExamSubjectId`,
       data: data
     })
-      .then(data => {
+      .then(json => {
         this.setState({
-          Title: data.data[0].title,
-          Exams: data.data[0].exams
+          Title: json.data[0].title,
+          Exams: json.data[0].exams
         });
       })
       .catch(err => {

@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
+import Pagination from "react-js-pagination";
 import { updateStateData } from "./../../actions/index";
 import { API } from "./../../API/API";
 import axios from "axios";
@@ -46,26 +47,40 @@ function ModalManage(props) {
 
 const ContentTable = () => {
   return (
-    <TableWrap columns={["STT", "Subject ID", "Subject name", "Actions"]}>
+    <React.Fragment>
       <SubjectManageContext.Consumer>
-        {({ mainState, onDeleteSubject }) => (
+        {({ mainState, onDeleteSubject, handlePageChange }) => (
           <React.Fragment>
-            {mainState.SubjectManage
-              ? mainState.SubjectManage.map((subject, index) => {
-                  return (
-                    <RowTable
-                      key={index}
-                      subject={subject}
-                      index={index}
-                      onDeleteSubject={onDeleteSubject}
-                    />
-                  );
-                })
-              : ""}
+            <TableWrap
+              columns={["STT", "Subject ID", "Subject name", "Actions"]}
+            >
+              {mainState.SubjectManage
+                ? mainState.SubjectManage.map((subject, index) => {
+                    return (mainState.pageMainNumber - 1) * 10 <= index &&
+                      index < mainState.pageMainNumber * 10 ? (
+                      <RowTable
+                        key={index}
+                        subject={subject}
+                        index={index}
+                        onDeleteSubject={onDeleteSubject}
+                      />
+                    ) : null;
+                  })
+                : ""}
+            </TableWrap>
+            <Pagination
+              activePage={mainState.pageMainNumber}
+              itemsCountPerPage={10}
+              totalItemsCount={
+                mainState.SubjectManage ? mainState.SubjectManage.length : 0
+              }
+              pageRangeDisplayed={5}
+              onChange={handlePageChange}
+            />
           </React.Fragment>
         )}
       </SubjectManageContext.Consumer>
-    </TableWrap>
+    </React.Fragment>
   );
 };
 const RowTable = ({ subject, index, onDeleteSubject }) => {
@@ -103,7 +118,8 @@ class SubjectManage extends Component {
         this.props.dispatch(
           updateStateData({
             ...this.props.mainState,
-            SubjectManage: json.data
+            SubjectManage: json.data,
+            pageMainNumber:1
           })
         );
       })
@@ -116,8 +132,8 @@ class SubjectManage extends Component {
     const data = new FormData(e.target);
     // console.log(data.get("NameSubject"))
     this.setState({
-      loading:true
-    })
+      loading: true
+    });
     axios({
       method: "POST",
       url: `${API}/create_sub`,
@@ -127,7 +143,7 @@ class SubjectManage extends Component {
         if (json.data === "success") {
           this.setState({
             status: false,
-            loading:false
+            loading: false
           });
           this.ShowData();
         } else if (json.data === "already") {
@@ -144,23 +160,31 @@ class SubjectManage extends Component {
     if (window.confirm("Do you want to delete this subject ?")) {
       var data = { id: id };
       this.setState({
-        loading:true
-      })
+        loading: true
+      });
       axios({
         method: "POST",
         url: `${API}/del_sub`,
-        data:data
+        data: data
       })
         .then(json => {
           this.ShowData();
           this.setState({
-            loading:false
-          })
+            loading: false
+          });
         })
         .catch(err => {
           console.error(err);
         });
     }
+  };
+  handlePageChange = pageNumber => {
+    this.props.dispatch(
+      updateStateData({
+        ...this.props.mainState,
+        pageMainNumber: pageNumber
+      })
+    );
   };
   render() {
     const { status, loading } = this.state;
@@ -171,7 +195,8 @@ class SubjectManage extends Component {
             dispatch: this.props.dispatch,
             mainState: this.props.mainState,
             onDeleteSubject: id =>
-              this.onDeleteSubject(id, this.props.mainState)
+              this.onDeleteSubject(id, this.props.mainState),
+            handlePageChange: this.handlePageChange
           }}
         >
           <div className="table-fx-left">

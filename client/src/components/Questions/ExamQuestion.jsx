@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { ReactDOM } from "react-dom";
 import { connect } from "react-redux";
 import { updateStateData } from "./../../actions/index";
 import {
@@ -92,8 +93,11 @@ class Timer extends Component {
 export const ItemShortcut = ({ number, item }) => {
   return (
     <div
-      data-index={item ? item.ID_QUE : ""}
-      className="item-question-shortcut"
+      className={
+        item.choose == true
+          ? "item-question-shortcut answered"
+          : "item-question-shortcut"
+      }
     >
       {number + 1}
     </div>
@@ -103,11 +107,11 @@ export const ItemShortcut = ({ number, item }) => {
 export const ColumnItemLeft = () => {
   return (
     <div className="left-menu-exam">
-      <div className="content-menu-exam">  
-        <ExamContext.Consumer>
-          {({ Exam, Finish,IsCheck }) => (
+      <ExamContext.Consumer>
+        {({mainState, Exam, Finish, IsCheck }) => (
+          <div className={mainState.scroll >= 100?"content-menu-exam scroll-top":"content-menu-exam"}>
             <React.Fragment>
-              {Exam.time ? <Timer time={Exam.time} IsCheck={IsCheck}/> : ""}
+              {Exam.time ? <Timer time={Exam.time} IsCheck={IsCheck} /> : ""}
               <div className="list-question-shortcut over-question">
                 {Exam.List
                   ? Exam.List.map((item, index) => {
@@ -118,14 +122,18 @@ export const ColumnItemLeft = () => {
                   : ""}
               </div>
               <div className="wrap-finish text-center">
-                <button className="btn btn-danger" onClick={Finish}>
-                  Finish
-                </button>
+                {Exam.List ? (
+                  <button className="btn btn-danger" onClick={Finish}>
+                    Finish
+                  </button>
+                ) : (
+                  ""
+                )}
               </div>
             </React.Fragment>
-          )}
-        </ExamContext.Consumer>
-      </div>
+          </div>
+        )}
+      </ExamContext.Consumer>
     </div>
   );
 };
@@ -146,32 +154,40 @@ export const RowItemAnswer = ({ Answer }) => {
   );
 };
 export const ItemAnswerChildren = ({ answer }) => {
+  const { ID_ANS, ID_QUE } = answer;
   return (
     <React.Fragment>
-      {answer ? (
-        <tr>
-          <td>
-            <input
-              type="radio"
-              className="option_que radio_que"
-              value={answer.ID_ANS}
-              name={answer.ID_QUE}
-            />
-          </td>
-          <td>
-            <p>{answer.ANS_TEXT}</p>
-          </td>
-        </tr>
-      ) : (
-        ""
-      )}
+      <ExamContext.Consumer>
+        {({ onChangeQuestion }) => (
+          <React.Fragment>
+            {answer ? (
+              <tr>
+                <td>
+                  <input
+                    type="radio"
+                    className="option_que radio_que"
+                    value={ID_ANS}
+                    name={ID_QUE}
+                    onChange={() => onChangeQuestion(ID_QUE)}
+                  />
+                </td>
+                <td>
+                  <p>{answer.ANS_TEXT}</p>
+                </td>
+              </tr>
+            ) : (
+              ""
+            )}
+          </React.Fragment>
+        )}
+      </ExamContext.Consumer>
     </React.Fragment>
   );
 };
 export const ItemQuetion = ({ item, index }) => {
   const { Answer } = item;
   return (
-    <div className="number-q">
+    <div className="number-q" id={item.ID_QUE}>
       <div className="box-question">
         <div className="content-q">
           <RowItemQuestion itemQue={item} index={index} />
@@ -200,7 +216,11 @@ export const ColumnItemRight = () => {
             Exam.List
               ? Exam.List.map((item, index) => {
                   return (
-                    <ItemQuetion key={index} index={index + 1} item={item} />
+                    <ItemQuetion
+                      key={item.ID_QUE}
+                      index={index + 1}
+                      item={item}
+                    />
                   );
                 })
               : ""
@@ -239,10 +259,11 @@ class ExamQuestion extends Component {
   constructor() {
     super();
     this.state = {
-      idExam:"",
+      idExam: "",
       loading: false,
-      payload:false,
-      isNext:true
+      payload: false,
+      isNext: true,
+      scroll:0
     };
   }
   componentDidMount() {
@@ -251,10 +272,7 @@ class ExamQuestion extends Component {
     let params = new URLSearchParams(location.search);
     let idExam = params.get("id");
     let idux = params.get("idux");
-    this.setState({
-      idExam,
-      idux
-    })
+
     let data = {
       id: idExam,
       idux: idux
@@ -262,21 +280,28 @@ class ExamQuestion extends Component {
     if (id == "") {
       this.GetExamRequestId(data);
     }
+
+    this.setState({
+      idExam,
+      idux
+    });
   }
+
   GetExamRequestId = data => {
-    return axios({
+    axios({
       method: "POST",
-      url: `${API}/GetExamRequestId`,
+      url: `${API}/GetExamQuestionId`,
       data: data
     })
       .then(json => {
-        const { data ,Questions  } = json.data;
-        if(json.data.status=='success'){
+        const { status, Questions, data } = json.data;
+        console.log("success");
+        if (status == "success") {
           this.props.dispatch(
             updateStateData({
               ...this.props.mainState,
               Exam: {
-                id: data.EXTIME,
+                id: data.IDEXAM,
                 name: data.EXAMTEXT,
                 time: data.EXTIME,
                 random: data.RANDOMEXAM,
@@ -299,7 +324,7 @@ class ExamQuestion extends Component {
       this.GetAnswerUserId();
     }
   };
-  GetAnswerUserId(){
+  GetAnswerUserId() {
     let inputs = document.getElementsByTagName("input");
     let result = [];
     if (inputs.length > 0) {
@@ -314,15 +339,15 @@ class ExamQuestion extends Component {
     }
     var currentDate = new Date();
     var timeNow = currentDate.getHours() + ":" + currentDate.getMinutes();
-    var dataUser = JSON.parse(localStorage.getItem("user"));
+    var dataUser = localStorage.getItem("user");
     var Data = {
       idExam: this.state.idExam,
       idux: this.state.idux,
-      idUser: dataUser.IDUSER,
+      idUser: dataUser,
       timeNow: timeNow,
       questions: result
     };
-    return axios({
+    axios({
       method: "POST",
       url: `${API}/GetQuestionUserId`,
       data: Data
@@ -334,6 +359,8 @@ class ExamQuestion extends Component {
         } else {
           this.props.dispatch(
             updateStateData({
+              ...this.props.mainState,
+              scroll:0,
               Exam: {
                 id: "",
                 name: "",
@@ -345,26 +372,36 @@ class ExamQuestion extends Component {
           );
           this.setState({
             isNext: false
-          })
-          
+          });
         }
       })
       .catch(err => {
         console.error(err);
       });
   }
-  IsCheck = () =>{
-    this.GetAnswerUserId()
-  }
+  IsCheck = () => {
+    this.GetAnswerUserId();
+  };
+  onChangeQuestion = id => {
+    const { Exam } = this.props.mainState;
+    var index = Exam.List.map(function(item) {
+      return item.ID_QUE;
+    }).indexOf(id);
+    Exam.List[index].choose = true;
+    this.props.dispatch(
+      updateStateData({
+        ...this.props.mainState,
+        Exam: Exam
+      })
+    );
+  };
   render() {
     const { Exam } = this.props.mainState;
-    console.log(this.props.mainState)
-    const { loading,isNext,idux } = this.state;
+    // console.log(this.props.mainState);
+    const { loading, isNext, idux } = this.state;
     if (isNext === false) {
       return (
-        <Redirect
-          to={{ pathname: `/result-test`, search: `?id=${idux}` }}
-        />
+        <Redirect to={{ pathname: `/result-test`, search: `?id=${idux}` }} />
       );
     }
     return (
@@ -373,14 +410,15 @@ class ExamQuestion extends Component {
         <ExamContext.Provider
           value={{
             dispatch: this.props.dispatch,
-            Exam: Exam?Exam:'',
+            mainState: this.props.mainState,
+            Exam: Exam ? Exam : "",
             Finish: this.Finish,
-            IsCheck:this.IsCheck
+            IsCheck: this.IsCheck,
+            onChangeQuestion: id => this.onChangeQuestion(id)
           }}
         >
           <MainExamQuestion />
         </ExamContext.Provider>
-
         {loading ? <Loading /> : ""}
         <Prompt
           when={isNext}

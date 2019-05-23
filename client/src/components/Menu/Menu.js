@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Route, Link, withRouter } from "react-router-dom";
+import { connect } from "react-redux";
 import fakeAuth from "./../Login/fakeAuth";
 
 const menus = [
@@ -8,21 +9,11 @@ const menus = [
     to: "/home",
     exact: false
   },
-  // {
-  //     name: "Đề thi",
-  //     to: "/exam/all",
-  //     exact: false
-  // },
   {
     name: "Chủ đề",
     to: "/chu-de-trac-nghiem",
     exact: false
   }
-  // {
-  //     name: "Khóa học",
-  //     to: "/course",
-  //     exact: false
-  // }
 ];
 class Profile extends Component {
   state = {
@@ -39,20 +30,10 @@ class Profile extends Component {
       showhide: !this.state.showhide
     });
   };
-  componentWillUnmount() {
-    this.handleOutsideClick();
-  }
-  handleOutsideClick = e => {
-    // ignore clicks on the component itself
-    console.log(this.node.contains(e.target));
-    if (this.node.contains(e.target)) {
-      console.log(this.node.contains(e.target));
-    }
-  };
   render() {
     const detail_tt = (
       <div className="ans_quick_link_user">
-        <Link to={`/account/profile`}>Thông tin cá nhân</Link>
+        <Link to={`/accounts/user`}>Thông tin cá nhân</Link>
         <a type="primary" onClick={this.Logout}>
           {" "}
           Đăng xuất
@@ -70,8 +51,15 @@ class Profile extends Component {
     );
   }
 }
+function isLogged() {
+  var status = false;
+  if (localStorage.getItem("user")) {
+    status = true;
+  }
+  return status;
+}
 const AuthButton = withRouter(({ history }) =>
-  fakeAuth.isAuthenticated === true ? (
+  isLogged() === true ? (
     <Profile history={history} />
   ) : (
     <li>
@@ -92,26 +80,7 @@ const MenuLink = ({ Label, to, active }) => {
     />
   );
 };
-class MenuItemLeft extends Component {
-  render() {
-    return (
-      <div className="menu__left">
-        <ul>
-          <li className="list__item">
-            <Link to="/home" title="Home">
-              <i className="fa fa-home" />
-            </Link>
-          </li>
-          <li className="list__item">
-            <Link to="/login" title="Tài khoản">
-              <i className="fa fa-user" />
-            </Link>
-          </li>
-        </ul>
-      </div>
-    );
-  }
-}
+
 class MenuItemHeader extends Component {
   ShowMenu = menus => {
     var result = null;
@@ -151,7 +120,7 @@ class Menu extends Component {
     return (
       <div className="menu test-online">
         <MenuItemHeader />
-        <MenuItemLeft />
+        {/* <MenuItemLeft /> */}
       </div>
     );
   }

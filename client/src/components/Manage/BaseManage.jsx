@@ -2,10 +2,10 @@ import React, { Component } from "react";
 import { Route, Redirect } from "react-router-dom";
 import ReactLoading from "react-loading";
 
-function isLogged() {
+function isAuthenticated(){
   var status = false;
   if (sessionStorage.getItem("OL_TOKEN")) {
-    status = true;
+    status = true
   }
   return status;
 }
@@ -14,7 +14,7 @@ export const PrivateRoute = ({ component: Component, ...rest }) => (
   <Route
     {...rest}
     render={props => {
-      return isLogged() ? (
+      return isAuthenticated() ? (
         <Component {...props} />
       ) : (
         <Redirect
@@ -106,7 +106,7 @@ export const Loading = () => {
     </div>
   );
 };
-export const Input = ({ placeholder, name, type }) => {
+export const Input = ({ placeholder, name, type,value,readonly }) => {
   return (
     <div className="form-group mag15">
       <input
@@ -114,17 +114,19 @@ export const Input = ({ placeholder, name, type }) => {
         className="form-control"
         placeholder={placeholder}
         name={name}
+        defaultValue={value}
+        readOnly={readonly?true:false}
       />
     </div>
   );
 };
-export const Select = ({name,data}) => {
+export const Select = ({name,data,Value}) => {
   return (
     <div className="form-group mag15">
-      <select className="form-control" name={name}>
+      <select className="form-control" name={name} defaultValue={Value}>
       {data?data.map((subject,index) =>{
         return (
-          <option value={subject.SUBID} key={index}>{subject.SUBTEXT}</option>
+          <option value={subject.SUBID} key={index} >{subject.SUBTEXT}</option>
         )
       }):""}
       </select>

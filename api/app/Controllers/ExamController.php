@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 // use Ramsey\Uuid\Uuid;
+use \Firebase\JWT\JWT;
 
 class ExamController extends Controller{
     private $tableName = 'feedback_question';
@@ -13,12 +14,13 @@ class ExamController extends Controller{
             return $response->withRedirect($this->router->pathFor('sign_in'));
         }
     }
-
+    
     public function display_exam($request,$response){
         $sql = "SELECT * FROM exam JOIN subjects ON exam.SUBID = subjects.SUBID";
         $result = $this->database->query($sql)->fetchAll();
         echo json_encode($result);
     }
+    
     public function add_exam($request,$response){
         $dataQuestion = $request->getParam('dataSave');
         $id = $request->getParam('id');
@@ -84,28 +86,7 @@ class ExamController extends Controller{
         }
     }
 
-    public function DetailExam($request,$response,$args){
-        $rsData = array(
-            'status' => 'error',
-            'message' => 'Xin lỗi! Dữ liệu chưa được cập nhật thành công!'
-        );
-        $id = $args['id'];
-        if(!empty($id)){
-            $sql = "SELECT * FROM exam JOIN subjects ON exam.SUBID = subjects.SUBID WHERE exam.IDEXAM ='$id'";
-            $result = $this->database->query($sql)->fetchAll();
-            if(!empty($result)){
-                $rsData['status'] = 'success';
-                $rsData['message'] = 'Đã lấy dữ liệu thành công!';
-                $rsData['data'] = $result[0];
-            }else{
-                $rsData['message'] = 'Đề thi này không tồn tại!';           
-            }
-        }else{
-            $rsData['message'] = 'Không lấy dữ liệu thành công!';           
-        }
-        echo json_encode($rsData);
-        return;
-    }
+    
     public function GetExam($request,$response,$args){
         $id     = $request->getParam('id');
         $idux   = $request->getParam('idux');
@@ -130,6 +111,7 @@ class ExamController extends Controller{
         }
         return [];
     }
+    
     private function RandomAnserId($input){
         if(!empty($input)){
             $arr = [];
@@ -362,22 +344,7 @@ class ExamController extends Controller{
             echo json_encode($message);
         }
     }
-    public function GetHistoryExamUser($request,$response){
-        $id = $request->getParam('id');
-        if(!empty($id)){
-            $sql = "SELECT * FROM exam INNER JOIN user_exam ON user_exam.IDEXAM = exam.IDEXAM INNER JOIN subjects ON subjects.SUBID = exam.SUBID WHERE user_exam.IDUSER = '$id' ORDER BY user_exam.ID_UX DESC";
-            $result = $this->database->query($sql)->fetchAll();
-            if(!empty($result)){
-                echo json_encode($result);
-            }else{
-                $message['error'] = 'Trống!';
-                echo json_encode($message);
-            }
-        }else{
-            $message['error'] = 'Không tìm thấy dữ liệu!';
-            echo json_encode($message);
-        }
-    }
+
     private function uuid()
     {
         return sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
@@ -540,7 +507,7 @@ class ExamController extends Controller{
         }
         return $questions;
     }
-
+    
     public function GetExamRequestId($request,$response){
         $rsData = array(
             'status' => 'error',
@@ -562,7 +529,6 @@ class ExamController extends Controller{
             $rsData['message'] = 'Chưa nhận được yêu cầu!';
         }
         echo json_encode($rsData);
-        return;
     }
     public function GetQuestionUserId($request, $response){
         $rsData = array(
@@ -571,13 +537,19 @@ class ExamController extends Controller{
         );
         $idExam     = $request->getParam('idExam');
         $idux     = $request->getParam('idux');
-        $idUser     = $request->getParam('idUser');
+        $jwt     = $request->getParam('idUser');
         $timeNow    = $request->getParam('timeNow');
         $QueID  = $request->getParam('questions');
         $number     = count($QueID);
+
+        $key = 'loginuser';
+        $token = (array)JWT::decode($jwt, $key, array('HS256'));
+        $idUser = $token['IDUSER'];
+
         $sqlAns = "SELECT question.ID_QUE,answer.ID_ANS FROM question INNER JOIN detail_exam ON detail_exam.ID_QUE = question.ID_QUE INNER JOIN answer ON answer.ID_QUE = question.ID_QUE WHERE detail_exam.IDEXAM = '$idExam' AND answer.CORRECT = 'true'";
         $resultAns = $this->database->query($sqlAns)->fetchAll();
         $m = count($resultAns);
+        
         if(!empty($idExam) && !empty($idUser)){
             $checkConfirm = $this->database->select('user_exam','*',['ID_UX ' => $idux]);
             $arr = $checkConfirm[0];

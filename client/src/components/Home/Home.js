@@ -18,25 +18,7 @@ class Home extends Component {
       Redi: true
     })
   }
-  componentDidMount() {
-    var data = JSON.parse(localStorage.getItem('user'));
-    if (data != null) {
-      axios({
-        method: 'POST',
-        url: `${API}/loading_login`,
-        data: { id: data.IDUSER }
-      })
-        .then(data => {
-          if (data.data.error) {
-            window.localStorage.removeItem('user')
-            window.location.reload()
-          }
-        })
-        .catch(err => {
-          console.error(err)
-        })
-    }
-  }
+  
   render() {
     var { Redi } = this.state;
     if (Redi) {

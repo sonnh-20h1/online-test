@@ -1,17 +1,23 @@
+import axios from "axios";
+import { API } from "./../../API/API";
+
 class fakeAuth {
-    constructor(){
-        this.isAuthenticated = false
+  constructor() {
+    if (localStorage.getItem("user")) {
+      this.isAuthenticated = true
+    }else{
+      this.isAuthenticated = false
     }
+  }
 
-    authenticate(cb){
-        this.isAuthenticated = true
-        cb()
-    }
+  authenticate(){
+      this.isAuthenticated = true
+  }
 
-    signout(cb){
-        this.isAuthenticated = false;
-        cb()
-    }
+  signout(cb){
+      this.isAuthenticated = false;
+      cb()
+  }
 }
 
 export default new fakeAuth();

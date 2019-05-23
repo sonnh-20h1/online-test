@@ -3,13 +3,6 @@ namespace App\Controllers;
 
 class QuestionController extends Controller{
 
-    public function index($req,$res){
-        if(isset($_SESSION['success'])){
-            return $this->view->render($res,'mng_question.phtml');
-        }else{
-            return $res->withRedirect($this->router->pathFor('sign_in'));
-        }
-    }
 
     public function Hanlding($req,$res){
         $que_name = $req->getParam('que_name');
