@@ -123,21 +123,21 @@ class Question extends Component {
     });
   };
   sendFeedback = e => {
+    e.preventDefault();
     const { valueFeedback, question } = this.state;
     const { exam_id } = this.props;
-    var user = JSON.parse(localStorage.getItem("user"));
+    var user = localStorage.getItem("user");
     if (this.state.valueFeedback == "") {
       this.setState({ validated: true });
     } else {
       var data = {
         id: "",
-        user_id: user.IDUSER,
+        user_id: user,
         exam_id: exam_id,
         valueFeedback,
         question_id: question.ID_QUE,
         time: this.getTime()
       };
-
       axios({
         method: "POST",
         url: `${API}/SaveFeedBack`,
@@ -155,7 +155,6 @@ class Question extends Component {
           console.error(err);
         });
     }
-    e.preventDefault();
   };
   getTime() {
     var date = new Date();

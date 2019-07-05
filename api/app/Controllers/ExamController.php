@@ -399,9 +399,13 @@ class ExamController extends Controller{
             $date = new \DateTime();
             $datetime = $date->format('Y-m-d')." ".$time;
             
+            $key = 'loginuser';
+            $token = (array)JWT::decode($user_id, $key, array('HS256'));
+            $idUser = $token['IDUSER'];
+            
             $itemData = [
 				'id'	=> $id,
-                'user_id' => $user_id,
+                'user_id' => $idUser,
                 'exam_id' => $exam_id,
 				'content' => $content,
 				'question_id' => $question_id,
@@ -591,3 +595,4 @@ class ExamController extends Controller{
         return;
     }
 }
+

@@ -92,15 +92,22 @@ class Timer extends Component {
 }
 export const ItemShortcut = ({ number, item }) => {
   return (
-    <div
-      className={
-        item.choose == true
-          ? "item-question-shortcut answered"
-          : "item-question-shortcut"
-      }
-    >
-      {number + 1}
-    </div>
+    <React.Fragment>
+      <ExamContext.Consumer>
+        {({ onChangeMove }) => (
+          <div
+            onClick={() => onChangeMove(item.ID_QUE)}
+            className={
+              item.choose == true
+                ? "item-question-shortcut answered"
+                : "item-question-shortcut"
+            }
+          >
+            {number + 1}
+          </div>
+        )}
+      </ExamContext.Consumer>
+    </React.Fragment>
   );
 };
 
@@ -108,8 +115,14 @@ export const ColumnItemLeft = () => {
   return (
     <div className="left-menu-exam">
       <ExamContext.Consumer>
-        {({mainState, Exam, Finish, IsCheck }) => (
-          <div className={mainState.scroll >= 100?"content-menu-exam scroll-top":"content-menu-exam"}>
+        {({ mainState, Exam, Finish, IsCheck }) => (
+          <div
+            className={
+              mainState.scroll >= 100
+                ? "content-menu-exam scroll-top"
+                : "content-menu-exam"
+            }
+          >
             <React.Fragment>
               {Exam.time ? <Timer time={Exam.time} IsCheck={IsCheck} /> : ""}
               <div className="list-question-shortcut over-question">
@@ -263,7 +276,7 @@ class ExamQuestion extends Component {
       loading: false,
       payload: false,
       isNext: true,
-      scroll:0
+      scroll: 0
     };
   }
   componentDidMount() {
@@ -360,7 +373,7 @@ class ExamQuestion extends Component {
           this.props.dispatch(
             updateStateData({
               ...this.props.mainState,
-              scroll:0,
+              scroll: 0,
               Exam: {
                 id: "",
                 name: "",
@@ -395,9 +408,12 @@ class ExamQuestion extends Component {
       })
     );
   };
+  onChangeMove = id => {
+    var top = document.getElementById(""+id+"");
+    window.scrollTo(0,top.offsetTop);
+  };
   render() {
     const { Exam } = this.props.mainState;
-    // console.log(this.props.mainState);
     const { loading, isNext, idux } = this.state;
     if (isNext === false) {
       return (
@@ -414,7 +430,8 @@ class ExamQuestion extends Component {
             Exam: Exam ? Exam : "",
             Finish: this.Finish,
             IsCheck: this.IsCheck,
-            onChangeQuestion: id => this.onChangeQuestion(id)
+            onChangeQuestion: id => this.onChangeQuestion(id),
+            onChangeMove: id => this.onChangeMove(id)
           }}
         >
           <MainExamQuestion />

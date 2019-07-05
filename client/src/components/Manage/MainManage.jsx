@@ -13,9 +13,16 @@ import SubjectManage from "./SubjectManage";
 import LoginManage from "./LoginManage";
 import GroupManage from './GroupManage';
 import MessageManage from './MessageManage';
+import FeelBackManage from './FeelBackManage'
 import { PrivateRoute } from './BaseManage';
 
 const Menus = [
+  {
+    name: "Phản hồi",
+    to: "/manage/feelback",
+    icon: "fa fa-bell-o",
+    exact: false
+  },
   {
     name: "Thông báo",
     to: "/manage/message",
@@ -93,6 +100,7 @@ const ComponentManage = () => {
     <Switch>
       <PrivateRoute path="/manage/admin" component={AccountManage} />
       <PrivateRoute path="/manage/message" component={MessageManage} />
+      <PrivateRoute path="/manage/feelback" component={FeelBackManage} />
       <PrivateRoute path="/manage/users" component={UserManage} />
       <PrivateRoute path="/manage/subjects" component={SubjectManage} />
       <PrivateRoute path="/manage/exams" component={ExamManage} />

@@ -47,6 +47,7 @@ var initialState = {
   ListAccountExam:[],
   ListAccountHistory:[],
   ProfileUser:[],
+  FeelBacks:[],
   status: false
 };
 
