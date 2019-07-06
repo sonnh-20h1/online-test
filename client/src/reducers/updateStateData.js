@@ -48,6 +48,7 @@ var initialState = {
   ListAccountHistory:[],
   ProfileUser:[],
   FeelBacks:[],
+  ListFileDownload:[],
   status: false
 };
 

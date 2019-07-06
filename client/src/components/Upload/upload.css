@@ -1,0 +1,10 @@
+.form_upload{
+    display: inline-block;
+}
+.form_upload input{
+    display: inline-block;
+}
+.part_upload{
+    text-align: center;
+    padding-top:60px; 
+}

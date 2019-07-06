@@ -1,6 +1,12 @@
 import React, { Component } from "react";
 import { Route, Link, withRouter } from "react-router-dom";
 import { connect } from "react-redux";
+import {
+  Dropdown,
+  UncontrolledDropdown,
+  DropdownMenu,
+  DropdownToggle
+} from "reactstrap";
 import fakeAuth from "./../Login/fakeAuth";
 
 const menus = [
@@ -12,6 +18,11 @@ const menus = [
   {
     name: "Chủ đề",
     to: "/chu-de-trac-nghiem",
+    exact: false
+  },
+  {
+    name: "Upload",
+    to: "/upload-question",
     exact: false
   }
 ];
@@ -31,22 +42,25 @@ class Profile extends Component {
     });
   };
   render() {
-    const detail_tt = (
-      <div className="ans_quick_link_user">
-        <Link to={`/accounts/user`}>Thông tin cá nhân</Link>
-        <a type="primary" onClick={this.Logout}>
-          {" "}
-          Đăng xuất
-        </a>
-      </div>
-    );
     var { showhide } = this.state;
     return (
       <div className="header_profile">
-        <div className="icon_toggle" onClick={this.show}>
-          <i className="glyphicon glyphicon-user" />
-        </div>
-        {showhide ? detail_tt : ""}
+        <Dropdown isOpen={showhide} toggle={this.show}>
+          <DropdownToggle caret nav>
+            <div className="icon_toggle">
+              <i className="glyphicon glyphicon-user" />
+            </div>
+          </DropdownToggle>
+          <DropdownMenu right>
+            <div className="ans_quick_link_user">
+              <Link to={`/accounts/user`}>Thông tin cá nhân</Link>
+              <a type="primary" onClick={this.Logout}>
+                {" "}
+                Đăng xuất
+              </a>
+            </div>
+          </DropdownMenu>
+        </Dropdown>
       </div>
     );
   }

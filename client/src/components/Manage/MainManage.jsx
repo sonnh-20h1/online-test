@@ -13,7 +13,8 @@ import SubjectManage from "./SubjectManage";
 import LoginManage from "./LoginManage";
 import GroupManage from './GroupManage';
 import MessageManage from './MessageManage';
-import FeelBackManage from './FeelBackManage'
+import FeelBackManage from './FeelBackManage';
+import UploadManage from './UploadManage';
 import { PrivateRoute } from './BaseManage';
 
 const Menus = [
@@ -58,6 +59,12 @@ const Menus = [
     to: "/manage/groups",
     icon: "fa fa-users",
     exact: false
+  },
+  {
+    name: "Upload",
+    to: "/manage/upload-file-question",
+    icon: "fa fa-users",
+    exact: false
   }
 ];
 
@@ -100,6 +107,7 @@ const ComponentManage = () => {
     <Switch>
       <PrivateRoute path="/manage/admin" component={AccountManage} />
       <PrivateRoute path="/manage/message" component={MessageManage} />
+      <PrivateRoute path="/manage/upload-file-question" component={UploadManage} />
       <PrivateRoute path="/manage/feelback" component={FeelBackManage} />
       <PrivateRoute path="/manage/users" component={UserManage} />
       <PrivateRoute path="/manage/subjects" component={SubjectManage} />

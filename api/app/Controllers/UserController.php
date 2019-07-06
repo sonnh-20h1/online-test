@@ -110,7 +110,7 @@ class UserController extends Controller{
                     "iat"       => $now,
                     "IDUSER"    => $result[0]['IDUSER'],
                     'EMAIL'     => $result[0]['EMAIL'],
-                    'PASS'      => $result[0]['PASS']
+                    // 'PASS'      => $result[0]['PASS']
                 );
                 $token = JWT::encode($payload, $key);
                 echo json_encode($token);

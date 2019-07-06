@@ -10,7 +10,6 @@ use Medoo\Medoo;
 $app = new \Slim\App();
 
 $container = $app->getContainer();
-$container['view'] = new \Slim\Views\PhpRenderer('Views/manage');
 
 $container['database'] = function () {
 	return new Medoo([
@@ -29,6 +28,8 @@ $container['database'] = function () {
 
 	]); 
 };
+
+$container['upload_file'] = __DIR__;
 
 require 'app/routes.php';
 

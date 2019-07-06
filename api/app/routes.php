@@ -77,6 +77,9 @@ $app->post('/DeleteUserGroupId','App\Controllers\GroupController:DeleteUserGroup
 $app->post('/DeleteExamGroupId','App\Controllers\GroupController:DeleteExamGroupId');
 $app->post('/onDeleteGroupId','App\Controllers\GroupController:onDeleteGroupId');
 
+//upload file question
+$app->get('/get-upload','App\Controllers\UploadFileQuestion:showDataUploadFile');
+$app->post('/upload-question','App\Controllers\UploadFileQuestion:uploadFile');
 
 
 

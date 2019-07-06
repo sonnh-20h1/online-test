@@ -21,6 +21,7 @@ import Account from "./Profile";
 import Home from "./Home/Home";
 import Subject from "./Subject/Subject";
 import SubjectDetail from "./Subject/SubjectDetail";
+import UploadFileQuestions from './Upload/UploadFileQuestions';
 
 class Footer extends Component {
   state = {
@@ -70,6 +71,10 @@ class MainComponent extends Component {
         <PrivateRoute
           path="/chu-de-trac-nghiem"
           component={() => <Subject />}
+        />
+        <PrivateRoute
+          path="/upload-question"
+          component={() => <UploadFileQuestions />}
         />
         <PrivateRoute
           path="/account/:name"
