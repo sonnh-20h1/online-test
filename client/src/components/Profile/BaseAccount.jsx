@@ -16,6 +16,11 @@ export const ListMenuItem = () => {
             to="/accounts/history"
             active={false}
           />
+          <MenuLink
+            Lable="Phản hồi trang web"
+            to="/accounts/feedback-website"
+            active={false}
+          />
         </ul>
       </div>
     </div>

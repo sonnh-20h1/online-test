@@ -6,7 +6,7 @@ import { updateStateData } from "./../../actions/index";
 import { API } from "./../../API/API";
 import ReactLoading from "react-loading";
 import axios from "axios";
-import AccountManage from './AccountManage'; 
+import AccountManage from './AccountManage';
 import UserManage from "./UserManage";
 import ExamManage from "./ExamManage";
 import SubjectManage from "./SubjectManage";
@@ -15,24 +15,13 @@ import GroupManage from './GroupManage';
 import MessageManage from './MessageManage';
 import FeelBackManage from './FeelBackManage';
 import UploadManage from './UploadManage';
-import { PrivateRoute } from './BaseManage';
+import FeedBackWebsite from './FeedBackWebsite';
+import { PrivateRoute, MenuManages } from './BaseManage';
 
 const Menus = [
   {
-    name: "Phản hồi",
-    to: "/manage/feelback",
-    icon: "fa fa-bell-o",
-    exact: false
-  },
-  {
     name: "Thông báo",
     to: "/manage/message",
-    icon: "fa fa-bell-o",
-    exact: false
-  },
-  {
-    name: "Tài khoản",
-    to: "/manage/admin",
     icon: "fa fa-bell-o",
     exact: false
   },
@@ -68,40 +57,7 @@ const Menus = [
   }
 ];
 
-const MenuLink = ({ Label, to, active, icon }) => {
-  return (
-    <Route
-      path={to}
-      exact={active}
-      children={({ match }) => (
-        <li className={match ? "active" : ""}>
-          <Link to={to}>
-            <i className={icon} />
-            {Label}
-          </Link>
-        </li>
-      )}
-    />
-  );
-};
-export const MenuManages = ({ menus }) => {
-  return (
-    <div className="row-menu">
-      <ul>
-        {menus.map((item, index) => {
-          return (
-            <MenuLink
-              key={index}
-              Label={item.name}
-              icon={item.icon}
-              to={item.to}
-            />
-          );
-        })}
-      </ul>
-    </div>
-  );
-};
+
 const ComponentManage = () => {
   return (
     <Switch>
@@ -113,6 +69,7 @@ const ComponentManage = () => {
       <PrivateRoute path="/manage/subjects" component={SubjectManage} />
       <PrivateRoute path="/manage/exams" component={ExamManage} />
       <PrivateRoute path="/manage/groups" component={GroupManage} />
+      <PrivateRoute path="/manage/feelback-website" component={FeedBackWebsite} />
       <Redirect to="/manage/users" />
     </Switch>
   );
@@ -128,7 +85,7 @@ const AdminManage = () => {
 const BoxManage = () => {
   return (
     <Switch>
-      <Route path="/manage/login" render={props => <LoginManage {...props}/>} />
+      <Route path="/manage/login" render={props => <LoginManage {...props} />} />
       <Route path="/manage" component={AdminManage} />
     </Switch>
   );

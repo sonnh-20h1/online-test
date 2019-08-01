@@ -49,6 +49,7 @@ var initialState = {
   ProfileUser:[],
   FeelBacks:[],
   ListFileDownload:[],
+  ListFeedBackWebsite:[],
   status: false
 };
 

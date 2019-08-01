@@ -1,0 +1,9 @@
+.title_feedback img{
+    width: 100%;
+}
+.title_feedback{
+    padding-top:20px; 
+}
+.content_feedback textarea{
+    width: 100%;
+}

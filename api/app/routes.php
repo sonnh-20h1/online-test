@@ -81,6 +81,11 @@ $app->post('/onDeleteGroupId','App\Controllers\GroupController:onDeleteGroupId')
 $app->get('/get-upload','App\Controllers\UploadFileQuestion:showDataUploadFile');
 $app->post('/upload-question','App\Controllers\UploadFileQuestion:uploadFile');
 
+//feed back website
+
+$app->get('/getFeedBackWebsite','App\Controllers\FeedBackWebController:getFeedBackWebsite');
+$app->post('/add-feedbackwebsite','App\Controllers\FeedBackWebController:insertFeedBack');
+
 
 
 

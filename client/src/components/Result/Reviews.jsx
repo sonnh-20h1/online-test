@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import checkTrue from "../../img/check-symbol.svg";
 import { API } from "./../../API/API";
+import { Link } from "react-router-dom";
 import {
   Button,
   Form,
@@ -232,7 +233,8 @@ class ReviewQuestions extends Component {
   state = {
     ListQuestions: {},
     status: true,
-    exam_id: ""
+    exam_id: "",
+    subId:''
   };
   ShowQuestions = (ListQuestions, exam_id) => {
     var result = null;
@@ -265,34 +267,46 @@ class ReviewQuestions extends Component {
     this.getQuestionData(data);
   }
 
-  getQuestionData = data => {
-    return axios({
+  getQuestionData = async data => {
+    var json = await axios({
       method: "POST",
       url: `${API}/get-exam-question`,
       data: data
-    })
-      .then(data => {
-        if (data.data.error) {
-          console.log(data.data);
-        } else {
-          this.props.dispatch(
-            updateStateData({
-              ...this.props.mainState,
-              Questions: [...data.data]
-            })
-          );
-          this.setState({
-            status: false
-          });
-        }
+    }).catch(err => {
+      console.error(err);
+    });
+
+    var jsonSubject = await axios({
+      method: "GET",
+      url: `${API}/GetResultRequest/${data.idux}`,
+    }).catch(err => {
+      console.error(err);
+    });
+
+    if(jsonSubject.data){
+      this.setState({
+        subId:jsonSubject.data[0].SUBID
       })
-      .catch(err => {
-        console.error(err);
+    }
+
+    if (json.data.error) {
+      console.error(json.data);
+    } else {
+      this.props.dispatch(
+        updateStateData({
+          ...this.props.mainState,
+          Questions: [...json.data]
+        })
+      );
+      this.setState({
+        status: false
       });
+    }
   };
   render() {
     const { Questions } = this.props.mainState;
-    const { status, exam_id } = this.state;
+    const { status, exam_id,subId } = this.state;
+    console.log(this.state)
     return (
       <div className="question-test online-test">
         <div className="ol-content">
@@ -312,6 +326,9 @@ class ReviewQuestions extends Component {
                   ""
                 )}
                 {Questions ? this.ShowQuestions(Questions, exam_id) : ""}
+              </div>
+              <div className="btn_complete">
+                <Link to={`/chu-de-trac-nghiem/${subId}`}>Quay về</Link>
               </div>
             </div>
           </div>

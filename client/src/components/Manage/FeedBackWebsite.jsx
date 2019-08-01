@@ -9,8 +9,8 @@ import {
   TableWrap,
   HeaderTable,
   ContentManage,
-  ModalBackground,
-  Loading
+  Menus,
+  MenuItemTop
 } from "./BaseManage";
 
 const UploadManageContext = React.createContext();
@@ -22,13 +22,13 @@ const ContentTable = () => {
         {({ mainState, handlePageChange }) => (
           <React.Fragment>
             <TableWrap
-              columns={["STT", "Email", "Ngày upload", "File", "Actions"]}
+              columns={["STT", "Email", "Content", "Ngày"]}
             >
-              {mainState.ListFileDownload
-                ? mainState.ListFileDownload.map((download, index) => {
+              {mainState.ListFeedBackWebsite
+                ? mainState.ListFeedBackWebsite.map((feedback, index) => {
                     return (mainState.pageMainNumber - 1) * 10 <= index &&
                       index < mainState.pageMainNumber * 10 ? (
-                      <RowTable key={index} download={download} index={index} />
+                      <RowTable key={index} feedback={feedback} index={index} />
                     ) : null;
                   })
                 : ""}
@@ -37,7 +37,7 @@ const ContentTable = () => {
               activePage={mainState.pageMainNumber}
               itemsCountPerPage={10}
               totalItemsCount={
-                mainState.ListFileDownload ? mainState.ListFileDownload.length : 0
+                mainState.ListFeedBackWebsite ? mainState.ListFeedBackWebsite.length : 0
               }
               pageRangeDisplayed={5}
               onChange={handlePageChange}
@@ -48,21 +48,14 @@ const ContentTable = () => {
     </React.Fragment>
   );
 };
-const RowTable = ({ download, index }) => {
-  const { create_on, email, fileName, path } = download;
+const RowTable = ({ feedback, index }) => {
+  const { create_on, email, content } = feedback;
   return (
     <tr>
       <td>{index + 1}</td>
       <td>{email}</td>
+      <td>{content}</td>
       <td>{create_on}</td>
-      <td>{fileName}</td>
-      <td>
-        <span className="download_del">
-          <a href={local+path}>
-            <i className="fa fa-download del_" />
-          </a>
-        </span>
-      </td>
     </tr>
   );
 };
@@ -80,7 +73,7 @@ class UploadManage extends Component {
   async ShowData() {
     var json = await axios({
       method: "GET",
-      url: `${API}/get-upload`
+      url: `${API}/getFeedBackWebsite`
     }).catch(err => {
       console.error(err);
     });
@@ -89,7 +82,7 @@ class UploadManage extends Component {
       this.props.dispatch(
         updateStateData({
           ...this.props.mainState,
-          ListFileDownload: data,
+          ListFeedBackWebsite: data,
           pageMainNumber:1
         })
       );
@@ -117,7 +110,7 @@ class UploadManage extends Component {
           }}
         >
           <div className="table-fx-left">
-            <Breadcrumb home="Manage" manage="Upload Management" />
+            <MenuItemTop menus={Menus} />
             <ContentManage>
               <ContentTable />
             </ContentManage>

@@ -1,11 +1,38 @@
 import React, { Component } from "react";
-import { Route, Redirect } from "react-router-dom";
+import { Route, Redirect, Link } from "react-router-dom";
 import ReactLoading from "react-loading";
 
-function isAuthenticated(){
+export const Menus = [
+  {
+    name: "Thông báo",
+    to: "/manage/message",
+    icon: "",
+    exact: false
+  },
+  {
+    name: "Phản hồi câu hỏi",
+    to: "/manage/feelback",
+    // icon: "fa fa-bell-o",
+    exact: false
+  },
+  {
+    name: "Phản hồi Website",
+    to: "/manage/feelback-website",
+    // icon: "fa fa-bell-o",
+    exact: false
+  },
+  {
+    name: "Đổi mật khẩu",
+    to: "/manage/admin",
+    // icon: "fa fa-bell-o",
+    exact: false
+  },
+];
+
+function isAuthenticated() {
   var status = false;
   if (sessionStorage.getItem("OL_TOKEN")) {
-    status = true
+    status = true;
   }
   return status;
 }
@@ -40,6 +67,25 @@ export const Breadcrumb = ({ home, manage }) => {
   );
 };
 
+export const MenuItemTop = ({menus}) => {
+  return (
+    <div className="Menu_item_top">
+      <ul>
+        {menus.map((item, index) => {
+          return (
+            <MenuLink
+              key={index}
+              Label={item.name}
+              icon={item.icon}
+              to={item.to}
+            />
+          );
+        })}
+      </ul>
+    </div>
+  );
+};
+
 export function TableWrap(props) {
   return (
     <table className="table table-management">
@@ -63,6 +109,42 @@ export function HeaderTable(props) {
     </div>
   );
 }
+
+const MenuLink = ({ Label, to, active, icon }) => {
+  return (
+    <Route
+      path={to}
+      exact={active}
+      children={({ match }) => (
+        <li className={match ? "active" : ""}>
+          <Link to={to}>
+            <i className={icon} />
+            {Label}
+          </Link>
+        </li>
+      )}
+    />
+  );
+};
+export const MenuManages = ({ menus }) => {
+  return (
+    <div className="row-menu">
+      <ul>
+        {menus.map((item, index) => {
+          return (
+            <MenuLink
+              key={index}
+              Label={item.name}
+              icon={item.icon}
+              to={item.to}
+            />
+          );
+        })}
+      </ul>
+    </div>
+  );
+};
+
 export function ContentManage(props) {
   return (
     <div className="content-table">
@@ -106,7 +188,7 @@ export const Loading = () => {
     </div>
   );
 };
-export const Input = ({ placeholder, name, type,value,readonly }) => {
+export const Input = ({ placeholder, name, type, value, readonly }) => {
   return (
     <div className="form-group mag15">
       <input
@@ -115,20 +197,24 @@ export const Input = ({ placeholder, name, type,value,readonly }) => {
         placeholder={placeholder}
         name={name}
         defaultValue={value}
-        readOnly={readonly?true:false}
+        readOnly={readonly ? true : false}
       />
     </div>
   );
 };
-export const Select = ({name,data,Value}) => {
+export const Select = ({ name, data, Value }) => {
   return (
     <div className="form-group mag15">
       <select className="form-control" name={name} defaultValue={Value}>
-      {data?data.map((subject,index) =>{
-        return (
-          <option value={subject.SUBID} key={index} >{subject.SUBTEXT}</option>
-        )
-      }):""}
+        {data
+          ? data.map((subject, index) => {
+              return (
+                <option value={subject.SUBID} key={index}>
+                  {subject.SUBTEXT}
+                </option>
+              );
+            })
+          : ""}
       </select>
     </div>
   );

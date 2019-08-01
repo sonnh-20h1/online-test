@@ -12,7 +12,8 @@ class Result extends Component {
       TimeStart: 0,
       TimeEnd: 0,
       Score: 0,
-      NumQuestion: 0
+      NumQuestion: 0,
+      subId: ""
     };
   }
   componentDidMount() {
@@ -35,7 +36,8 @@ class Result extends Component {
           TimeStart: data[0].TIMESTART,
           TimeEnd: data[0].TIMEEND,
           Score: data[0].SCORE,
-          NumQuestion: data[0].RANDOMEXAM
+          NumQuestion: data[0].RANDOMEXAM,
+          subId: data[0].SUBID
         });
       })
       .catch(err => {
@@ -51,7 +53,8 @@ class Result extends Component {
       Score,
       NumQuestion,
       idexam,
-      idux
+      idux,
+      subId
     } = this.state;
     return (
       <div className="result-exam online-test">
@@ -114,6 +117,11 @@ class Result extends Component {
                     </tbody>
                   </table>
                 </div>
+              </div>
+            </div>
+            <div className="col-md-12">
+              <div className="btn_complete">
+                <Link to={`/chu-de-trac-nghiem/${subId}`}>Hoàn thành</Link>
               </div>
             </div>
           </div>

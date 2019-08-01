@@ -13,7 +13,7 @@
 
   .home-page{
     min-height: 600px;
-    background: url("./img/home.jpg") no-repeat;
+    /* background: url("./img/home.jpg") no-repeat; */
     position: relative;
     background-position-y: -50px;
     background-size: cover;

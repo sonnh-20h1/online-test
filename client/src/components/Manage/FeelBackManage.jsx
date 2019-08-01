@@ -10,7 +10,9 @@ import {
   HeaderTable,
   ContentManage,
   ModalBackground,
-  Loading
+  Loading,
+  Menus,
+  MenuItemTop
 } from "./BaseManage";
 
 const FeelBackManageContext = React.createContext();
@@ -112,7 +114,7 @@ class FeelBackManage extends Component {
           }}
         >
           <div className="table-fx-left">
-            <Breadcrumb home="Manage" manage="Feelback Management" />
+          <MenuItemTop menus={Menus} />
             <ContentManage>
               <ContentTable />
             </ContentManage>

@@ -10,7 +10,9 @@ import {
   HeaderTable,
   ContentManage,
   ModalBackground,
-  Loading
+  Loading,
+  Menus,
+  MenuItemTop
 } from "./BaseManage";
 
 const MessageManageContext = React.createContext();
@@ -47,6 +49,7 @@ const RowTable = ({ me, index }) => {
                 className="form-control"
                 defaultValue={text}
                 type="text"
+                rows="10"
               />
             </span>
             <span className="col-md-2">
@@ -114,7 +117,7 @@ class MessageManage extends Component {
           }}
         >
           <div className="table-fx-left">
-            <Breadcrumb home="Manage" manage="Message Management" />
+            <MenuItemTop menus={Menus} />
             <ContentManage>
               <ContentTable />
             </ContentManage>

@@ -2,10 +2,12 @@ import React, { Component } from "react";
 import Pagination from "react-js-pagination";
 import { connect } from "react-redux";
 import axios from "axios";
+import './style.css';
 import userImage from "./../../img/user.svg";
 import { updateStateData } from "./../../actions/index";
 import { API } from "./../../API/API";
 import HistoryAccount from "./HistoryAccount";
+import FeedBackAccount from "./FeedBackAccount";
 import {
   WrapContentProfile,
   MenuLink,
@@ -148,7 +150,6 @@ const ExamModalTable = ({ onClick }) => {
           "Tên đề",
           "Môn",
           "Số câu",
-          "Ngẫu nhiên",
           "Thời gian",
           "Ngày thêm"
         ]}
@@ -177,7 +178,6 @@ const ExamRowTable = ({ ae, index }) => {
       <td>{id_exam}</td>
       <td>{name}</td>
       <td>{subject}</td>
-      <td>{number}</td>
       <td>{random}</td>
       <td>{time}</td>
       <td>{create_on}</td>
@@ -198,6 +198,7 @@ class Accounts extends Component {
   state = {
     showUser: false,
     showHistory: false,
+    showFeedback:false,
     status: false
   };
   componentDidMount() {
@@ -219,6 +220,11 @@ class Accounts extends Component {
       if (name === "history") {
         this.setState({
           showHistory: true
+        });
+      }
+      if (name === "feedback-website") {
+        this.setState({
+          showFeedback: true
         });
       }
     }
@@ -262,7 +268,7 @@ class Accounts extends Component {
     }
   };
   render() {
-    const { showUser, showHistory, status } = this.state;
+    const { showUser, showHistory,showFeedback, status } = this.state;
     return (
       <ProfileContainer>
         <AccountContext.Provider
@@ -276,6 +282,7 @@ class Accounts extends Component {
           <WrapMenuProfile />
           <WrapContentProfile>
             {showUser ? <InfomationUser /> : ""}
+            {showFeedback? <FeedBackAccount />:""}
             {showHistory ? (
               <HistoryAccount
                 dispatch={this.props.dispatch}
