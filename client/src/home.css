@@ -135,16 +135,13 @@
   font-size: 35px;
   padding: 0 22px;
   color:#fff;
-  font-family: cursive;
 }
 .text-position p{
   padding: 25px 0;
   font-size: 22px;
   color:#fff;
-  font-family: cursive;
 }
 .text_cursive{
-  font-family: cursive;
 }
 .text-position button{
   padding: 8px 30px;
@@ -152,7 +149,6 @@
   background: #c06c84;
   border: none;
   color:#fff;
-  font-family: cursive;
 }
 .MinHeight{
   min-height: 550px;

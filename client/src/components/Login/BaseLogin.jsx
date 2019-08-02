@@ -6,20 +6,43 @@ function isLogged() {
   return !!localStorage.getItem("user");
 }
 
+export function ModalBackground(props) {
+  return (
+    <div className="modal-manage">
+      <div className="modal_backdrop show" onClick={() => props.onClick()} />
+      <div className="modal-main">
+        <div className="modal_box" style={{ width: "" + props.width + "px" }}>
+          <div className="modal_header row-title">
+            <div className="modal_title">
+              <p>{props.title}</p>
+            </div>
+            <div className="modal_close">
+              <span onClick={() => props.onClick()}>Đóng</span>
+            </div>
+          </div>
+          <div className="modal-container">
+            <div className="modal_table">{props.children}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export const PrivateRoute = ({ component: Component, ...rest }) => (
   <Route
     {...rest}
     render={props => {
-      return isLogged() === true? (
+      return isLogged() === true ? (
         <Component {...props} />
       ) : (
-        <Redirect
-          to={{
-            pathname: "/login",
-            state: { from: props.location }
-          }}
-        />
-      );
+          <Redirect
+            to={{
+              pathname: "/login",
+              state: { from: props.location }
+            }}
+          />
+        );
     }}
   />
 );
