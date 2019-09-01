@@ -9,7 +9,7 @@ class UserController extends Controller{
 
     public function Display_user($req,$res){
         $users = array();
-        $sql = "SELECT * FROM users  ORDER BY create_on DESC";
+        $sql = "SELECT * FROM users  ORDER BY time DESC";
         $result = $this->database->query($sql)->fetchAll();
         foreach($result as $item){
             $users[] =[
@@ -20,6 +20,7 @@ class UserController extends Controller{
                 'EMAIL' => $item['EMAIL'],
                 'create_on' => $item['create_on'],
                 'status' => $item['status'],
+                'role_account' => $item['role_account'],
                 'do_number' => $this->GetDoNumberUser($item['IDUSER']),
                 'do_limit' => $this->GetNumberUserLimit($item['EMAIL']),
                 'affiliate' => count($this->database->select($this->tableName,'*',['Id_people' => $item['IDUSER']])),
@@ -183,14 +184,16 @@ class UserController extends Controller{
         $FirstName = $request->getParam('FirstName');
         $LastName  = $request->getParam('LastName');
         $Email     = $request->getParam('Email');
+        $term      = $request->getParam('term');
         $PeopleEmail     = $request->getParam('PeopleEmail');
 
-        if(!empty($UserName) && !empty($PassWord) && !empty($Email)){
+        if(!empty($UserName) && !empty($PassWord) && !empty($Email) && $term == true){
             $CheckUserName  = $this->database->select($this->tableName,'USERNAME',['USERNAME' => $UserName]);
             $CheckEmail     = $this->database->select($this->tableName,'EMAIL',['EMAIL' => $Email]);
             $CheckPeopleEmail     = $this->database->select($this->tableName,'*',['EMAIL' => $PeopleEmail]);
             $date = new \DateTime();
             $create_on = $date->format('Y-m-d');
+            $time = $date->format('Y-m-d H:i:s');
             if(!empty($CheckUserName)){
                 $message['error'] = 'Tài khoản này đã tồn tại!';
                 echo json_encode($message);
@@ -210,8 +213,11 @@ class UserController extends Controller{
                             'EMAIL'     => $Email,
                             'Id_people' => $CheckPeopleEmail[0]["IDUSER"],
                             'create_on' => $create_on,
+                            'time'      => $time,
+                            'role_account' => 1,
                             'USERNAME'  => $UserName,
                             'PASS'      => $PassWord,
+                            'term'     => 1,
                             'status'    => 1
                         ]);
                     }
@@ -222,7 +228,10 @@ class UserController extends Controller{
                         'EMAIL'     => $Email,
                         'create_on' => $create_on,
                         'USERNAME'  => $UserName,
+                        'time'      => $time,
+                        'role_account' => 1,
                         'PASS'      => $PassWord,
+                        'term'     => 1,
                         'status'    => 1
                     ]);
                 }

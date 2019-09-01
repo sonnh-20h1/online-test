@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import Pagination from "react-js-pagination";
 import { updateStateData } from "./../../actions/index";
 import { API } from "./../../API/API";
+import {account} from './../../constants/config';
 import axios from "axios";
 import {
   Breadcrumb,
@@ -30,6 +31,7 @@ const ContentTable = () => {
                 "Số GH",
                 "GT",
                 "Ngày tạo",
+                "Loại TK",
                 "Status",
                 "Actions"
               ]}
@@ -72,7 +74,8 @@ const RowTable = ({ user, index }) => {
     EMAIL,
     affiliate,
     create_on,
-    status
+    status,
+    role_account
   } = user;
   return (
     <React.Fragment>
@@ -87,6 +90,7 @@ const RowTable = ({ user, index }) => {
             <td>{do_limit}</td>
             <td>{affiliate}</td>
             <td>{create_on}</td>
+            <td>{role_account?account.filter((ac) => ac.key == role_account)[0].name:''}</td>
             <td>
               <div className={status == 1 ? "circle green" : "circle red"} />
             </td>

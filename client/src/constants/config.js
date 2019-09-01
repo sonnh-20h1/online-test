@@ -8,4 +8,9 @@ export const SIGNUP_USER = 'SIGNUP_USER';
 export const QUESTION_RESPONSE = 'QUESTION_RESPONSE';
 export const UPDATE_STATE_DATA = 'UPDATE_STATE_DATA';
 
-
+export const account = [
+    { key : 1, name: 'SAME'},
+    { key : 2, name: 'VIP'},
+    { key : 3, name: 'PRO'},
+  ]
+  

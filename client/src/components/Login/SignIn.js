@@ -14,7 +14,8 @@ class SignIn extends Component {
       PeopleEmail: "",
       UserName: "",
       PassWord: "",
-      terms: false,
+      term: false,
+      statusDialog: false,
       errors: {}
     };
   }
@@ -25,7 +26,8 @@ class SignIn extends Component {
       Email,
       UserName,
       PeopleEmail,
-      PassWord
+      PassWord,
+      term
     } = this.state;
     let errors = {};
     var user = {};
@@ -44,6 +46,9 @@ class SignIn extends Component {
     if (PassWord === "") {
       errors["PassWord"] = false;
     }
+    if (term !== true) {
+      errors["err"] = "Bạn vui lòng chọn điều khoản trên";
+    }
     if (Email === PeopleEmail) {
       errors["err"] = "Người giới thiệu không thể trùng email với bạn!";
     }
@@ -53,15 +58,17 @@ class SignIn extends Component {
       Email &&
       UserName &&
       PassWord &&
-      Email != PeopleEmail
+      Email != PeopleEmail &&
+      term == true
     ) {
       user = {
-        LastName: LastName,
-        FirstName: FirstName,
-        Email: Email,
-        PeopleEmail: PeopleEmail,
-        UserName: UserName,
-        PassWord: PassWord
+        LastName,
+        FirstName,
+        Email,
+        PeopleEmail,
+        UserName,
+        PassWord,
+        term
       };
       if (user) this.props.SignUser(user);
     }
@@ -98,7 +105,14 @@ class SignIn extends Component {
 
   onTerm = () => {
     this.setState({
-      terms: false
+      term: false
+    });
+  };
+
+  statusDialog = () => {
+    const { statusDialog } = this.state;
+    this.setState({
+      statusDialog: !statusDialog
     });
   };
 
@@ -110,11 +124,11 @@ class SignIn extends Component {
       PeopleEmail,
       UserName,
       PassWord,
-      terms,
+      term,
       errors,
+      statusDialog,
       status
     } = this.state;
-    console.log(this.state);
     return (
       <div className="login_wrapper">
         <div className="max-wrapper">
@@ -228,16 +242,26 @@ class SignIn extends Component {
                     onChange={this.onChange}
                   />
                 </div>
-
+                <div className="pad-10">
+                  <p>
+                    Chi tiết các điều khoản{" "}
+                    <span
+                      onClick={this.statusDialog}
+                      style={{ color: "#337ab7", cursor: "pointer" }}
+                    >
+                      Xem
+                    </span>
+                  </p>
+                </div>
                 <div className="pad-10">
                   <input
                     type="checkbox"
-                    name="terms"
-                    checked={terms}
+                    name="term"
+                    checked={term}
                     onChange={this.onChange}
                   />
                   <span className="text_cursive">
-                    Đồng ý với các điều khoản trên
+                  Tôi đã đọc và đồng ý với các quy định/điều khoản người dùng của trang web
                   </span>
                 </div>
                 <div className="pad-10 btn-10">
@@ -264,11 +288,11 @@ class SignIn extends Component {
             </div>
           </div>
         </div>
-        {terms ? (
+        {statusDialog ? (
           <ModalBackground
             title="Các điều khoản đăng kí tài khoản"
             width={800}
-            onClick={this.onTerm}
+            onClick={this.statusDialog}
           >
             <p>
               {" "}
@@ -288,11 +312,11 @@ class SignIn extends Component {
             <div className="pad-10">
               <input
                 type="checkbox"
-                name="terms"
-                checked={terms}
+                name="term"
+                checked={term}
                 onChange={this.onChange}
               />
-              <span className="text_cursive">Đồng ý</span>
+              <span className="text_cursive">Tôi đã đọc và đồng ý với các quy định/điều khoản người dùng của trang web</span>
             </div>
           </ModalBackground>
         ) : (
