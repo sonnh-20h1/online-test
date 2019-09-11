@@ -88,14 +88,14 @@ const HistoryRowTable = ({ ah, index }) => {
 
 class HistoryAccount extends React.Component {
   componentDidMount() {
-    var token = localStorage.getItem("user");
+    var token = localStorage.getItem("token");
     let data = { token: token };
     this.onShowHistory(data);
   }
   onShowHistory = async data => {
     var json = await axios({
       method: "POST",
-      url: `${API}/GetHistoryExamUser`,
+      url: `${API}/profile/GetHistoryExamUser`,
       data: data
     }).catch(err => {
       console.error(err);

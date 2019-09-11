@@ -21,7 +21,7 @@ const menus = [
     exact: false
   },
   {
-    name: "Upload",
+    name: "Đóng góp",
     to: "/upload-question",
     exact: false
   }
@@ -32,9 +32,9 @@ class Profile extends Component {
   };
   Logout = () => {
     const { history } = this.props;
-    window.localStorage.removeItem("user");
-    fakeAuth.signout(() => history.push("/login"));
-    window.location.reload();
+    window.localStorage.removeItem("token");
+    window.localStorage.removeItem("term");
+    fakeAuth.signout(() => history.push("/login-google"));
   };
   show = () => {
     this.setState({
@@ -67,7 +67,7 @@ class Profile extends Component {
 }
 function isLogged() {
   var status = false;
-  if (localStorage.getItem("user")) {
+  if (localStorage.getItem("token")) {
     status = true;
   }
   return status;

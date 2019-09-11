@@ -10,11 +10,12 @@ class UploadFileQuestion extends Controller{
 
     private $tableNameUser = 'users';
     private $tableName = 'ol_upload_file';
+    private $tableNameAccountGoogle = 'ol_account_google';
 
     private function upload($file,$id,$idUser,$email,$create_on){
         $rsData = array(
             'status' => 'error',
-            'message' => 'Xin lỗi! Chưa upload được file lên server!'
+            'message' => 'Xin lỗi! Chưa upload được file lên server này!'
           );
         $fileName = basename($file["name"]);
         $path_name = date('Y') . '/' . date('m') . '/' . date('d').'/';
@@ -71,23 +72,26 @@ class UploadFileQuestion extends Controller{
         return $rsData;
     }
     public function uploadFile($request, $response) {
-        $jwt = $request->getParam('token');
+
         $rsData = array(
             'status' => 'error',
             'message' => 'Xin lỗi! Chưa upload được file lên server!'
-          );
-        $key = 'loginuser';
-        $token = (array)JWT::decode($jwt, $key, array('HS256'));
-        $idUser = $token['IDUSER'];
-        $email = $token['EMAIL'];
+        );
 
-        $date = new \DateTime();
-        $create_on = $date->format('Y-m-d');
+        $params = $request->getParams();
+        $token = isset($params['token']) ? $params['token'] : '';
+        $checkAccount = $this->database->select($this->tableNameAccountGoogle,'*',['accessToken' => $token]);
+        if(!empty($checkAccount)){
+            $idUser = $checkAccount[0]['id'];
+            $email = $checkAccount[0]['email'];
 
-        $id = $date->format('Y-md-His');
-        $result  = $this->database->select($this->tableNameUser,'*',['IDUSER'=>$idUser]);
-        if($result){
-           $rsData = $this->upload($_FILES['filename'],$id,$idUser,$email,$create_on);
+            $date = new \DateTime();
+            $create_on = $date->format('Y-m-d H:i:s');
+
+            $id = $date->format('Y-md-His');
+            $rsData = $this->upload($_FILES['filename'],$id,$idUser,$email,$create_on);
+        }else{
+            $rsData['message'] = 'token chưa đúng';
         }
         echo json_encode($rsData);
     }

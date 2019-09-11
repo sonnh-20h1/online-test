@@ -5,25 +5,28 @@ use \Firebase\JWT\JWT;
 class UserController extends Controller{
 
     private $tableName = 'users';
+    private $tableNameAccountGoogle = 'ol_account_google';
     private $tableNameGroupUser = 'ol_groups_user';
 
     public function Display_user($req,$res){
         $users = array();
-        $sql = "SELECT * FROM users  ORDER BY time DESC";
+        $sql = "SELECT * FROM ol_account_google  ORDER BY create_on DESC";
         $result = $this->database->query($sql)->fetchAll();
         foreach($result as $item){
             $users[] =[
-                'IDUSER' => $item['IDUSER'],
-                'LASTNAME' => $item['LASTNAME'],
-                'FIRSTNAME' => $item['FIRSTNAME'],
-                'USERNAME' => $item['USERNAME'],
-                'EMAIL' => $item['EMAIL'],
+                'id' => $item['id'],
+                'googleId' => $item['googleId'],
+                'accessToken' => $item['accessToken'],
+                'email' => $item['email'],
+                'name' => $item['name'],
+                'imageUrl' => $item['imageUrl'],
+                'university' => $item['university'],
+                'term'     => $item['term'],
                 'create_on' => $item['create_on'],
                 'status' => $item['status'],
-                'role_account' => $item['role_account'],
-                'do_number' => $this->GetDoNumberUser($item['IDUSER']),
-                'do_limit' => $this->GetNumberUserLimit($item['EMAIL']),
-                'affiliate' => count($this->database->select($this->tableName,'*',['Id_people' => $item['IDUSER']])),
+                'do_number' => $this->GetDoNumberUser($item['id']),
+                'do_limit' => $this->GetNumberUserLimit($item['email']),
+                // 'affiliate' => count($this->database->select($this->tableName,'*',['Id_people' => $item['IDUSER']])),
             ];
         }
         echo json_encode($users);
@@ -74,20 +77,23 @@ class UserController extends Controller{
     }
 
     public function GetHistoryExamUser($request,$response){
-        $jwt = $request->getParam('token');
-        if(!empty($jwt)){
-
-            $key = 'loginuser';
-            $token = (array)JWT::decode($jwt, $key, array('HS256'));
-            $id = $token['IDUSER'];
-
-            $sql = "SELECT * FROM exam 
-                    INNER JOIN user_exam ON user_exam.IDEXAM = exam.IDEXAM 
-                    INNER JOIN subjects ON subjects.SUBID = exam.SUBID 
-                    WHERE user_exam.IDUSER = '$id' 
-                    ORDER BY user_exam.DATEEXAM	DESC,user_exam.TIMESTART DESC";
-            $result = $this->database->query($sql)->fetchAll();
-            echo json_encode($result);
+        $token = $request->getParam('token');
+        if(!empty($token)){
+            $checkToken  = $this->database->select($this->tableNameAccountGoogle,'*',['accessToken'=>$token]);
+            if(!empty($checkToken)){
+                $sql = "SELECT * FROM exam 
+                        INNER JOIN user_exam ON user_exam.IDEXAM = exam.IDEXAM 
+                        INNER JOIN subjects ON subjects.SUBID = exam.SUBID 
+                        WHERE user_exam.IDUSER = :id 
+                        ORDER BY user_exam.DATEEXAM	DESC,user_exam.TIMESTART DESC";
+                $result = $this->database->query($sql,[
+                    ":id" => $checkToken[0]['id']
+                ])->fetchAll(); 
+                echo json_encode($result);
+            }else{
+                $message['error'] = 'Token không chính xác!';
+                echo json_encode($message);
+            }
         }else{
             $message['error'] = 'Không tìm thấy dữ liệu!';
             echo json_encode($message);
@@ -244,25 +250,24 @@ class UserController extends Controller{
         }
     }
     public function GetUserId($request,$response){
-        $jwt = $request->getParam('token');
+        $token = $request->getParam('token');
         
-        if(!empty($jwt)){
-            $key = 'loginuser';
-            $token = (array)JWT::decode($jwt, $key, array('HS256'));
-            $result  = $this->database->select($this->tableName,'*',['IDUSER'=>$token['IDUSER']]); 
+        if(!empty($token)){
+            
+            $result  = $this->database->select($this->tableNameAccountGoogle,'*',['accessToken'=>$token]); 
             if($result){
                 $users = array();
                 $item = $result[0];
                 $user =[
-                    'IDUSER' => $item['IDUSER'],
-                    'LASTNAME' => $item['LASTNAME'],
-                    'FIRSTNAME' => $item['FIRSTNAME'],
-                    'USERNAME' => $item['USERNAME'],
-                    'EMAIL' => $item['EMAIL'],
+                    'id' => $item['id'],
+                    'imageUrl' => $item['imageUrl'],
+                    'university' => $item['university'],
+                    'name' => $item['name'],
+                    'email' => $item['email'],
                     'status' => $item['status'],
-                    'do_number' => $this->GetDoNumberUser($item['IDUSER']),
-                    'do_limit' => $this->GetNumberUserLimit($item['EMAIL']),
-                    'groups' => $this->GetGroupsEmail($item['EMAIL']),
+                    'do_number' => $this->GetDoNumberUser($item['id']),
+                    'do_limit' => $this->GetNumberUserLimit($item['email']),
+                    'groups' => $this->GetGroupsEmail($item['email']),
                 ];
                 echo json_encode($user);
             }else{
@@ -310,6 +315,7 @@ class UserController extends Controller{
                             ol_groups.name,
                             ol_groups_user.email,
                             ol_groups_user.limit,
+                            ol_groups_user.doing,
                             ol_groups_user.create_on 
                     FROM `ol_groups` 
                     JOIN ol_groups_user ON ol_groups.id = ol_groups_user.id_group 

@@ -1,6 +1,8 @@
 <?php
 session_start();
 
+$app->get('/getSubject','App\Controllers\SubjectController:getSubject');
+
 $app->post('/display_sub','App\Controllers\SubjectController:display_sub');
 $app->post('/create_sub','App\Controllers\SubjectController:create_subject');
 $app->post('/del_sub','App\Controllers\SubjectController:del_subject');
@@ -87,6 +89,24 @@ $app->get('/getFeedBackWebsite','App\Controllers\FeedBackWebController:getFeedBa
 $app->post('/add-feedbackwebsite','App\Controllers\FeedBackWebController:insertFeedBack');
 
 
+// login by google
 
+$app->group('/login-google',function() use($app){
+
+    $app->post('/login','App\Controllers\AccountController:index');
+    $app->post('/loadingLogin','App\Controllers\AccountController:loadingLogin');
+    $app->post('/updateAccount','App\Controllers\AccountController:updateAccount');
+    $app->get('/display_user','App\Controllers\UserController:Display_user');
+
+});
+
+// profile 
+
+$app->group('/profile',function() use($app){
+
+    $app->post('/GetUserId','App\Controllers\UserController:GetUserId');
+    $app->post('/GetHistoryExamUser','App\Controllers\UserController:GetHistoryExamUser');
+    
+});
 
 

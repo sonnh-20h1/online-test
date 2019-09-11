@@ -19,7 +19,7 @@ import Reviews from "./Result/Reviews";
 import Accounts from "./Profile/Account";
 import Account from "./Profile";
 import Home from "./Home/Home";
-import Subject from "./Subject/Subject";
+import Subjects from "./Subject/Subjects";
 import SubjectDetail from "./Subject/SubjectDetail";
 import UploadFileQuestions from './Upload/UploadFileQuestions';
 
@@ -70,7 +70,7 @@ class MainComponent extends Component {
         />
         <PrivateRoute
           path="/chu-de-trac-nghiem"
-          component={() => <Subject />}
+          component={() => <Subjects />}
         />
         <PrivateRoute
           path="/upload-question"
@@ -100,7 +100,7 @@ class MainComponent extends Component {
           path="/review-test"
           component={location => <Reviews location={location} />}
         />
-        <Redirect to="/login" />
+        <Redirect to="/login-google" />
       </Switch>
     );
   };
@@ -110,9 +110,15 @@ class MainComponent extends Component {
       <div className="test-online">
         <Menu />
         <div className="container-main">{this.RenderMenu()}</div>
-        <Footer/>
+        <Footer />
       </div>
     );
   }
 }
+
+// export default connect(state => {
+//   return {
+//     mainState: state.updateStateData
+//   };
+// })(MainComponent);
 export default MainComponent;

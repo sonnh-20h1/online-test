@@ -141,7 +141,7 @@ const UserModalManage = ({ onClick }) => {
 
 const UserContentTable = () => {
   return (
-    <TableWrap columns={["STT", "Email", "Username","Giới hạn", "Ngày thêm", "Actions"]}>
+    <TableWrap columns={["STT", "Email", "Username","Giới hạn","Đã làm", "Ngày thêm", "Actions"]}>
       <GroupManageContext.Consumer>
         {({ mainState }) => (
           <React.Fragment>
@@ -158,7 +158,7 @@ const UserContentTable = () => {
 };
 
 const UserRowTable = ({ gu, index }) => {
-  const { id, email,limit, username, create_on } = gu;
+  const { id, email,limit, username, create_on,doing } = gu;
   return (
     <React.Fragment>
       <GroupManageContext.Consumer>
@@ -168,6 +168,7 @@ const UserRowTable = ({ gu, index }) => {
             <td>{email}</td>
             <td>{username}</td>
             <td>{limit}</td>
+            <td>{doing}</td>
             <td>{create_on}</td>
             <td>
               <span className="subject_del" onClick={() => onDeleteUser(id)}>

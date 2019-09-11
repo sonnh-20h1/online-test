@@ -5,6 +5,7 @@ use \Firebase\JWT\JWT;
 
 class TestExamController extends Controller{
     private $tableName = 'exam';
+    private $tableNameAccountGoogle = 'ol_account_google';
 
     public function GetExamQuestionId($request, $response){
         $rsData = array(
@@ -70,20 +71,24 @@ class TestExamController extends Controller{
         );
         $idExam     = $request->getParam('idExam');
         $idux     = $request->getParam('idux');
-        $jwt     = $request->getParam('idUser');
+        $token     = $request->getParam('token');
         $timeNow    = $request->getParam('timeNow');
         $QueID  = $request->getParam('questions');
         $number     = count($QueID);
 
-        $key = 'loginuser';
-        $token = (array)JWT::decode($jwt, $key, array('HS256'));
-        $idUser = $token['IDUSER'];
+        $idUser = null;
+        $checkAccount = $this->database->select($this->tableNameAccountGoogle,'*',['accessToken' => $token]);
+        if(!empty($checkAccount)){
+            $idUser = $checkAccount[0]['id'];
+        }
 
         $sqlAns = " SELECT question.ID_QUE,answer.ID_ANS 
                     FROM question INNER JOIN detail_exam ON detail_exam.ID_QUE = question.ID_QUE 
                     INNER JOIN answer ON answer.ID_QUE = question.ID_QUE
-                    WHERE detail_exam.IDEXAM = '$idExam' AND answer.CORRECT = 'true'";
-        $resultAns = $this->database->query($sqlAns)->fetchAll();
+                    WHERE detail_exam.IDEXAM = :idExam AND answer.CORRECT = 'true'";
+        $resultAns = $this->database->query($sqlAns,[
+            ":idExam" => $idExam
+        ])->fetchAll();
         $m = count($resultAns);
         
         if(!empty($idExam) && !empty($idUser)){

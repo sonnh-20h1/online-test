@@ -3,50 +3,76 @@ import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 import { GoogleLogin } from "react-google-login";
 import { SignUserRequest } from "./../../actions/index";
-import {API_GOOGLE} from '../../API/API';
+import { API_GOOGLE, API } from '../../API/API';
+import axios from "axios";
+import { updateStateData } from "./../../actions/index";
+import './style.css';
 class SignIn extends Component {
-  responseGoogle = (response) =>{
-    console.log(response)
+  responseGoogle = async response => {
+    if (window.gapi) {
+      const auth2 = window.gapi.auth2.getAuthInstance();
+      auth2.disconnect();
+    }
+    const accessToken = {
+      accessToken: response.accessToken,
+      ...response.profileObj
+    };
+    const {history} = this.props;
+    var json = await axios({
+      method: "POST",
+      url: `${API}/login-google/login`,
+      data: accessToken
+    }).catch(err => {
+      console.error(err);
+    });
+    var responseApi = json.data;
+    if (responseApi.status == 'success') {
+      localStorage.setItem("token", responseApi.data.token);
+      localStorage.setItem("term", responseApi.data.term);
+      history.push("/home");
+    }
+
+  }
+  responseGoogleFail = (response) => {
+    console.error(response);
   }
   render() {
     return (
-      <div className="login_wrapper">
-        <div className="max-wrapper">
-          <div className="Login_banner row">
-            <div className="background_left col-md-6">
-              <div className="background MinHeight">
-                <section className="login_content magTop20">
-                  <div className="Login_title pad-10">
-                    <h3 className="border-title text_cursive">Đăng nhập</h3>
-                  </div>
-                  <div className="Sign-name">
-                    <GoogleLogin
-                      clientId={API_GOOGLE}
-                      buttonText="Login"
-                      onSuccess={(res) => this.responseGoogle(res)}
-                      onFailure={(res) => this.responseGoogle(res)}
-                    />
-                  </div>
-                </section>
-              </div>
+      <div className="loginWrapper">
+        <div className="viewWapper">
+          <div className="viewLogin">
+            <p>
+              Test y dược online
+          </p>
+            <div className="viewWithEmail">
+              <div className="viewWithEmailText">Đăng nhập bằng tài khoản google</div>
             </div>
-            <div className="background_right col-md-6">
-              <section className="login_content magTop20">
-                <div className="Login_title pad-10">
-                  <h3 className="border-title text_cursive">Đăng kí</h3>
-                </div>
-                <div className="Sign-name">
-                  <p>
-                    Nếu bạn chưa có tài khoản thì vui lòng đăng kí ở phía dưới
-                  </p>
-                </div>
-              </section>
+            <div className="viewLoginButton">
+              <GoogleLogin
+                clientId={API_GOOGLE}
+                buttonText=""
+                onSuccess={(res) => this.responseGoogle(res)}
+                onFailure={(res) => this.responseGoogleFail(res)}
+                // cookiePolicy={'single_host_origin'}
+                isSignedIn={false}
+                autoLoad={false}
+                icon={false}
+              >
+                <i className="fa fa-google-plus" />
+              </GoogleLogin>
             </div>
           </div>
+        </div>
+        <div className="footerTest">
+          <p>Test y dược online - Hệ thống thi trắc nghiệm y dược của Test y dược online</p>
         </div>
       </div>
     );
   }
 }
 
-export default SignIn;
+export default connect(state => {
+  return {
+    mainState: state.updateStateData
+  };
+})(SignIn);

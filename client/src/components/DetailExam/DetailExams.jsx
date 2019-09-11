@@ -67,7 +67,7 @@ class DetailExams extends Component {
       var id = match.params.id;
       var data = {
         id: id,
-        token: localStorage.getItem("user")
+        token: localStorage.getItem("token")
       };
       this.viewDetail(data);
       this.GetMessage();
@@ -115,7 +115,7 @@ class DetailExams extends Component {
     }
   };
   GetStart = () => {
-    var data = localStorage.getItem("user");
+    var data = localStorage.getItem("token");
     const { id } = this.props.mainState.DetailExam;
     var currentDate = new Date();
     var timeNow = currentDate.getHours() + ":" + currentDate.getMinutes();
@@ -127,7 +127,7 @@ class DetailExams extends Component {
       currentDate.getDate();
     var dataExam = {
       idExam: id,
-      idUser: data,
+      token: data,
       timeNow: timeNow,
       dateNow: dateNow,
       score: 0

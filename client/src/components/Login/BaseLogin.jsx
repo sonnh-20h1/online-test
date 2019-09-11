@@ -3,7 +3,13 @@ import { Redirect, Link, Route } from "react-router-dom";
 import fakeAuth from "./fakeAuth";
 
 function isLogged() {
-  return !!localStorage.getItem("user");
+  if (localStorage.getItem("token")) {
+    if (localStorage.getItem("term") == 0) {
+      return 0;
+    }
+    return 1;
+  }
+  return 2;
 }
 
 export function ModalBackground(props) {
@@ -33,16 +39,24 @@ export const PrivateRoute = ({ component: Component, ...rest }) => (
   <Route
     {...rest}
     render={props => {
-      return isLogged() === true ? (
-        <Component {...props} />
+      return isLogged() == 0 ? (
+        <Redirect
+          to={{
+            pathname: "/term"
+          }}
+        />
       ) : (
-          <Redirect
-            to={{
-              pathname: "/login",
-              state: { from: props.location }
-            }}
-          />
-        );
+          isLogged() == 1 ? (
+            <Component {...props} />
+          ) : (
+              <Redirect
+                to={{
+                  pathname: "/login-google",
+                  state: { from: props.location }
+                }}
+              />
+            )
+        )
     }}
   />
 );

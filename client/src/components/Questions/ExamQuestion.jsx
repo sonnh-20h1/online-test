@@ -352,11 +352,11 @@ class ExamQuestion extends Component {
     }
     var currentDate = new Date();
     var timeNow = currentDate.getHours() + ":" + currentDate.getMinutes();
-    var dataUser = localStorage.getItem("user");
+    var token = localStorage.getItem("token");
     var Data = {
       idExam: this.state.idExam,
       idux: this.state.idux,
-      idUser: dataUser,
+      token: token,
       timeNow: timeNow,
       questions: result
     };

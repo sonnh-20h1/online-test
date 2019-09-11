@@ -28,6 +28,7 @@ class GroupController extends Controller{
         $sql = "SELECT  ol_groups_user.email, 
                         ol_groups_user.id,
                         ol_groups_user.limit,
+                        ol_groups_user.doing,
                         users.USERNAME as username,
                         ol_groups_user.create_on 
                 FROM `ol_groups_user` JOIN users ON ol_groups_user.email = users.EMAIL 
@@ -137,6 +138,7 @@ class GroupController extends Controller{
                         'email'     => $email,
                         'id_user'   => $checkExam[0]['IDUSER'],
                         'limit'     => $limit,
+                        'doing'     => 0,
                         'id_group'  => $id_group,
                         'status'    => 1,
                         'create_on' => $create_on
@@ -176,7 +178,7 @@ class GroupController extends Controller{
 		}
         if(empty($id)){
             $date = new \DateTime();
-            $create_on = $date->format('Y-m-d');
+            $create_on = $date->format('Y-m-d H:i:s');
 
             $id = $date->format('Y-md-His');
             $itemData = [

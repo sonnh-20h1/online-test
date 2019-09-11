@@ -56,7 +56,7 @@ class FeedBackAccount extends React.Component {
     e.preventDefault();
     var form = new FormData(e.target);
     var contentFeedBack = form.get("feedback");
-    var token = localStorage.getItem("user");
+    var token = localStorage.getItem("token");
     let data = { token: token, content: contentFeedBack };
 
     var json = await axios({

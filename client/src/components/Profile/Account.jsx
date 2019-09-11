@@ -21,14 +21,20 @@ const AccountContext = React.createContext();
 
 const WrapMenuProfile = () => {
   return (
-    <div className="menu-left col-md-2">
-      <div className="account-infomation">
-        <div className="user-image">
-          <img src={userImage} alt="" />
-        </div>
-      </div>
-      <ListMenuItem />
-    </div>
+    <React.Fragment>
+      <AccountContext.Consumer>
+        {({ ProfileUser }) => (
+          <div className="menu-left col-md-2">
+            <div className="account-infomation">
+              <div className="user-image">
+                <img src={ProfileUser.imageUrl} alt="" />
+              </div>
+            </div>
+            <ListMenuItem />
+          </div>
+        )}
+      </AccountContext.Consumer>
+    </React.Fragment>
   );
 };
 
@@ -39,25 +45,27 @@ const ContentTableAlowExam = () => {
         {({ ProfileUser }) => (
           <React.Fragment>
             {ProfileUser.groups ? (
-              <WrapTable
-                columns={[
-                  "STT",
-                  "Tên nhóm",
-                  "Email",
-                  "Số lượt thi",
-                  "Ngày vào",
-                  "Đề thi"
-                ]}
-              >
-                {ProfileUser.groups.map((group, index) => {
-                  return (
-                    <RowTableGroup key={index} index={index} group={group} />
-                  );
-                })}
-              </WrapTable>
-            ) : (
-              <p>Bạn chưa tham gia nhóm nào</p>
-            )}
+              <div>
+                {ProfileUser.groups.length !== 0 ?
+                  <WrapTable
+                    columns={[
+                      "STT",
+                      "Tên nhóm",
+                      "Email",
+                      "Số lượt thi",
+                      "Đã thi",
+                      "Ngày vào",
+                      "Đề thi"
+                    ]}
+                  >
+                    {ProfileUser.groups.map((group, index) => {
+                      return (
+                        <RowTableGroup key={index} index={index} group={group} />
+                      );
+                    })}
+                  </WrapTable> : <p>Bạn chưa tham gia nhóm nào</p>}
+              </div>
+            ) : ''}
           </React.Fragment>
         )}
       </AccountContext.Consumer>
@@ -66,7 +74,7 @@ const ContentTableAlowExam = () => {
 };
 
 const RowTableGroup = ({ group, index }) => {
-  const { id, name, email, limit, create_on } = group;
+  const { id, name, email, doing, limit, create_on } = group;
   return (
     <React.Fragment>
       <AccountContext.Consumer>
@@ -76,6 +84,7 @@ const RowTableGroup = ({ group, index }) => {
             <td>{name}</td>
             <td>{email}</td>
             <td>{limit}</td>
+            <td>{doing}</td>
             <td>{create_on}</td>
             <td>
               <button
@@ -107,18 +116,16 @@ const UserText = () => {
                 <p>
                   Họ tên:{" "}
                   <span>
-                    {ProfileUser.FIRSTNAME + " " + ProfileUser.LASTNAME}
+                    {ProfileUser.name}
                   </span>
                 </p>
               </div>
               <div className="col-md-6">
-                <p>
-                  Tài khoản: <span>{ProfileUser.USERNAME}</span>
-                </p>
+
               </div>
               <div className="col-md-12">
                 <p>
-                  Email: <span>{ProfileUser.EMAIL}</span>
+                  Email: <span>{ProfileUser.email}</span>
                 </p>
               </div>
               <div className="col-md-6">
@@ -159,8 +166,8 @@ const ExamModalTable = ({ onClick }) => {
             <React.Fragment>
               {mainState.ListAccountExam
                 ? mainState.ListAccountExam.map((ae, index) => {
-                    return <ExamRowTable key={index} ae={ae} index={index} />;
-                  })
+                  return <ExamRowTable key={index} ae={ae} index={index} />;
+                })
                 : ""}
             </React.Fragment>
           )}
@@ -198,11 +205,11 @@ class Accounts extends Component {
   state = {
     showUser: false,
     showHistory: false,
-    showFeedback:false,
+    showFeedback: false,
     status: false
   };
   componentDidMount() {
-    var token = localStorage.getItem("user");
+    var token = localStorage.getItem("token");
     let data = { token: token };
     this.onShowData(data);
     this.onCheckRoute();
@@ -232,7 +239,7 @@ class Accounts extends Component {
   onShowData = async data => {
     var json = await axios({
       method: "POST",
-      url: `${API}/GetUserId`,
+      url: `${API}/profile/GetUserId`,
       data: data
     }).catch(err => {
       console.error(err);
@@ -268,7 +275,7 @@ class Accounts extends Component {
     }
   };
   render() {
-    const { showUser, showHistory,showFeedback, status } = this.state;
+    const { showUser, showHistory, showFeedback, status } = this.state;
     return (
       <ProfileContainer>
         <AccountContext.Provider
@@ -282,15 +289,15 @@ class Accounts extends Component {
           <WrapMenuProfile />
           <WrapContentProfile>
             {showUser ? <InfomationUser /> : ""}
-            {showFeedback? <FeedBackAccount />:""}
+            {showFeedback ? <FeedBackAccount /> : ""}
             {showHistory ? (
               <HistoryAccount
                 dispatch={this.props.dispatch}
                 mainState={this.props.mainState}
               />
             ) : (
-              ""
-            )}
+                ""
+              )}
             {status ? (
               <ExamModalTable
                 onClick={() => {
@@ -304,8 +311,8 @@ class Accounts extends Component {
                 }}
               />
             ) : (
-              ""
-            )}
+                ""
+              )}
           </WrapContentProfile>
         </AccountContext.Provider>
       </ProfileContainer>

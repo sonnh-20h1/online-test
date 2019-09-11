@@ -15,7 +15,7 @@ class Profile extends React.Component {
     this.onChange = this.onChange.bind(this);
   }
   componentDidMount() {
-    var token = localStorage.getItem("user");
+    var token = localStorage.getItem("token");
     let data = { token: token };
     this.onShowData(data);
   }
@@ -143,7 +143,7 @@ class Tested extends React.Component {
     };
   }
   componentDidMount() {
-    var token = localStorage.getItem("user");
+    var token = localStorage.getItem("token");
     let data = { token: token };
     this.onShowHistory(data);
   }

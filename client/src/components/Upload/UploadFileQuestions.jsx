@@ -65,7 +65,7 @@ class UploadFileQuestion extends Component {
     e.preventDefault();
     var formData = new FormData();
     var target = e.target;
-    var token = localStorage.getItem("user");
+    var token = localStorage.getItem("token");
     if (target.filename.files[0]) {
       formData.append("token", token);
       formData.append("filename", target.filename.files[0]);

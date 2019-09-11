@@ -10,25 +10,28 @@ import axios from "axios";
 import "./App.css";
 import "./home.css";
 import LoginUser from "./components/Login/LoginUser";
-import Login_google from "./components/Login/SignUp";
+import LoginGoogle from "./components/Login/SignUp";
 import SignIn from "./components/Login/SignIn";
 import MainManage from "./components/Manage/MainManage";
 import MainComponents from "./components/MainComponent";
+import Term from "./components/Home/Term";
 
 class App extends Component {
   componentDidMount() {
-    if (localStorage.getItem("user")) {
-      var data = { token: localStorage.getItem("user") };
+    if (localStorage.getItem("token")) {
+      var data = { token: localStorage.getItem("token") };
       axios({
         method: "POST",
-        url: `${API}/loading_login`,
+        url: `${API}/login-google/loadingLogin`,
         data: data
       })
         .then(json => {
-          const { status } = json.data;
+          const { status,data } = json.data;
           if (status == "error") {
-            window.localStorage.removeItem("user");
-            window.location.reload();
+            window.localStorage.removeItem("token");
+            window.localStorage.removeItem("term");
+          }else{
+            localStorage.setItem("term", data.term);
           }
           console.log(json.data);
         })
@@ -43,12 +46,17 @@ class App extends Component {
       <Router>
         <React.Fragment>
           <Switch>
+            <Route path="/login" render={props => <LoginUser {...props} />} />
+            
             <Route
-              path="/login"
+              path="/login-google"
               exact
-              render={props => <LoginUser {...props} />}
+              render={props => <LoginGoogle {...props} />}
             />
-            <Route path="/login-google" component={() => <Login_google />} />
+            <Route
+              path="/term"
+              render={props => <Term {...props} />}
+            />
             <Route path="/sign-in" component={() => <SignIn />} />
             <Route path="/manage" component={MainManage} />
             <Route path="/" component={MainComponents} />

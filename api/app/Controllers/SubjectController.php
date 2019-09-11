@@ -8,6 +8,25 @@ class SubjectController extends Controller{
         $result  = $this->database->select('subjects','*');
         echo json_encode($result);
     }
+
+    public function getSubject($req,$res){
+        $params = $req->getParams();
+        $CountPerPage = 12;
+        $page = isset($params['page'])?$params['page']:1;
+        $search = isset($params['search'])?$params['search']:'';
+        $count = $this->database->count('subjects',[
+            'SUBTEXT[~]' => $search
+        ]);
+        $result  = $this->database->select('subjects','*',[
+            'SUBTEXT[~]' => $search,
+            "LIMIT" => [($page - 1)*$CountPerPage, $CountPerPage]
+        ]);
+        $rsData['page'] = (int)$page;
+        $rsData['pageSize'] = $count;
+        $rsData['CountPerPage'] = $CountPerPage;
+        $rsData['data'] = $result;
+        echo json_encode($rsData);
+    }
     public function create_subject($req,$res){
         $id = $req->getParam('sub_id');
         $name = $req->getParam('sub_name');

@@ -127,7 +127,7 @@ class Question extends Component {
     e.preventDefault();
     const { valueFeedback, question } = this.state;
     const { exam_id } = this.props;
-    var user = localStorage.getItem("user");
+    var user = localStorage.getItem("token");
     if (this.state.valueFeedback == "") {
       this.setState({ validated: true });
     } else {

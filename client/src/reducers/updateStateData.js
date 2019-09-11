@@ -32,6 +32,13 @@ var initialState = {
     SubjectExam: "",
     status: 1
   },
+  ListSubject:{
+    search:'',
+    page:0,
+    CountPerPage:0,
+    pageSize:0,
+    data:[]
+  },
   ListQuestions: [],
   ShowUpdate: false,
   pageNumber: 1,
@@ -50,7 +57,11 @@ var initialState = {
   FeelBacks:[],
   ListFileDownload:[],
   ListFeedBackWebsite:[],
-  status: false
+  status: false,
+  Account:{
+    term:0,
+    university:""
+  }
 };
 
 var updateStateData = (state = initialState, action) => {

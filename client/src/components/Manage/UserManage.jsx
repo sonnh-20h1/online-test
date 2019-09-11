@@ -24,15 +24,12 @@ const ContentTable = () => {
             <TableWrap
               columns={[
                 "STT",
+                "Avt",
                 "Email",
-                "UserName",
                 "Họ tên",
                 "Số LT",
                 "Số GH",
-                "GT",
                 "Ngày tạo",
-                "Loại TK",
-                "Status",
                 "Actions"
               ]}
             >
@@ -65,17 +62,16 @@ const ContentTable = () => {
 
 const RowTable = ({ user, index }) => {
   const {
-    IDUSER,
+    id,
     do_number,
     do_limit,
-    LASTNAME,
-    FIRSTNAME,
-    USERNAME,
-    EMAIL,
-    affiliate,
+    name,
+    email,
+    imageUrl,
+    university,
+    term,
     create_on,
     status,
-    role_account
   } = user;
   return (
     <React.Fragment>
@@ -83,21 +79,20 @@ const RowTable = ({ user, index }) => {
         {({ onDetailUser }) => (
           <tr>
             <td>{index + 1}</td>
-            <td>{EMAIL}</td>
-            <td>{USERNAME}</td>
-            <td>{FIRSTNAME + " " + LASTNAME}</td>
+            <td><img src={imageUrl} className="imageUrl" alt=""/></td>
+            <td>{email}</td>
+            <td>{name}</td>
             <td>{do_number}</td>
             <td>{do_limit}</td>
-            <td>{affiliate}</td>
             <td>{create_on}</td>
-            <td>{role_account?account.filter((ac) => ac.key == role_account)[0].name:''}</td>
+            {/* <td>{role_account?account.filter((ac) => ac.key == role_account)[0].name:''}</td>
             <td>
               <div className={status == 1 ? "circle green" : "circle red"} />
-            </td>
+            </td> */}
             <td>
               <button
                 style={{ padding: "0 5px" }}
-                onClick={() => onDetailUser(IDUSER)}
+                onClick={() => onDetailUser(id)}
                 className="btn btn_primary"
               >
                 Chi tiết
@@ -198,8 +193,8 @@ class UserManage extends Component {
 
   async onShowData() {
     var json = await axios({
-      method: "POST",
-      url: `${API}/display_user`
+      method: "GET",
+      url: `${API}/login-google/display_user`
     }).catch(err => {
       console.error(err);
     });

@@ -3,7 +3,7 @@ import { API } from "./../../API/API";
 
 class fakeAuth {
   constructor() {
-    if (localStorage.getItem("user")) {
+    if (localStorage.getItem("token")) {
       this.isAuthenticated = true
     }else{
       this.isAuthenticated = false
