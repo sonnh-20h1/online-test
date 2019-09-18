@@ -127,13 +127,13 @@ class Question extends Component {
     e.preventDefault();
     const { valueFeedback, question } = this.state;
     const { exam_id } = this.props;
-    var user = localStorage.getItem("token");
+    var token = localStorage.getItem("token");
     if (this.state.valueFeedback == "") {
       this.setState({ validated: true });
     } else {
       var data = {
         id: "",
-        user_id: user,
+        token: token,
         exam_id: exam_id,
         valueFeedback,
         question_id: question.ID_QUE,
@@ -306,7 +306,6 @@ class ReviewQuestions extends Component {
   render() {
     const { Questions } = this.props.mainState;
     const { status, exam_id,subId } = this.state;
-    console.log(this.state)
     return (
       <div className="question-test online-test">
         <div className="ol-content">

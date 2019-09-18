@@ -39,6 +39,15 @@ var initialState = {
     pageSize:0,
     data:[]
   },
+  ListExamBySubject:{
+    id:"",
+    search:'',
+    page:0,
+    CountPerPage:0,
+    pageSize:0,
+    title:{},
+    exams:[]
+  },
   ListQuestions: [],
   ShowUpdate: false,
   pageNumber: 1,

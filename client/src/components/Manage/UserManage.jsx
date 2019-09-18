@@ -3,7 +3,6 @@ import { connect } from "react-redux";
 import Pagination from "react-js-pagination";
 import { updateStateData } from "./../../actions/index";
 import { API } from "./../../API/API";
-import {account} from './../../constants/config';
 import axios from "axios";
 import {
   Breadcrumb,
@@ -13,7 +12,26 @@ import {
   ModalBackground,
   Loading
 } from "./BaseManage";
+import { account } from './../../constants/config';
 const UserManageContext = React.createContext();
+
+export const Select = ({ name, data, Value, onChange }) => {
+  return (
+    <div style={{ margin: "0px" }}>
+      <select onChange={onChange} name={name} defaultValue={Value}>
+        {data
+          ? data.map((uni, index) => {
+            return (
+              <option value={uni.key} key={index}>
+                {uni.name}
+              </option>
+            );
+          })
+          : ""}
+      </select>
+    </div>
+  );
+};
 
 const ContentTable = () => {
   return (
@@ -27,21 +45,23 @@ const ContentTable = () => {
                 "Avt",
                 "Email",
                 "Họ tên",
+                "Trường",
+                "Loại",
                 "Số LT",
                 "Số GH",
-                "Ngày tạo",
+                // "Ngày tạo",
                 "Actions"
               ]}
             >
               {mainState.UserManage
                 ? mainState.UserManage.map((user, index) => {
-                    return (mainState.pageMainNumber - 1) * 20 <= index &&
-                      index < mainState.pageMainNumber * 20 ? (
+                  return (mainState.pageMainNumber - 1) * 20 <= index &&
+                    index < mainState.pageMainNumber * 20 ? (
                       <RowTable key={index} user={user} index={index} />
                     ) : (
                       ""
                     );
-                  })
+                })
                 : ""}
             </TableWrap>
             <Pagination
@@ -69,6 +89,7 @@ const RowTable = ({ user, index }) => {
     email,
     imageUrl,
     university,
+    type,
     term,
     create_on,
     status,
@@ -76,15 +97,25 @@ const RowTable = ({ user, index }) => {
   return (
     <React.Fragment>
       <UserManageContext.Consumer>
-        {({ onDetailUser }) => (
+        {({ onDetailUser,onChangeSelect }) => (
           <tr>
             <td>{index + 1}</td>
-            <td><img src={imageUrl} className="imageUrl" alt=""/></td>
+            <td><img src={imageUrl} className="imageUrl" alt="" /></td>
             <td>{email}</td>
             <td>{name}</td>
+            <td>{university}</td>
+            {/* <td>{ account.filter(ac => ac.key == type)[0].name}</td> */}
+            <td>
+              <Select
+                name="type"
+                data={account}
+                Value={type}
+                onChange={(e) => onChangeSelect(e,id)}
+              />
+            </td>
             <td>{do_number}</td>
             <td>{do_limit}</td>
-            <td>{create_on}</td>
+            {/* <td>{create_on}</td> */}
             {/* <td>{role_account?account.filter((ac) => ac.key == role_account)[0].name:''}</td>
             <td>
               <div className={status == 1 ? "circle green" : "circle red"} />
@@ -134,8 +165,8 @@ const UserModalManage = ({ onClick }) => {
                   )}
                 </TableWrap>
               ) : (
-                <p style={{ textAlign: "center" }}>Không có người giới thiệu</p>
-              )}
+                  <p style={{ textAlign: "center" }}>Không có người giới thiệu</p>
+                )}
 
               <p>2/ Thông tin các thành viên đã được bạn giới thiệu</p>
               {mainState.UserInformationManage.affiliate ? (
@@ -155,10 +186,10 @@ const UserModalManage = ({ onClick }) => {
                   )}
                 </TableWrap>
               ) : (
-                <p style={{ textAlign: "center" }}>
-                  Bạn chưa giới thiệu được thành viên nào
+                  <p style={{ textAlign: "center" }}>
+                    Bạn chưa giới thiệu được thành viên nào
                 </p>
-              )}
+                )}
             </React.Fragment>
           )}
         </UserManageContext.Consumer>
@@ -249,9 +280,13 @@ class UserManage extends Component {
     }
   };
 
+  onChangeSelect = (event,id) => {
+    const { value } = event.target;
+    console.log(value,id)
+  }
+
   render() {
     const { status } = this.state;
-    console.log(this.props.mainState);
     return (
       <React.Fragment>
         <UserManageContext.Provider
@@ -259,7 +294,8 @@ class UserManage extends Component {
             dispatch: this.props.dispatch,
             mainState: this.props.mainState,
             handlePageChange: this.handlePageChange,
-            onDetailUser: id => this.onDetailUser(id)
+            onDetailUser: id => this.onDetailUser(id),
+            onChangeSelect: this.onChangeSelect
           }}
         >
           <div className="table-fx-left">
@@ -276,8 +312,8 @@ class UserManage extends Component {
               }}
             />
           ) : (
-            ""
-          )}
+              ""
+            )}
         </UserManageContext.Provider>
       </React.Fragment>
     );

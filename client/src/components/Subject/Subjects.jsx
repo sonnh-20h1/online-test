@@ -110,7 +110,6 @@ class Subject extends Component {
     });
     if (json) {
       const { data, pageSize, page, CountPerPage } = json.data;
-      console.log(data)
       this.props.dispatch(
         updateStateData({
           ...this.props.mainState,

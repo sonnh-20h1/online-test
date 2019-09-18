@@ -10,8 +10,13 @@ import {
 } from "react-bootstrap";
 import { Link, Redirect } from "react-router-dom";
 import itemImg from "../../img/icon-3.png";
+import { connect } from "react-redux";
+import { updateStateData } from "./../../actions/index";
 import axios from "axios";
 import { API } from "./../../API/API";
+import Pagination from "react-js-pagination";
+
+const SubjectDetailContext = React.createContext();
 
 const SecBreadcrumb = ({ Title }) => {
   return (
@@ -22,20 +27,47 @@ const SecBreadcrumb = ({ Title }) => {
           <BreadcrumbItem href="/chu-de-trac-nghiem">
             Chủ đề trắc nghiệm
           </BreadcrumbItem>
-          <BreadcrumbItem active>{Title.SUBTEXT}</BreadcrumbItem>
+          <BreadcrumbItem active>{Title ? Title.SUBTEXT : ""}</BreadcrumbItem>
         </Breadcrumb>
       </Container>
     </div>
   );
 };
-const ShowListSubject = ({ Title, Exams }) => {
+const ShowListSubject = () => {
   return (
     <Container>
-      <div className="page__wrapper">
-        <TitleSubject Title={Title} />
-        {Exams.length > 0 ? <SearchExam /> : ""}
-        <ListExams Exams={Exams} />
-      </div>
+      <SubjectDetailContext.Consumer>
+        {({ ListExamBySubject, handlePageChange }) => (
+          <React.Fragment>
+            {
+              ListExamBySubject.exams ?
+                <div className="page__wrapper">
+                  {ListExamBySubject.title ? <TitleSubject Title={ListExamBySubject.title} /> : ""}
+                  <SearchExam />
+                  <ListExams Exams={ListExamBySubject.exams} />
+                  <Row style={{ textAlign: "center" }}>
+                    <Pagination
+                      activePage={ListExamBySubject.page}
+                      itemsCountPerPage={ListExamBySubject.CountPerPage}
+                      totalItemsCount={ListExamBySubject.pageSize}
+                      pageRangeDisplayed={5}
+                      onChange={handlePageChange}
+                    />
+                  </Row>
+                </div> : (
+                  <div className="page__wrapper">
+                    {ListExamBySubject.title ? <TitleSubject Title={ListExamBySubject.title} /> : ""}
+                    <SearchExam />
+                    <Row className="shop__list">
+                      <Alert variant="success">
+                        <i className="fa fa-check-circle" /> Đề thi trống !
+                      </Alert>
+                    </Row>
+                  </div>
+                )}
+          </React.Fragment>
+        )}
+      </SubjectDetailContext.Consumer>
     </Container>
   );
 };
@@ -52,17 +84,24 @@ const SearchExam = () => {
     <Row className="justify-content-center">
       <Col md={8}>
         <div className="form__search">
-          <div className="input-group pad10 padLR15">
-            <input
-              className="form-control Border0"
-              placeholder="Tìm kiếm đề thi"
-            />
-            <div className="input-group-btn">
-              <Button className="Border0">
-                <i className="fa fa-search" />
-              </Button>
-            </div>
-          </div>
+          <SubjectDetailContext.Consumer>
+            {({ onSearch }) => (
+              <form onSubmit={onSearch}>
+                <div className="input-group pad10 padLR15">
+                  <input
+                    className="form-control Border0"
+                    placeholder="Tìm kiếm đề thi"
+                    name="search"
+                  />
+                  <div className="input-group-btn">
+                    <Button className="Border0" type="submit">
+                      <i className="fa fa-search" />
+                    </Button>
+                  </div>
+                </div>
+              </form>
+            )}
+          </SubjectDetailContext.Consumer>
         </div>
       </Col>
     </Row>
@@ -76,11 +115,7 @@ const ListExams = ({ Exams }) => {
         Exams.map((exam, index) => {
           return <ItemExam key={index} exam={exam} index={index} />;
         })
-      ) : (
-        <Alert variant="success">
-          <i className="fa fa-check-circle" /> Nội dung đang được cập nhật!
-        </Alert>
-      )}
+      ) : ""}
     </Row>
   );
 };
@@ -94,7 +129,7 @@ const ItemExam = ({ exam, index }) => {
           </div>
           <div className="item_left_text">
             <h3 className="list__title">
-              Bài {index + 1}: {exam.EXAMTEXT}
+              {exam.EXAMTEXT}
             </h3>
             <p>
               Số câu: {exam.RANDOMEXAM} - chế
@@ -117,7 +152,7 @@ const ItemExam = ({ exam, index }) => {
   );
 };
 
-class DetailSubject extends Component {
+class SubjectDetail extends Component {
   constructor() {
     super();
     this.state = {
@@ -126,38 +161,89 @@ class DetailSubject extends Component {
     };
   }
   componentDidMount() {
-    // var check = localStorage.getItem("user");
     let { match } = this.props.match;
     if (match.params.id) {
-      var data = { id: match.params.id };
-      this.GetExamSubjectId(data);
+      console.log(match.params.id)
+      this.props.dispatch(
+        updateStateData({
+          ...this.props.mainState,
+          ListExamBySubject: {
+            ...this.props.mainState.ListExamBySubject,
+            id: match.params.id
+          }
+        })
+      );
+      this.GetExamSubjectId(match.params.id);
     }
   }
-  GetExamSubjectId(data) {
-    return axios({
-      method: "POST",
-      url: `${API}/GetExamSubjectId`,
-      data: data
-    })
-      .then(json => {
-        this.setState({
-          Title: json.data[0].title,
-          Exams: json.data[0].exams
-        });
+
+  GetExamSubjectId = async (id, search, pageNumber) => {
+
+    search = search ? `search=${search}` : ``;
+    pageNumber = pageNumber ? `page=${pageNumber}` : ``;
+
+    var json = await axios({
+      method: "GET",
+      url: `${API}/getExamBySubjectId/${id}?${search}&${pageNumber}`,
+    }).catch(err => {
+      console.error(err);
+    });
+    console.log(json)
+    if (json) {
+      this.props.dispatch(
+        updateStateData({
+          ...this.props.mainState,
+          ListExamBySubject: {
+            ...this.props.mainState.ListExamBySubject,
+            ...json.data
+          }
+        })
+      );
+    }
+  }
+  onSearch = e => {
+    e.preventDefault();
+    const data = new FormData(e.target);
+    var search = data.get("search");
+    this.props.dispatch(
+      updateStateData({
+        ...this.props.mainState,
+        ListExamBySubject: {
+          ...this.props.mainState.ListExamBySubject,
+          search
+        }
       })
-      .catch(err => {
-        console.error(err);
-      });
+    );
+    const { id } = this.props.mainState.ListExamBySubject;
+    this.GetExamSubjectId(id, search);
+  }
+  handlePageChange = (pageNumber) => {
+    const { search, id } = this.props.mainState.ListExamBySubject;
+    this.GetExamSubjectId(id, search, pageNumber);
   }
   render() {
-    var { Exams, Title } = this.state;
+    console.log(this.props.mainState.ListExamBySubject)
     return (
       <section className="ol-content">
-        <SecBreadcrumb Title={Title} />
-        <ShowListSubject Title={Title} Exams={Exams} />
+        <SubjectDetailContext.Provider
+          value={{
+            dispatch: this.props.dispatch,
+            ListExamBySubject: this.props.mainState.ListExamBySubject,
+            handlePageChange: this.handlePageChange,
+            onSearch: this.onSearch
+          }}
+        >
+          <SecBreadcrumb Title={this.props.mainState.ListExamBySubject.title} />
+          <ShowListSubject />
+        </SubjectDetailContext.Provider>
+
       </section>
     );
   }
 }
 
-export default DetailSubject;
+export default connect(state => {
+  return {
+    mainState: state.updateStateData
+  };
+})(SubjectDetail);

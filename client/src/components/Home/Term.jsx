@@ -9,16 +9,15 @@ import {
 } from "reactstrap";
 import axios from "axios";
 import { API } from "./../../API/API";
+import { university } from './../../constants/config';
 import "./term.css";
 
 const SecBreadcrumb = () => {
   return (
     <div className="ol-breadcrumb">
-      <Container>
-        <Breadcrumb className="breadcrumb__content">
-          <BreadcrumbItem active>ĐIỀU KHOẢN VÀ ĐIỀU KIỆN SỬ DỤNG CỦA TEST Y DƯỢC ONLINE </BreadcrumbItem>
-        </Breadcrumb>
-      </Container>
+      <Breadcrumb className="breadcrumb__content">
+        <BreadcrumbItem active>ĐIỀU KHOẢN VÀ ĐIỀU KIỆN SỬ DỤNG CỦA TEST Y DƯỢC ONLINE </BreadcrumbItem>
+      </Breadcrumb>
     </div>
   );
 };
@@ -360,13 +359,35 @@ const InformationTerm = () => {
   )
 }
 
+export const Select = ({ name, data, Value, onChange }) => {
+  return (
+    <div className="form-group" style={{ margin: "0px" }}>
+      <select className="form-control" onChange={onChange} name={name} defaultValue={Value}>
+        <option value="">--- Chọn Trường học ---</option>
+        {data
+          ? data.map((uni, index) => {
+            return (
+              <option value={uni.key} key={index}>
+                {uni.name}
+              </option>
+            );
+          })
+          : ""}
+        <option value="100">Trường khác ...</option>
+      </select>
+    </div>
+  );
+};
+
 class Term extends Component {
   constructor() {
     super();
     this.state = {
       term: false,
       university: "",
-      error: false
+      email:"",
+      error: false,
+      isSelect: true
     };
   }
 
@@ -381,7 +402,7 @@ class Term extends Component {
     });
   }
   onClick = async e => {
-    const { term, university } = this.state;
+    const { term, university,email } = this.state;
     const { history } = this.props;
     if (term && university) {
       var data = {
@@ -408,27 +429,48 @@ class Term extends Component {
       })
     }
   }
+  onChangeSelect = (event) => {
+    const { value } = event.target;
+    if (value == 100) {
+      this.setState({
+        isSelect: false
+      })
+    } else {
+      var uni = university.filter(uni => uni.key == value);
+      this.setState({
+        university: uni[0].name
+      })
+    }
+  }
   render() {
-    var { term } = this.state;
+    var { term, isSelect } = this.state;
     return (
-      <section className="ol-content" style={{marginTop:"10px"}}>
-        <SecBreadcrumb />
+      <section className="ol-content term-wrapper" style={{ position: 'fixed', top: '0', left: '0', zIndex: '1', width: '100%', height: '100%' }}>
         <Container>
           <div className="page__wrapper">
             <div className="term">
-              <Row>
-                <Col md={12} style={{border: "#333 solid 1px"}}>
-                  <div className="InformationTerm">
-                    <InformationTerm />
-                  </div>
-                </Col>
-                <Col md={6} style={{paddingTop:"10px"}}>
+              <SecBreadcrumb />
+              <div className="InformationTerm">
+                <InformationTerm />
+              </div>
+              <Row className="acceptTerm">
+                <Col md={4} style={{ paddingTop: "10px" }}>
                   <InputGroup style={{ display: "grid", gridTemplateColumns: "auto 1fr" }}>
-                    <InputGroupAddon style={{ lineHeight: "30px", paddingRight: "12px" }}>Tên trường học</InputGroupAddon>
-                    <Input placeholder="Nhập tên trường ..." name="university" onChange={this.onChange} value={this.state.university} />
+                    {
+                      isSelect ?
+                        <Select
+                          name="university"
+                          data={university}
+                          onChange={this.onChangeSelect}
+                        /> :
+                        <Input placeholder="Nhập tên trường ..." name="university" onChange={this.onChange} value={this.state.university} />
+                    }
                   </InputGroup>
                 </Col>
-                <Col md={12} style={{paddingTop:"10px"}}>
+                <Col md={4} style={{ paddingTop: "10px",paddingLeft:"10px" }}>
+                  <Input placeholder="email người đã giới thiệu bạn ..." name="email" onChange={this.onChange} value={this.state.email} />
+                </Col>
+                <Col md={12} style={{ paddingTop: "10px" }}>
                   <InputGroup style={{ display: "grid", gridTemplateColumns: "auto 1fr" }}>
                     <InputGroupAddon style={{ lineHeight: "30px", paddingRight: "12px" }}>
                       <input

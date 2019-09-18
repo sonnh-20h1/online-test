@@ -6,6 +6,7 @@ use \Firebase\JWT\JWT;
 
 class ExamController extends Controller{
     private $tableName = 'feedback_question';
+    private $tableNameAccountGoogle = 'ol_account_google';
     public function index($request,$response){
 
         if(isset($_SESSION['success'])){
@@ -57,6 +58,54 @@ class ExamController extends Controller{
     private function GetSubjectId($id){
         $result = $this->database->select('subjects','*',['SUBID' => $id]);
         return $result;
+    }
+
+    public function getExamBySubjectId($request,$response,$args){
+        $id = $args['id'];
+        $params = $request->getParams();
+        $search = isset($params['search'])?$params['search']:'';
+        $page = isset($params['page'])?$params['page']:1;
+        $CountPerPage = 5;
+        if(!empty($id)){
+            $count = $this->database->count('exam',[
+                "[>]subjects" => "SUBID"
+            ],'*',[
+                'exam.SUBID' => $id,
+                'exam.EXAMTEXT[~]' => $search,
+            ]);
+            $result = $this->database->select('exam',[
+                "[>]subjects" => "SUBID"
+            ],'*',[
+                'exam.SUBID' => $id,
+                'exam.EXAMTEXT[~]' => $search,
+                "LIMIT" => [($page - 1)*$CountPerPage, $CountPerPage]
+            ]);
+            $data = [];
+            $title = $this->GetSubjectId($id);
+            if(!empty($result) && !empty($title)){
+                $data =[
+                    'CountPerPage' => $CountPerPage,
+                    'pageSize' => $count,
+                    'page' => (int)$page,
+                    'title' => $title[0],
+                    'exams' => $result
+                ];
+                echo json_encode($data);exit;
+            }else{
+                $data =[
+                    'CountPerPage' => $CountPerPage,
+                    'pageSize' => $count,
+                    'page' => (int)$page,
+                    'title' => $title[0],
+                    'exams' => ''
+                ];
+                echo json_encode($data);exit;
+            }
+            
+        }else{
+            $message['error'] = 'Không tìm thấy dữ liệu!';
+            echo json_encode($message);
+        }
     }
 
     public function GetExamSubjectId($request,$response){
@@ -368,13 +417,13 @@ class ExamController extends Controller{
         // die;
         $params = $request->getParams();
         $id             = isset(	$params['id']) ? $params['id'] : '';
-        $user_id        = isset(	$params['user_id']) ? $params['user_id'] : '';
+        $token        = isset(	$params['token']) ? $params['token'] : '';
         $content        = isset(	$params['valueFeedback']) ? $params['valueFeedback'] : '';
         $question_id    = isset(	$params['question_id']) ? $params['question_id'] : '';
         $time           = isset(	$params['time']) ? $params['time'] : '';
         $exam_id        = isset(	$params['exam_id']) ? $params['exam_id'] : '';
 
-        if(empty($user_id)) {
+        if(empty($token)) {
 			$rsData['message'] = 'Người dùng không được để trống!';
 			echo json_encode($rsData);
 			return;
@@ -397,35 +446,36 @@ class ExamController extends Controller{
         if(!$id){
             $id = $this->uuid();
             $date = new \DateTime();
-            $datetime = $date->format('Y-m-d')." ".$time;
-            
-            $key = 'loginuser';
-            $token = (array)JWT::decode($user_id, $key, array('HS256'));
-            $idUser = $token['IDUSER'];
-            
-            $itemData = [
-				'id'	=> $id,
-                'user_id' => $idUser,
-                'exam_id' => $exam_id,
-				'content' => $content,
-				'question_id' => $question_id,
-				'status' => 1,
-				'create_on' => $datetime
-            ];
-            $selectColumns = ['id'];
-            $where = ['id' => $itemData['id']];
-            $data = $this->database->select($this->tableName, $selectColumns, $where);
-            if(!empty($data)) {
-				$rsData['message'] = "Vui lòng nhập lại.chưa gửi được!";
-				echo json_encode($rsData);exit;
+            $datetime = $date->format('Y-m-d H:i:s');
+            $result = $this->database->select($this->tableNameAccountGoogle,'*',['accessToken' => $token]);
+
+            if(!empty($result)){
+                $item = $result[0];
+                $idUser = $item['id'];
+                $itemData = [
+                    'id'	=> $id,
+                    'user_id' => $idUser,
+                    'exam_id' => $exam_id,
+                    'content' => $content,
+                    'question_id' => $question_id,
+                    'status' => 1,
+                    'create_on' => $datetime
+                ];
+                $selectColumns = ['id'];
+                $where = ['id' => $itemData['id']];
+                $data = $this->database->select($this->tableName, $selectColumns, $where);
+                if(!empty($data)) {
+                    $rsData['message'] = "Vui lòng nhập lại.chưa gửi được!";
+                    echo json_encode($rsData);exit;
+                }
+                $result = $this->database->insert($this->tableName, $itemData);
+                if($result->rowCount()) {
+                    $rsData['status'] = 'success';
+                    $rsData['message'] = 'Đã gửi thành công!';
+                } else {
+                    $rsData['message'] = 'Dữ liệu chưa được cập nhật vào cơ sở dữ liệu!';
+                }
             }
-            $result = $this->database->insert($this->tableName, $itemData);
-            if($result->rowCount()) {
-				$rsData['status'] = 'success';
-				$rsData['message'] = 'Đã gửi thành công!';
-			} else {
-				$rsData['message'] = 'Dữ liệu chưa được cập nhật vào cơ sở dữ liệu!';
-			}
         }
         echo json_encode($rsData);
     }

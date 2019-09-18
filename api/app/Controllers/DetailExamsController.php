@@ -54,6 +54,7 @@ class DetailExamsController extends Controller{
 
                 if((!empty($idExam) && !empty($idUser) && $groupId != null) || (!empty($idExam) && !empty($idUser))){
                     $date = new \DateTime();
+                    $startDate = $date->format('Y-m-d H:i:s');
                     $id = $date->format('mdhis');
                     $result = $this->database->insert($this->tableNameUser,[
                         'ID_UX'     => $id,
@@ -61,6 +62,7 @@ class DetailExamsController extends Controller{
                         'IDEXAM'    => $idExam,
                         'TIMESTART' => $timeNow,
                         'DATEEXAM'  => $dateNow,
+                        'start_date' => $startDate,
                         'id_group' => $groupId
                     ]);
                     if($groupId != null){

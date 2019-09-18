@@ -51,6 +51,7 @@ class AccountController extends Controller{
                     'accessToken'   => $accessToken,
                     'name'          => $name,
                     'term'          => 0,
+                    'type'          => 1,
                     'imageUrl'      => $imageUrl,
                     'status'        => 1,
                     'create_on'     => $create_on
@@ -84,12 +85,14 @@ class AccountController extends Controller{
         $params = $request->getParams();
         $token = isset($params['token']) ? $params['token'] : '';
         $term = isset($params['term']) ? $params['term'] : '';
+        $email = isset($params['email']) ? $params['email'] : '';
         $university = isset($params['university']) ? $params['university'] : '';
 
         if($term == true && !empty($university)){
             $this->database->update($this->tableName,[
                 'term' => 1,
-                'university' => $university
+                'university' => $university,
+                'introduced' => $email
             ],[ 'accessToken' => $token]);
             $rsData['status'] =  'success';
             $rsData['message'] = 'Đã cập nhật thành công.';

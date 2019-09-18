@@ -660,7 +660,6 @@ class ExamManage extends Component {
   };
   render() {
     const { status, loading } = this.state;
-    console.log(this.props.mainState);
     return (
       <React.Fragment>
         <ExamManageContext.Provider

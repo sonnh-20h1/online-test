@@ -176,11 +176,12 @@
 }
 .form-horizontal {
   width: 200px;
-  margin: auto;
 }
 .login_box {
   height: 100%;
   display: grid;
+  justify-content: center;
+  align-items: center;
 }
 .text-center .btn_max {
   width: 100%;

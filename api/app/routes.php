@@ -24,7 +24,7 @@ $app->post('/GetUserExamId','App\Controllers\ExamController:GetUserExamId');
 $app->post('/GetExamMinuteId','App\Controllers\ExamController:GetExamMinuteId');
 $app->post('/exam-question','App\Controllers\ExamController:GetExam');
 $app->post('/GetExamSubjectId','App\Controllers\ExamController:GetExamSubjectId');
-
+$app->get('/getExamBySubjectId/{id}','App\Controllers\ExamController:getExamBySubjectId');
 //Random the exams
 $app->post('/ChooseRandomExam','App\Controllers\ExamController:ChooseRandomExam');
 $app->post('/GetExamRequestId','App\Controllers\ExamController:GetExamRequestId');
@@ -108,5 +108,3 @@ $app->group('/profile',function() use($app){
     $app->post('/GetHistoryExamUser','App\Controllers\UserController:GetHistoryExamUser');
     
 });
-
-

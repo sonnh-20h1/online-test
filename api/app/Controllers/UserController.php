@@ -10,19 +10,20 @@ class UserController extends Controller{
 
     public function Display_user($req,$res){
         $users = array();
-        $sql = "SELECT * FROM ol_account_google  ORDER BY create_on DESC";
+        $sql = "SELECT * FROM ol_account_google WHERE term = 1 ORDER BY create_on DESC";
         $result = $this->database->query($sql)->fetchAll();
         foreach($result as $item){
             $users[] =[
-                'id' => $item['id'],
-                'googleId' => $item['googleId'],
-                'accessToken' => $item['accessToken'],
-                'email' => $item['email'],
-                'name' => $item['name'],
-                'imageUrl' => $item['imageUrl'],
-                'university' => $item['university'],
-                'term'     => $item['term'],
-                'create_on' => $item['create_on'],
+                'id'            => $item['id'],
+                'googleId'      => $item['googleId'],
+                'accessToken'   => $item['accessToken'],
+                'email'         => $item['email'],
+                'name'          => $item['name'],
+                'imageUrl'      => $item['imageUrl'],
+                'university'    => $item['university'],
+                'type'          => $item['type'],
+                'term'          => $item['term'],
+                'create_on'     => $item['create_on'],
                 'status' => $item['status'],
                 'do_number' => $this->GetDoNumberUser($item['id']),
                 'do_limit' => $this->GetNumberUserLimit($item['email']),
@@ -58,8 +59,10 @@ class UserController extends Controller{
         if($id){
             $sql = "SELECT COUNT(user_exam.ID_UX) as doexam
                         FROM `user_exam` JOIN exam ON user_exam.IDEXAM = exam.IDEXAM    
-                        WHERE exam.status = 2 AND user_exam.IDUSER = '$id'";
-            $result = $this->database->query($sql)->fetchAll();
+                        WHERE exam.status = 2 AND user_exam.IDUSER = :id";
+            $result = $this->database->query($sql,[
+                ":id" => $id
+            ])->fetchAll();
             return $result[0]['doexam'];
         }
         return 0;

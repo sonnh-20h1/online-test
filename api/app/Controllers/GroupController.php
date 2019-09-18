@@ -25,16 +25,20 @@ class GroupController extends Controller{
 
     public function SelectUserGroupId($request,$response){
         $id   =  $request->getParam('id') ;
-        $sql = "SELECT  ol_groups_user.email, 
-                        ol_groups_user.id,
-                        ol_groups_user.limit,
-                        ol_groups_user.doing,
-                        users.USERNAME as username,
-                        ol_groups_user.create_on 
-                FROM `ol_groups_user` JOIN users ON ol_groups_user.email = users.EMAIL 
-                WHERE ol_groups_user.id_group ='$id'";
-        $result = $this->database->query($sql)->fetchAll();
-        echo json_encode($result);
+        $result = $this->database->select('ol_groups_user',[
+            "[>]ol_account_google" => "email"
+        ],[
+            'ol_groups_user.email',
+            'ol_groups_user.id',
+            'ol_groups_user.limit',
+            'ol_groups_user.doing',
+            'ol_groups_user.create_on'
+        ],[
+            'ol_groups_user.id_group' => $id
+        ]);
+        $rsData['status'] = 'success';
+        $rsData['data'] = $result;
+        echo json_encode($rsData);
     }
 
     public function DeleteUserGroupId($request,$response){
@@ -125,7 +129,7 @@ class GroupController extends Controller{
             $create_on = $date->format('Y-m-d');
 
             $id = $date->format('Y-md-His');
-            $checkExam = $this->database->select('users','*',['EMAIL' => $email]);
+            $checkExam = $this->database->select('ol_account_google','*',['email' => $email,'term' => 1]);
             if(!empty($checkExam)){
                 $checkGroup = $this->database->select($this->tableNameGroupUser,'*',[
                         'email'     => $email,
@@ -136,7 +140,7 @@ class GroupController extends Controller{
                     $itemData = [
                         'id'	    => $id,
                         'email'     => $email,
-                        'id_user'   => $checkExam[0]['IDUSER'],
+                        'id_user'   => $checkExam[0]['id'],
                         'limit'     => $limit,
                         'doing'     => 0,
                         'id_group'  => $id_group,

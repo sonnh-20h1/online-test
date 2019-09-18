@@ -141,7 +141,7 @@ const UserModalManage = ({ onClick }) => {
 
 const UserContentTable = () => {
   return (
-    <TableWrap columns={["STT", "Email", "Username","Giới hạn","Đã làm", "Ngày thêm", "Actions"]}>
+    <TableWrap columns={["STT", "Email","Giới hạn","Đã làm", "Ngày thêm", "Actions"]}>
       <GroupManageContext.Consumer>
         {({ mainState }) => (
           <React.Fragment>
@@ -158,7 +158,7 @@ const UserContentTable = () => {
 };
 
 const UserRowTable = ({ gu, index }) => {
-  const { id, email,limit, username, create_on,doing } = gu;
+  const { id, email,limit, create_on,doing } = gu;
   return (
     <React.Fragment>
       <GroupManageContext.Consumer>
@@ -166,7 +166,6 @@ const UserRowTable = ({ gu, index }) => {
           <tr>
             <td>{index + 1}</td>
             <td>{email}</td>
-            <td>{username}</td>
             <td>{limit}</td>
             <td>{doing}</td>
             <td>{create_on}</td>
@@ -419,7 +418,7 @@ class GroupManage extends Component {
         this.props.dispatch(
           updateStateData({
             ...this.props.mainState,
-            ListGroupUser: json.data
+            ListGroupUser: json.data.data
           })
         );
       })
@@ -558,7 +557,6 @@ class GroupManage extends Component {
   };
   render() {
     const { status, status_exam, status_user, loading } = this.state;
-    console.log(this.props.mainState);
     return (
       <React.Fragment>
         <GroupManageContext.Provider
