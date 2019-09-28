@@ -25,7 +25,7 @@ class UserController extends Controller{
                 'term'          => $item['term'],
                 'create_on'     => $item['create_on'],
                 'status' => $item['status'],
-                'do_number' => $this->GetDoNumberUser($item['id']),
+                'do_number' => $this->GetDoNumberUser($item['email']),
                 'do_limit' => $this->GetNumberUserLimit($item['email']),
                 // 'affiliate' => count($this->database->select($this->tableName,'*',['Id_people' => $item['IDUSER']])),
             ];
@@ -40,11 +40,11 @@ class UserController extends Controller{
         );
         $id = $request->getParam('id');
         if(!empty($id)){
-            $result = $this->database->select($this->tableName,'*',['IDUSER' => $id]);
+            $result = $this->database->select($this->tableNameAccountGoogle,'*',['id' => $id]);
             if(!empty($result)){
                 $users = [
-                    'affiliate' => $this->database->select($this->tableName,'*',['Id_people' => $id]),
-                    'introduced' => $this->database->select($this->tableName,'*',['IDUSER' => $result[0]['Id_people']])
+                    'affiliate' => $this->database->select($this->tableNameAccountGoogle,'*',['introduced' => $result[0]['email']]),
+                    'introduced' => $this->database->select($this->tableNameAccountGoogle,'*',['email' => $result[0]['introduced']])
                 ];
                 $rsData['status'] = 'success';
                 $rsData['message'] = 'Đã lấy dữ liệu thành công!';
@@ -55,24 +55,33 @@ class UserController extends Controller{
         echo json_encode($rsData);
     }
 
-    private function GetDoNumberUser($id){
-        if($id){
-            $sql = "SELECT COUNT(user_exam.ID_UX) as doexam
-                        FROM `user_exam` JOIN exam ON user_exam.IDEXAM = exam.IDEXAM    
-                        WHERE exam.status = 2 AND user_exam.IDUSER = :id";
-            $result = $this->database->query($sql,[
-                ":id" => $id
-            ])->fetchAll();
-            return $result[0]['doexam'];
+    private function GetDoNumberUser($email){
+        if($email){
+            $doExam = 0;
+            $result = $this->database->select('ol_groups_user',[
+                "[>]ol_groups" => ["id_group" => "id"]
+            ],'ol_groups_user.doing',[
+                'ol_groups_user.email' => $email,
+                'ol_groups.status' => 1 
+            ]);
+            foreach($result as $item){
+                $doExam += $item;
+            }
+            return $doExam;
         }
         return 0;
     }
     private function GetNumberUserLimit($email){
         if($email){
             $LimitExam = 0;
-            $result = $this->database->select($this->tableNameGroupUser,'*',['email' => $email]);
+            $result = $this->database->select('ol_groups_user',[
+                "[>]ol_groups" => ["id_group" => "id"]
+            ],'ol_groups_user.limit',[
+                'ol_groups_user.email' => $email,
+                'ol_groups.status' => 1 
+            ]);
             foreach($result as $item){
-                $LimitExam += $item['limit'];
+                $LimitExam += $item;
             }
             return $LimitExam;
         }
@@ -266,9 +275,10 @@ class UserController extends Controller{
                     'imageUrl' => $item['imageUrl'],
                     'university' => $item['university'],
                     'name' => $item['name'],
+                    'type' => (int)$item['type'],
                     'email' => $item['email'],
-                    'status' => $item['status'],
-                    'do_number' => $this->GetDoNumberUser($item['id']),
+                    'status' => (int)$item['status'],
+                    'do_number' => $this->GetDoNumberUser($item['email']),
                     'do_limit' => $this->GetNumberUserLimit($item['email']),
                     'groups' => $this->GetGroupsEmail($item['email']),
                 ];
@@ -316,6 +326,9 @@ class UserController extends Controller{
         if($email){
             $sql = "SELECT  ol_groups.id,
                             ol_groups.name,
+                            ol_groups.status,
+                            ol_groups.create_on as createDate,
+                            ol_groups.limit_group,
                             ol_groups_user.email,
                             ol_groups_user.limit,
                             ol_groups_user.doing,
@@ -323,7 +336,7 @@ class UserController extends Controller{
                     FROM `ol_groups` 
                     JOIN ol_groups_user ON ol_groups.id = ol_groups_user.id_group 
                     WHERE ol_groups_user.email = '$email'
-                    ORDER BY ol_groups.create_on DESC";
+                    ORDER BY ol_groups.status DESC";
             return $this->database->query($sql)->fetchAll();
         }
         return [];

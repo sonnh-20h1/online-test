@@ -151,11 +151,11 @@ const UserModalManage = ({ onClick }) => {
               {mainState.UserInformationManage.introduced ? (
                 <TableWrap
                   columns={[
+                    "Avt",
                     "Email",
-                    "UserName",
                     "Họ tên",
-                    "Ngày tạo",
-                    "Status"
+                    "Trường",
+                    "Ngày tạo"
                   ]}
                 >
                   {mainState.UserInformationManage.introduced.map(
@@ -172,11 +172,11 @@ const UserModalManage = ({ onClick }) => {
               {mainState.UserInformationManage.affiliate ? (
                 <TableWrap
                   columns={[
+                    "Avt",
                     "Email",
-                    "UserName",
                     "Họ tên",
-                    "Ngày tạo",
-                    "Status"
+                    "Trường",
+                    "Ngày tạo"
                   ]}
                 >
                   {mainState.UserInformationManage.affiliate.map(
@@ -199,16 +199,14 @@ const UserModalManage = ({ onClick }) => {
 };
 
 const IntroducedRowTable = ({ info }) => {
-  const { create_on, EMAIL, USERNAME, FIRSTNAME, LASTNAME, status } = info;
+  const { create_on, email,university,  name, imageUrl } = info;
   return (
     <tr>
-      <td>{EMAIL}</td>
-      <td>{USERNAME}</td>
-      <td>{FIRSTNAME + " " + LASTNAME}</td>
+      <td><img src={imageUrl} alt="" className="imageUrl"/></td>
+      <td>{email}</td>
+      <td>{name}</td>
+      <td>{university}</td>
       <td>{create_on}</td>
-      <td>
-        <div className={status == 1 ? "circle green" : "circle red"} />
-      </td>
     </tr>
   );
 };
@@ -280,9 +278,19 @@ class UserManage extends Component {
     }
   };
 
-  onChangeSelect = (event,id) => {
+  onChangeSelect = async (event,id) => {
     const { value } = event.target;
-    console.log(value,id)
+    var json = await axios({
+      method: "POST",
+      url: `${API}/login-google/updateAccount`,
+      data: { id: id,type:value }
+    }).catch(err => {
+      console.error(err);
+    });
+    if(json){
+      const {message,status} = json.data;
+      alert(message)
+    }
   }
 
   render() {

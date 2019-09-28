@@ -37,7 +37,7 @@ class DetailExamsController extends Controller{
                     FROM ol_groups as g 
                     INNER JOIN ol_groups_exam as e ON g.id = e.id_group 
                     INNER JOIN ol_groups_user as u ON g.id = u.id_group 
-                    WHERE e.id_exam = :id_exam AND u.id_user = :id_user",[
+                    WHERE e.id_exam = :id_exam AND u.id_user = :id_user AND g.status = 1",[
                         ':id_exam' => $idExam,
                         ':id_user' => $idUser
                 ])->fetchAll();
@@ -147,36 +147,32 @@ class DetailExamsController extends Controller{
             $iduser = $checkAccount[0]['id'];
 
             if(!empty($id) && !empty($email)){
-                $sql = "SELECT * FROM exam JOIN subjects ON exam.SUBID = subjects.SUBID WHERE exam.IDEXAM ='$id'";
-                $result = $this->database->query($sql)->fetchAll();
-    
-                $sqlUser = "SELECT * FROM `ol_groups_user` 
-                            INNER JOIN ol_groups_exam ON ol_groups_user.id_group = ol_groups_exam.id_group 
-                            WHERE ol_groups_user.email = '$email' AND ol_groups_exam.id_exam = '$id'";
-    
-                $sqlDoNumber = "SELECT COUNT(user_exam.ID_UX) as doexam
-                                FROM `user_exam` JOIN exam ON user_exam.IDEXAM = exam.IDEXAM    
-                                WHERE exam.status = 2 AND user_exam.IDUSER = '$iduser'";
-    
-                $CheckUser = $this->database->query($sqlUser)->fetchAll();
-                $DoNumberExam = $this->database->query($sqlDoNumber)->fetchAll();
-    
-                $LimitExam = 0;
+                $sql = "SELECT * FROM exam JOIN subjects ON exam.SUBID = subjects.SUBID WHERE exam.IDEXAM =:id";
+                $result = $this->database->query($sql,[":id" => $id])->fetchAll();
+
+                $sqlStatus = "SELECT  gu.limit, gu.doing FROM 
+                            ol_groups as g 
+                            INNER JOIN ol_groups_exam as ge ON g.id = ge.id_group
+                            INNER JOIN ol_groups_user as gu ON g.id = gu.id_group
+                            WHERE   gu.id_user = :id_user 
+                                    AND ge.id_exam = :id_exam
+                                    AND g.status = 1
+                                    AND gu.limit > gu.doing";
+                
                 if(!empty($result)){
                     $rsData['status'] = 'success';
                     $rsData['message'] = 'Đã lấy dữ liệu thành công!';
                     $rsData['data'] = $result[0];
-                    $rsData['correct'] = 2;
                     if($result[0]['status'] == 1){
                         $rsData['correct'] = 1;
-                    }else if(!empty($CheckUser)){
-                        foreach($CheckUser as $item){
-                            $LimitExam += $item['limit'];
-                        }
-                        if($DoNumberExam[0]['doexam'] < $LimitExam){
+                    }else if($result[0]['status'] == 2){
+                        $checkStatus =$this->database->query($sqlStatus,[ ":id_user" => $iduser,":id_exam" => $id])->fetchAll();
+                        if(!empty($checkStatus)){
                             $rsData['correct'] = 1;
+                        }else{
+                            $rsData['correct'] = 2;
                         }
-                    } 
+                    }
                 }else{
                     $rsData['message'] = 'Đề thi này không tồn tại!';           
                 }

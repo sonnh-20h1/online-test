@@ -8,6 +8,7 @@ import { updateStateData } from "./../../actions/index";
 import { API } from "./../../API/API";
 import HistoryAccount from "./HistoryAccount";
 import FeedBackAccount from "./FeedBackAccount";
+import { account } from './../../constants/config';
 import {
   WrapContentProfile,
   MenuLink,
@@ -51,10 +52,11 @@ const ContentTableAlowExam = () => {
                     columns={[
                       "STT",
                       "Tên nhóm",
-                      "Email",
+                      "Trạng thái",
                       "Số lượt thi",
                       "Đã thi",
-                      "Ngày vào",
+                      "Ngày bắt đầu",
+                      "Số ngày SD",
                       "Đề thi"
                     ]}
                   >
@@ -74,7 +76,7 @@ const ContentTableAlowExam = () => {
 };
 
 const RowTableGroup = ({ group, index }) => {
-  const { id, name, email, doing, limit, create_on } = group;
+  const { id, name, limit_group, doing, limit,status, createDate } = group;
   return (
     <React.Fragment>
       <AccountContext.Consumer>
@@ -82,10 +84,11 @@ const RowTableGroup = ({ group, index }) => {
           <tr>
             <td>{index + 1}</td>
             <td>{name}</td>
-            <td>{email}</td>
+            <td>{status==1?"Hoạt động":"Hết hạn"}</td>
             <td>{limit}</td>
             <td>{doing}</td>
-            <td>{create_on}</td>
+            <td>{createDate}</td>
+            <td>{limit_group}</td>
             <td>
               <button
                 style={{ padding: "0 5px" }}
@@ -121,7 +124,8 @@ const UserText = () => {
                 </p>
               </div>
               <div className="col-md-6">
-
+                  {/* <p>{ProfileUser.type}</p> */}
+                  <p>Loại tài khoản: <span>{ProfileUser.type?account.filter(ac => ac.key == (ProfileUser.type))[0].name:""}</span></p>
               </div>
               <div className="col-md-12">
                 <p>
@@ -276,6 +280,7 @@ class Accounts extends Component {
   };
   render() {
     const { showUser, showHistory, showFeedback, status } = this.state;
+    // console.log(this.props.mainState.ProfileUser);
     return (
       <ProfileContainer>
         <AccountContext.Provider

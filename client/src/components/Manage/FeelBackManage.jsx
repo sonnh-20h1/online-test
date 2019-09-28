@@ -55,12 +55,12 @@ const ContentTable = () => {
   );
 };
 const RowTable = ({ feel, index }) => {
-  const { SUBID, EMAIL,content,create_on,exam_id,QUE_TEXT } = feel;
+  const { SUBID, email,content,create_on,exam_id,QUE_TEXT } = feel;
   return (
     <tr>
       <td>{index + 1}</td>
       <td>{create_on}</td>
-      <td>{EMAIL}</td>
+      <td>{email}</td>
       <td>{content}</td>
       <td>{SUBID}</td>
       <td>{exam_id}</td>

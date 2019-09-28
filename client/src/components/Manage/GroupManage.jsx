@@ -35,6 +35,14 @@ const AddModalManage = ({ onClick }) => {
               />
             </div>
             <div className="form-group">
+              <input
+                type="text"
+                className="form-control"
+                placeholder="Giới giạn ngày ..."
+                name="limitGroup"
+              />
+            </div>
+            <div className="form-group">
               <textarea
                 rows="4"
                 cols="50"
@@ -70,7 +78,12 @@ const FormModalAddGroupManage = ({ onAdd, button, placeholder, name }) => {
                 name="id_group"
                 value={mainState.ItemGroup.id}
               />
-              <Input name={name} placeholder={placeholder} type="text" />
+
+              <Input
+                name={name}
+                placeholder={placeholder}
+                type="text"
+              />
               <div className="text-left" style={{ margin: "20px 0" }}>
                 <ButtonPrimary>{button}</ButtonPrimary>
               </div>
@@ -82,7 +95,7 @@ const FormModalAddGroupManage = ({ onAdd, button, placeholder, name }) => {
   );
 };
 
-const FormModalAddUser = ({ onAdd, button, nameEmail,nameNumber }) => {
+const FormModalAddUser = ({ onAdd, button, nameEmail, nameNumber }) => {
   return (
     <React.Fragment>
       <GroupManageContext.Consumer>
@@ -98,10 +111,25 @@ const FormModalAddUser = ({ onAdd, button, nameEmail,nameNumber }) => {
                 name="id_group"
                 value={mainState.ItemGroup.id}
               />
-              <Input name={nameEmail} placeholder={"Chọn email ..."} type="email" />
-              <Input name={nameNumber} placeholder={"Giới hạn"} type="number" />
+              <input
+                type="hidden"
+                name="id"
+                value={mainState.EditUserGroup ? mainState.EditUserGroup.id : ""}
+              />
+              <Input
+                name={nameEmail}
+                value={mainState.EditUserGroup ? mainState.EditUserGroup.email : ""}
+                placeholder={"Chọn email ..."}
+                type="email"
+              />
+              <Input
+                name={nameNumber}
+                value={mainState.EditUserGroup ? mainState.EditUserGroup.limit : null}
+                placeholder={"Giới hạn"}
+                type="number"
+              />
               <div className="text-left" style={{ margin: "20px 0" }}>
-                <ButtonPrimary>{button}</ButtonPrimary>
+                <ButtonPrimary>{Object.keys(mainState.EditUserGroup).length > 0 ?  "Sửa": button}</ButtonPrimary>
               </div>
             </form>
           </React.Fragment>
@@ -130,8 +158,8 @@ const UserModalManage = ({ onClick }) => {
             {mainState.ListGroupUser != "" ? (
               <UserContentTable />
             ) : (
-              <p className="text-center">Chưa có thành viên nào</p>
-            )}
+                <p className="text-center">Chưa có thành viên nào</p>
+              )}
           </React.Fragment>
         )}
       </GroupManageContext.Consumer>
@@ -141,14 +169,14 @@ const UserModalManage = ({ onClick }) => {
 
 const UserContentTable = () => {
   return (
-    <TableWrap columns={["STT", "Email","Giới hạn","Đã làm", "Ngày thêm", "Actions"]}>
+    <TableWrap columns={["STT", "Email", "Giới hạn", "Đã làm", "Ngày thêm", "Actions"]}>
       <GroupManageContext.Consumer>
         {({ mainState }) => (
           <React.Fragment>
             {mainState.ListGroupUser
               ? mainState.ListGroupUser.map((gu, index) => {
-                  return <UserRowTable key={index} gu={gu} index={index} />;
-                })
+                return <UserRowTable key={index} gu={gu} index={index} />;
+              })
               : ""}
           </React.Fragment>
         )}
@@ -158,11 +186,11 @@ const UserContentTable = () => {
 };
 
 const UserRowTable = ({ gu, index }) => {
-  const { id, email,limit, create_on,doing } = gu;
+  const { id, email, limit, create_on, doing } = gu;
   return (
     <React.Fragment>
       <GroupManageContext.Consumer>
-        {({ onDeleteUser }) => (
+        {({ onEditUser,onDeleteUser }) => (
           <tr>
             <td>{index + 1}</td>
             <td>{email}</td>
@@ -170,6 +198,9 @@ const UserRowTable = ({ gu, index }) => {
             <td>{doing}</td>
             <td>{create_on}</td>
             <td>
+              <span className="subject_edit" onClick={() => onEditUser(gu)}>
+                <i className="fa fa-pencil edit_" />
+              </span>
               <span className="subject_del" onClick={() => onDeleteUser(id)}>
                 <i className="fa fa-trash-o del_" />
               </span>
@@ -196,8 +227,8 @@ const ExamModalManage = ({ onClick }) => {
             {mainState.ListGroupExam != "" ? (
               <ExamContentTable />
             ) : (
-              <p className="text-center">Chưa có đề thi nào</p>
-            )}
+                <p className="text-center">Chưa có đề thi nào</p>
+              )}
           </React.Fragment>
         )}
       </GroupManageContext.Consumer>
@@ -213,8 +244,8 @@ const ExamContentTable = () => {
           <React.Fragment>
             {mainState.ListGroupExam
               ? mainState.ListGroupExam.map((gx, index) => {
-                  return <ExamRowTable key={index} gx={gx} index={index} />;
-                })
+                return <ExamRowTable key={index} gx={gx} index={index} />;
+              })
               : ""}
           </React.Fragment>
         )}
@@ -256,7 +287,9 @@ const ContentTable = () => {
                 "STT",
                 "Tên nhóm",
                 "Ghi chú",
+                "Số ngày",
                 "Ngày tạo",
+                "Trạng thái",
                 "Đề thi",
                 "Thành viên",
                 "Actions"
@@ -267,12 +300,12 @@ const ContentTable = () => {
                   mainState.ListGroups.map((group, index) => {
                     return (mainState.pageMainNumber - 1) * 20 <= index &&
                       index < mainState.pageMainNumber * 20 ? (
-                      <RowTable key={index} group={group} index={index} />
-                    ) : null;
+                        <RowTable key={index} group={group} index={index} />
+                      ) : null;
                   })
                 ) : (
-                  <p className="text-center">Chưa có nhóm nào</p>
-                )}
+                    <p className="text-center">Chưa có nhóm nào</p>
+                  )}
               </React.Fragment>
             </TableWrap>
             {mainState.ListGroups ? (
@@ -284,8 +317,8 @@ const ContentTable = () => {
                 onChange={handlePageChange}
               />
             ) : (
-              ""
-            )}
+                ""
+              )}
           </React.Fragment>
         )}
       </GroupManageContext.Consumer>
@@ -294,7 +327,7 @@ const ContentTable = () => {
 };
 
 const RowTable = ({ group, index }) => {
-  const { id, name, note, create_on } = group;
+  const { id, name,limit_group, note, create_on,status } = group;
   return (
     <React.Fragment>
       <GroupManageContext.Consumer>
@@ -303,7 +336,9 @@ const RowTable = ({ group, index }) => {
             <td style={{ width: "50px" }}>{index + 1}</td>
             <td style={{ width: "200px" }}>{name}</td>
             <td>{note}</td>
+            <td style={{ width: "100px" }}>{limit_group}</td>
             <td style={{ width: "100px" }}>{create_on}</td>
+            <td style={{ width: "100px" }}>{status==1?"Hoạt động":"Hết hạn"}</td>
             <td style={{ width: "60px" }}>
               <ButtonPrimary onClick={() => onShowExam(id, name)}>
                 Đề thi
@@ -368,6 +403,7 @@ class GroupManage extends Component {
       id: "",
       name: data.get("NameGroup"),
       note: data.get("NoteGroup"),
+      limit: data.get("limitGroup"),
       id_roles: roleToken
     };
     axios({
@@ -491,6 +527,12 @@ class GroupManage extends Component {
         const { message } = json.data;
         alert(message);
         this.onShowDataUser(id);
+        this.props.dispatch(
+          updateStateData({
+            ...this.props.mainState,
+            EditUserGroup: {}
+          })
+        );
       })
       .catch(err => {
         console.error(err);
@@ -555,8 +597,17 @@ class GroupManage extends Component {
         });
     }
   };
+  onEditUser = (gu) => {
+    this.props.dispatch(
+      updateStateData({
+        ...this.props.mainState,
+        EditUserGroup: gu
+      })
+    );
+  }
   render() {
     const { status, status_exam, status_user, loading } = this.state;
+    console.log(this.props.mainState.EditUserGroup)
     return (
       <React.Fragment>
         <GroupManageContext.Provider
@@ -571,6 +622,7 @@ class GroupManage extends Component {
             onShowExam: (id, name) => this.onShowExam(id, name),
             onDeleteGroup: id => this.onDeleteGroup(id),
             onDeleteUser: id => this.onDeleteUser(id),
+            onEditUser: gu => this.onEditUser(gu),
             onDeleteExam: id => this.onDeleteExam(id)
           }}
         >
@@ -606,8 +658,8 @@ class GroupManage extends Component {
               }}
             />
           ) : (
-            ""
-          )}
+              ""
+            )}
           {status_exam ? (
             <ExamModalManage
               onClick={() => {
@@ -625,8 +677,8 @@ class GroupManage extends Component {
               }}
             />
           ) : (
-            ""
-          )}
+              ""
+            )}
           {status ? (
             <AddModalManage
               onClick={() => {
@@ -634,8 +686,8 @@ class GroupManage extends Component {
               }}
             />
           ) : (
-            ""
-          )}
+              ""
+            )}
           {loading ? <Loading /> : ""}
         </GroupManageContext.Provider>
       </React.Fragment>

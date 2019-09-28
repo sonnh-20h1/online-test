@@ -1,6 +1,22 @@
 <?php
 session_start();
 
+$app->get('/', function($req, $res){
+    echo $req->getUri();
+    return $res;
+});
+
+// server {
+//     listen 80;
+//     server_name sonn.402vanhoa.ml;
+//     index index.html;
+//     root /home/sonn/react/build;
+
+//     location / {
+//         try_files $uri /index.html$is_args$args;
+//     }
+// }
+
 $app->get('/getSubject','App\Controllers\SubjectController:getSubject');
 
 $app->post('/display_sub','App\Controllers\SubjectController:display_sub');
@@ -76,6 +92,7 @@ $app->post('/onAddUserGroup','App\Controllers\GroupController:onAddUserGroup');
 $app->post('/SelectGroupId','App\Controllers\GroupController:SelectGroupId');
 $app->post('/SelectUserGroupId','App\Controllers\GroupController:SelectUserGroupId');
 $app->post('/DeleteUserGroupId','App\Controllers\GroupController:DeleteUserGroupId');
+$app->post('/EditUserGroupId','App\Controllers\GroupController:EditUserGroupId');
 $app->post('/DeleteExamGroupId','App\Controllers\GroupController:DeleteExamGroupId');
 $app->post('/onDeleteGroupId','App\Controllers\GroupController:onDeleteGroupId');
 
@@ -88,6 +105,7 @@ $app->post('/upload-question','App\Controllers\UploadFileQuestion:uploadFile');
 $app->get('/getFeedBackWebsite','App\Controllers\FeedBackWebController:getFeedBackWebsite');
 $app->post('/add-feedbackwebsite','App\Controllers\FeedBackWebController:insertFeedBack');
 
+$app->get('/cronjob','App\Controllers\CronJobController:index');
 
 // login by google
 

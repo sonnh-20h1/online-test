@@ -65,7 +65,7 @@ class ExamController extends Controller{
         $params = $request->getParams();
         $search = isset($params['search'])?$params['search']:'';
         $page = isset($params['page'])?$params['page']:1;
-        $CountPerPage = 5;
+        $CountPerPage = 20;
         if(!empty($id)){
             $count = $this->database->count('exam',[
                 "[>]subjects" => "SUBID"
@@ -466,10 +466,12 @@ class ExamController extends Controller{
                 $data = $this->database->select($this->tableName, $selectColumns, $where);
                 if(!empty($data)) {
                     $rsData['message'] = "Vui lòng nhập lại.chưa gửi được!";
-                    echo json_encode($rsData);exit;
+                    echo json_encode($rsData);
+                    exit;
                 }
                 $result = $this->database->insert($this->tableName, $itemData);
                 if($result->rowCount()) {
+                    $rsData['data'] = $itemData;
                     $rsData['status'] = 'success';
                     $rsData['message'] = 'Đã gửi thành công!';
                 } else {

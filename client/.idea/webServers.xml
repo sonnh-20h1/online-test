@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="75be450e-911c-45d5-b97b-a20740cc6c51" name="react" url="http://157.230.241.89">
+        <fileTransfer host="157.230.241.89" port="22" privateKey="C:\Users\nguye\.ssh\id_rsa" rootFolder="/home/sonn/react" accessType="SFTP" keyPair="true">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+          <option name="port" value="22" />
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>

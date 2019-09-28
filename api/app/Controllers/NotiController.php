@@ -9,11 +9,11 @@ class NotiController extends Controller{
                     feedback_question.create_on,
                     feedback_question.content,
                     feedback_question.exam_id,
-                    users.EMAIL,
+                    ol_account_google.email,
                     question.SUBID,
                     question.QUE_TEXT
                 FROM feedback_question 
-                INNER JOIN users ON users.IDUSER = feedback_question.user_id 
+                INNER JOIN ol_account_google ON ol_account_google.id = feedback_question.user_id 
                 INNER JOIN question ON question.ID_QUE = feedback_question.question_id 
                 ORDER BY feedback_question.create_on DESC";
         $result = $this->database->query($sql)->fetchAll();

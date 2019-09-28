@@ -68,6 +68,19 @@ class GroupController extends Controller{
         echo json_encode($rsData);
     }
 
+    public function EditUserGroupId($request,$response){
+        $rsData = array(
+            'status' => 'error',
+            'message' => 'Có lỗi sảy ra, vui lòng thử lại!'
+        );
+        $id   =  $request->getParam('id') ;
+        if(!empty($id)){
+            $this->database->update($this->tableNameSame,['id' => $id]);
+            $rsData['status'] = 'success';
+            $rsData['message'] = 'Đã sửa thành công.';
+        }
+        echo json_encode($rsData);
+    }
     public function onAddExamGroup($request,$response){
         $rsData = array(
             'status' => 'error',
@@ -120,47 +133,58 @@ class GroupController extends Controller{
             'message' => 'Xin lỗi! Bạn vui lòng nhập đầy đủ thông tin!'
         );
         $params = $request->getParams();
+        $id   =  $request->getParam('id') ;
         $id_group   =  $request->getParam('id_group') ;
         $email    = $request->getParam('email') ;
         $limit    = $request->getParam('limit') ;
 
-        if(!empty($id_group) && !empty($email) && !empty($limit)) {
-            $date = new \DateTime();
-            $create_on = $date->format('Y-m-d');
-
-            $id = $date->format('Y-md-His');
-            $checkExam = $this->database->select('ol_account_google','*',['email' => $email,'term' => 1]);
-            if(!empty($checkExam)){
-                $checkGroup = $this->database->select($this->tableNameGroupUser,'*',[
-                        'email'     => $email,
-                        'id_group'  =>$id_group
-                    ]
-                );
-                if(empty($checkGroup)){
-                    $itemData = [
-                        'id'	    => $id,
-                        'email'     => $email,
-                        'id_user'   => $checkExam[0]['id'],
-                        'limit'     => $limit,
-                        'doing'     => 0,
-                        'id_group'  => $id_group,
-                        'status'    => 1,
-                        'create_on' => $create_on
-                    ];
-                    $result = $this->database->insert($this->tableNameGroupUser, $itemData);
-                    if($result->rowCount()) {
-                        $rsData['status'] = 'success';
-                        $rsData['message'] = 'Đã thêm thành viên thành công!';
-                    } else {
-                        $rsData['message'] = 'Dữ liệu chưa được cập nhật vào cơ sở dữ liệu!';
+        if(!empty($id)){
+            $itemData = [
+                'limit' => $limit
+            ];
+            $this->database->update($this->tableNameGroupUser, $itemData,['id' => $id]);
+            $rsData['status'] = 'success';
+            $rsData['message'] = 'Đã sửa thành công!';
+        }else{
+            if(!empty($id_group) && !empty($email) && !empty($limit)) {
+                $date = new \DateTime();
+                $create_on = $date->format('Y-m-d');
+    
+                $id = $date->format('Y-md-His');
+                $checkExam = $this->database->select('ol_account_google','*',['email' => $email,'term' => 1]);
+                if(!empty($checkExam)){
+                    $checkGroup = $this->database->select($this->tableNameGroupUser,'*',[
+                            'email'     => $email,
+                            'id_group'  =>$id_group
+                        ]
+                    );
+                    if(empty($checkGroup)){
+                        $itemData = [
+                            'id'	    => $id,
+                            'email'     => $email,
+                            'id_user'   => $checkExam[0]['id'],
+                            'limit'     => $limit,
+                            'doing'     => 0,
+                            'id_group'  => $id_group,
+                            'status'    => 1,
+                            'create_on' => $create_on
+                        ];
+                        $result = $this->database->insert($this->tableNameGroupUser, $itemData);
+                        if($result->rowCount()) {
+                            $rsData['status'] = 'success';
+                            $rsData['message'] = 'Đã thêm thành viên thành công!';
+                        } else {
+                            $rsData['message'] = 'Dữ liệu chưa được cập nhật vào cơ sở dữ liệu!';
+                        }
+                    }else{
+                        $rsData['message'] = 'Email đã tồn tại trong nhóm này!';
                     }
-                }else{
-                    $rsData['message'] = 'Email đã tồn tại trong nhóm này!';
+                }else {
+                    $rsData['message'] = 'Email này không tồn tại!';
                 }
-            }else {
-                $rsData['message'] = 'Email này không tồn tại!';
             }
         }
+        
         echo json_encode($rsData);
     }
 
@@ -173,9 +197,10 @@ class GroupController extends Controller{
         $id             = isset(	$params['id']) ? $params['id'] : '';
         $name           = isset(	$params['name']) ? $params['name'] : '';
         $note           = isset(	$params['note']) ? $params['note'] : '';
+        $limit           = isset(	$params['limit']) ? $params['limit'] : '';
         $id_roles       = isset(	$params['id_roles']) ? $params['id_roles'] : '';
 
-        if(empty($name) && empty($note) && empty($id_roles)) {
+        if(empty($name) && empty($note) && empty($id_roles) && empty($limit)) {
 			$rsData['message'] = 'Yêu cầu nhập thông tin đầy đủ!';
 			echo json_encode($rsData);
 			return;
@@ -189,6 +214,7 @@ class GroupController extends Controller{
 				'id'	=> $id,
                 'name' => $name,
                 'note' => $note,
+                'limit_group' => $limit,
 				'id_roles' => $id_roles,
 				'status' => 1,
 				'create_on' => $create_on

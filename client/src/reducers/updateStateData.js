@@ -48,6 +48,7 @@ var initialState = {
     title:{},
     exams:[]
   },
+  EditUserGroup:{ },
   ListQuestions: [],
   ShowUpdate: false,
   pageNumber: 1,

@@ -144,7 +144,6 @@ class Subject extends Component {
     this.getSubject(search, pageNumber);
   }
   render() {
-    console.log(this.props.mainState.ListSubject);
     return (
       <div className="vk-content" data-layout="full-height">
         <SubjectContext.Provider

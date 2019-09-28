@@ -84,18 +84,29 @@ class AccountController extends Controller{
 
         $params = $request->getParams();
         $token = isset($params['token']) ? $params['token'] : '';
-        $term = isset($params['term']) ? $params['term'] : '';
-        $email = isset($params['email']) ? $params['email'] : '';
-        $university = isset($params['university']) ? $params['university'] : '';
-
-        if($term == true && !empty($university)){
+        $id = isset($params['id']) ? $params['id'] : '';
+        if(!empty($id)){
+            $type = isset($params['type']) ? $params['type'] : '';
             $this->database->update($this->tableName,[
-                'term' => 1,
-                'university' => $university,
-                'introduced' => $email
-            ],[ 'accessToken' => $token]);
+                'type' => $type
+            ],[ 'id' => $id]);
             $rsData['status'] =  'success';
             $rsData['message'] = 'Đã cập nhật thành công.';
+        }
+        if(!empty($token)){
+            $term = isset($params['term']) ? $params['term'] : '';
+            $email = isset($params['email']) ? $params['email'] : '';
+            $university = isset($params['university']) ? $params['university'] : '';
+    
+            if($term == true && !empty($university)){
+                $this->database->update($this->tableName,[
+                    'term' => 1,
+                    'university' => $university,
+                    'introduced' => $email
+                ],[ 'accessToken' => $token]);
+                $rsData['status'] =  'success';
+                $rsData['message'] = 'Đã cập nhật thành công.';
+            } 
         }
         echo json_encode($rsData);
     }
