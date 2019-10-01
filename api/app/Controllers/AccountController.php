@@ -61,7 +61,7 @@ class AccountController extends Controller{
                     $rsData['status'] = 'success';
                     $rsData['data'] = [
                         'term' => 0,
-                        'accessToken' => $accessToken
+                        'token' => $accessToken
                     ];
                 } else {
                     $rsData['status'] = 'error';
