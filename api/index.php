@@ -20,7 +20,8 @@ $container['database'] = function () {
         'password' => '',
 
         'charset' => 'utf8',
-        'port' => 3306,
+        //port mysql on server is 3306
+        'port' => 3308,
 
         'option' => [
             PDO::ATTR_CASE => PDO::CASE_NATURAL

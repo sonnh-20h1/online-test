@@ -24,6 +24,11 @@ const menus = [
     name: "Đóng góp",
     to: "/upload-question",
     exact: false
+  },
+  {
+    name: "Đề thi cá nhân",
+    to: "/personal-exams",
+    exact: false
   }
 ];
 class Profile extends Component {
@@ -55,7 +60,6 @@ class Profile extends Component {
             <div className="ans_quick_link_user">
               <Link to={`/accounts/user`}>Thông tin cá nhân</Link>
               <a type="primary" onClick={this.Logout}>
-                {" "}
                 Đăng xuất
               </a>
             </div>
@@ -76,10 +80,10 @@ const AuthButton = withRouter(({ history }) =>
   isLogged() === true ? (
     <Profile history={history} />
   ) : (
-    <li>
-      <Link to="/login">Sign in</Link>
-    </li>
-  )
+      <li>
+        <Link to="/login">Sign in</Link>
+      </li>
+    )
 );
 const MenuLink = ({ Label, to, active }) => {
   return (

@@ -7,7 +7,7 @@ import {
   BrowserRouter as Router,
   Route,
   Switch,
-  Redirect
+  Redirect,
 } from "react-router-dom";
 import axios from "axios";
 import { Container, Row, Col } from "react-bootstrap";
@@ -21,11 +21,12 @@ import Account from "./Profile";
 import Home from "./Home/Home";
 import Subjects from "./Subject/Subjects";
 import SubjectDetail from "./Subject/SubjectDetail";
-import UploadFileQuestions from './Upload/UploadFileQuestions';
+import UploadFileQuestions from "./Upload/UploadFileQuestions";
+import PersonalExam from "./PersonalExams/PersonalExam";
 
 class Footer extends Component {
   state = {
-    text: ""
+    text: "",
   };
   componentDidMount() {
     this.GetMessage();
@@ -33,13 +34,13 @@ class Footer extends Component {
   async GetMessage() {
     var json = await axios({
       method: "POST",
-      url: `${API}/GetMessage`
-    }).catch(err => {
+      url: `${API}/GetMessage`,
+    }).catch((err) => {
       console.error(err);
     });
     if (json.data) {
       this.setState({
-        text: json.data[0].text
+        text: json.data[0].text,
       });
     }
   }
@@ -66,7 +67,7 @@ class MainComponent extends Component {
         <PrivateRoute path="/home" component={() => <Home />} />
         <PrivateRoute
           path="/chu-de-trac-nghiem/:id"
-          component={match => <SubjectDetail match={match} />}
+          component={(match) => <SubjectDetail match={match} />}
         />
         <PrivateRoute
           path="/chu-de-trac-nghiem"
@@ -78,11 +79,11 @@ class MainComponent extends Component {
         />
         <PrivateRoute
           path="/account/:name"
-          component={match => <Account match={match} />}
+          component={(match) => <Account match={match} />}
         />
         <PrivateRoute
           path="/accounts/:name"
-          component={match => <Accounts match={match} />}
+          component={(match) => <Accounts match={match} />}
         />
         <PrivateRoute
           path="/detail-exam/:id"
@@ -90,16 +91,17 @@ class MainComponent extends Component {
         />
         <PrivateRoute
           path="/online-test"
-          component={location => <ExamQuestion location={location} />}
+          component={(location) => <ExamQuestion location={location} />}
         />
         <PrivateRoute
           path="/result-test"
-          component={location => <Results location={location} />}
+          component={(location) => <Results location={location} />}
         />
         <PrivateRoute
           path="/review-test"
-          component={location => <Reviews location={location} />}
+          component={(location) => <Reviews location={location} />}
         />
+        <PrivateRoute path="/personal-exams" component={PersonalExam} />
         <Redirect to="/login-google" />
       </Switch>
     );
