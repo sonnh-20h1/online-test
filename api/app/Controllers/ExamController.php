@@ -332,7 +332,7 @@ class ExamController extends Controller{
     private function RequestUserAnswer($idux,$idQuestion){
         if(!empty($idux) && !empty($idQuestion)){
             // $sql = "SELECT * FROM `user_exam` JOIN detail_user_exam ON user_exam.ID_UX = detail_user_exam.ID_UX WHERE user_exam.ID_UX = '$idux' AND user_exam.IDEXAM = '$idExam' AND detail_user_exam.ID_QUE = '$idQuestion'";
-            $sql = "SELECT * FROM `user_exam` JOIN detail_user_exam ON user_exam.ID_UX = detail_user_exam.ID_UX WHERE user_exam.ID_UX = '$idux' AND detail_user_exam.ID_QUE = '$idQuestion'";            
+            $sql = "SELECT detail_user_exam.ID_ANS FROM `user_exam` JOIN detail_user_exam ON user_exam.ID_UX = detail_user_exam.ID_UX WHERE user_exam.ID_UX = '$idux' AND detail_user_exam.ID_QUE = '$idQuestion'";            
             $result = $this->database->query($sql)->fetchAll();
             if(!empty($result)){
                 return $result;    
@@ -357,9 +357,10 @@ class ExamController extends Controller{
                 }
                 $questions[] = [
                     'ID_QUE'       => $result[$i]['ID_QUE'],
+                    'type'         => $result[$i]['type'],
                     'QUE_TEXT'     => $result[$i]['QUE_TEXT'],
                     'Answer'       => $answer,
-                    'UserAnswer'   => $ID_ANS
+                    'UserAnswer'   => $UserAnswer
                 ];
             }
             echo json_encode($questions);

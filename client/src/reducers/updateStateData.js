@@ -67,11 +67,14 @@ var initialState = {
   FeelBacks:[],
   ListFileDownload:[],
   ListFeedBackWebsite:[],
+  personal_exams: [],
+  newQuestion: [],
   status: false,
   Account:{
     term:0,
     university:""
   }
+
 };
 
 var updateStateData = (state = initialState, action) => {

@@ -28,6 +28,7 @@ class TestExamController extends Controller{
                     $questions[] = [
                         'ID_QUE'        => $item['ID_QUE'],
                         'QUE_TEXT'      => $item['QUE_TEXT'],
+                        'type'          => $item['type'],
                         'choose'        => false,
                         'Answer'        => $answers,
                     ];

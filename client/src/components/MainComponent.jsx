@@ -23,6 +23,7 @@ import Subjects from "./Subject/Subjects";
 import SubjectDetail from "./Subject/SubjectDetail";
 import UploadFileQuestions from "./Upload/UploadFileQuestions";
 import PersonalExam from "./PersonalExams/PersonalExam";
+import "braft-editor/dist/output.css";
 
 class Footer extends Component {
   state = {
@@ -51,7 +52,12 @@ class Footer extends Component {
         <Container>
           <Row>
             <Col>
-              <marquee>{text}</marquee>
+              <marquee>
+                <div
+                  className="braft-output-content"
+                  dangerouslySetInnerHTML={{ __html: text }}
+                />
+              </marquee>
             </Col>
           </Row>
         </Container>
@@ -112,6 +118,9 @@ class MainComponent extends Component {
       <div className="test-online">
         <Menu />
         <div className="container-main">{this.RenderMenu()}</div>
+        <div style={{ height: "35px", width: "100%" }}>
+          <div className="container" />
+        </div>
         <Footer />
       </div>
     );

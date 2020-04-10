@@ -162,6 +162,7 @@ class ImportExamController extends Controller{
                 $questions[] = [
                     'ID_QUE'        => $item['ID_QUE'],
                     'QUE_TEXT'      => $item['QUE_TEXT'],
+                    'type'          => $item['type'],
                     'Answer'        => $answers,
                 ];
             }
@@ -190,7 +191,7 @@ class ImportExamController extends Controller{
     }
     private function GetExamHaveId($id){
         if($id){
-            $sql = "SELECT detail_exam.ID_DE,detail_exam.IDEXAM,question.ID_QUE,question.QUE_TEXT FROM detail_exam JOIN question ON detail_exam.ID_QUE = question.ID_QUE WHERE detail_exam.IDEXAM ='$id'";
+            $sql = "SELECT detail_exam.ID_DE,detail_exam.IDEXAM,question.ID_QUE,question.type,question.QUE_TEXT FROM detail_exam JOIN question ON detail_exam.ID_QUE = question.ID_QUE WHERE detail_exam.IDEXAM ='$id'";
             $result = $this->database->query($sql)->fetchAll();
             return $result;
         }

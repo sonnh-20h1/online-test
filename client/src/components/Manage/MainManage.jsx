@@ -1,75 +1,101 @@
 import React, { Component } from "react";
 import "./style.css";
 import { Redirect, Route, Switch, Link } from "react-router-dom";
-import { connect } from "react-redux";
-import { updateStateData } from "./../../actions/index";
-import { API } from "./../../API/API";
-import ReactLoading from "react-loading";
-import axios from "axios";
-import AccountManage from './AccountManage';
+
+import AccountManage from "./AccountManage";
 import UserManage from "./UserManage";
 import ExamManage from "./ExamManage";
 import SubjectManage from "./SubjectManage";
 import LoginManage from "./LoginManage";
-import GroupManage from './GroupManage';
-import MessageManage from './MessageManage';
-import FeelBackManage from './FeelBackManage';
-import UploadManage from './UploadManage';
-import FeedBackWebsite from './FeedBackWebsite';
-import { PrivateRoute, MenuManages } from './BaseManage';
+import GroupManage from "./GroupManage";
+import MessageManage from "./MessageManage";
+import FeelBackManage from "./FeelBackManage";
+import UploadManage from "./UploadManage";
+import FeedBackWebsite from "./FeedBackWebsite";
+import { PrivateRoute, MenuManages } from "./BaseManage";
+import CodeManage from "./CodeManage";
+import PersonManage from "./PersonManage";
+import ExamPersonManage from './ExamPersonManage'
 
 const Menus = [
   {
     name: "Thông báo",
     to: "/manage/message",
     icon: "fa fa-bell-o",
-    exact: false
+    exact: false,
   },
   {
     name: "Users",
     to: "/manage/users",
     icon: "fa fa-users",
-    exact: false
+    exact: false,
   },
   {
     name: "Subjects",
     to: "/manage/subjects",
     icon: "fa fa-address-book-o",
-    exact: false
+    exact: false,
   },
   {
     name: "Exams",
     to: "/manage/exams",
     icon: "fa fa-cubes",
-    exact: false
+    exact: false,
   },
   {
     name: "Groups",
     to: "/manage/groups",
     icon: "fa fa-users",
-    exact: false
+    exact: false,
   },
   {
     name: "Upload",
     to: "/manage/upload-file-question",
     icon: "fa fa-users",
-    exact: false
-  }
+    exact: false,
+  },
+  {
+    name: "Tạo mã",
+    to: "/manage/code",
+    icon: "fa fa-address-book-o",
+    exact: false,
+  },
+  {
+    name: "Danh sách cá nhân",
+    to: "/manage/person",
+    icon: "fa fa-users",
+    exact: false,
+  },
+  {
+    name: "Các đề thi cá nhân",
+    to: "/manage/exam-person",
+    icon: "fa fa-users",
+    exact: false,
+  },
 ];
-
 
 const ComponentManage = () => {
   return (
     <Switch>
       <PrivateRoute path="/manage/admin" component={AccountManage} />
       <PrivateRoute path="/manage/message" component={MessageManage} />
-      <PrivateRoute path="/manage/upload-file-question" component={UploadManage} />
+      <PrivateRoute
+        path="/manage/upload-file-question"
+        component={UploadManage}
+      />
       <PrivateRoute path="/manage/feelback" component={FeelBackManage} />
       <PrivateRoute path="/manage/users" component={UserManage} />
       <PrivateRoute path="/manage/subjects" component={SubjectManage} />
       <PrivateRoute path="/manage/exams" component={ExamManage} />
       <PrivateRoute path="/manage/groups" component={GroupManage} />
-      <PrivateRoute path="/manage/feelback-website" component={FeedBackWebsite} />
+      <PrivateRoute
+        path="/manage/feelback-website"
+        component={FeedBackWebsite}
+      />
+      <PrivateRoute path="/manage/code" component={CodeManage} />
+      <PrivateRoute path="/manage/person" component={PersonManage} />
+      <PrivateRoute path="/manage/exam-person" component={ExamPersonManage} />
+
       <Redirect to="/manage/users" />
     </Switch>
   );
@@ -85,7 +111,10 @@ const AdminManage = () => {
 const BoxManage = () => {
   return (
     <Switch>
-      <Route path="/manage/login" render={props => <LoginManage {...props} />} />
+      <Route
+        path="/manage/login"
+        render={(props) => <LoginManage {...props} />}
+      />
       <Route path="/manage" component={AdminManage} />
     </Switch>
   );

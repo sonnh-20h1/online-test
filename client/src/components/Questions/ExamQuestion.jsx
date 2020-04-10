@@ -8,12 +8,13 @@ import {
   Row,
   Col,
   Breadcrumb,
-  BreadcrumbItem
+  BreadcrumbItem,
 } from "react-bootstrap";
 import { Redirect, Prompt, Link } from "react-router-dom";
 import { API } from "./../../API/API";
 import axios from "axios";
 import ReactLoading from "react-loading";
+import { Checkbox, Radio } from "antd";
 const ExamContext = React.createContext();
 
 export const SecBreadcrumb = ({ Exam }) => {
@@ -35,7 +36,7 @@ class Timer extends Component {
     super();
     this.state = {
       count: 2,
-      isCheck: false
+      isCheck: false,
     };
   }
   componentDidMount() {
@@ -43,7 +44,7 @@ class Timer extends Component {
     var seconds = time * 60;
     // var seconds = 5;
     this.setState({
-      count: seconds
+      count: seconds,
     });
     this.doIntervalChange();
   }
@@ -55,7 +56,7 @@ class Timer extends Component {
       this.myInterval = setInterval(
         () =>
           this.setState({
-            count: this.state.count - 1
+            count: this.state.count - 1,
           }),
         1000
       );
@@ -151,46 +152,63 @@ export const ColumnItemLeft = () => {
   );
 };
 
-export const RowItemAnswer = ({ Answer }) => {
+export const RowItemAnswer = ({ Answer, type }) => {
   return (
     <div className="answer-q">
-      <table>
-        <tbody>
-          {Answer
-            ? Answer.map((answer, index) => {
-                return <ItemAnswerChildren key={index} answer={answer} />;
-              })
-            : ""}
-        </tbody>
-      </table>
+      {type == "2" ? (
+        <React.Fragment>
+          {Answer && <ItemAnswerCheckBox Answer={Answer} />}
+        </React.Fragment>
+      ) : (
+        <React.Fragment>
+          {Answer && <ItemAnswerChildren Answer={Answer} />}
+        </React.Fragment>
+      )}
     </div>
   );
 };
-export const ItemAnswerChildren = ({ answer }) => {
-  const { ID_ANS, ID_QUE } = answer;
+
+export const ItemAnswerCheckBox = ({ Answer }) => {
   return (
     <React.Fragment>
       <ExamContext.Consumer>
         {({ onChangeQuestion }) => (
           <React.Fragment>
-            {answer ? (
-              <tr>
-                <td>
-                  <input
-                    type="radio"
-                    className="option_que radio_que"
-                    value={ID_ANS}
-                    name={ID_QUE}
-                    onChange={() => onChangeQuestion(ID_QUE)}
+            {Answer &&
+              Answer.map((item, index) => (
+                <div key={index} style={{ display: "flex" }}>
+                  <Checkbox
+                    value={item.ID_ANS}
+                    onChange={(e) => onChangeQuestion(e, item, index)}
                   />
-                </td>
-                <td>
-                  <p>{answer.ANS_TEXT}</p>
-                </td>
-              </tr>
-            ) : (
-              ""
-            )}
+                  <p style={{ paddingLeft: "10px" }}>{item.ANS_TEXT}</p>
+                </div>
+              ))}
+          </React.Fragment>
+        )}
+      </ExamContext.Consumer>
+    </React.Fragment>
+  );
+};
+export const ItemAnswerChildren = ({ Answer }) => {
+  // const { ID_ANS, ID_QUE } = answer;
+  return (
+    <React.Fragment>
+      <ExamContext.Consumer>
+        {({ onChangeQuestion }) => (
+          <React.Fragment>
+            <Radio.Group>
+              {Answer &&
+                Answer.map((item, index) => (
+                  <div key={index} style={{ display: "flex" }}>
+                    <Radio
+                      value={item.ID_ANS}
+                      onChange={(e) => onChangeQuestion(e, item, index)}
+                    />
+                    <p>{item.ANS_TEXT}</p>
+                  </div>
+                ))}
+            </Radio.Group>
           </React.Fragment>
         )}
       </ExamContext.Consumer>
@@ -198,13 +216,13 @@ export const ItemAnswerChildren = ({ answer }) => {
   );
 };
 export const ItemQuetion = ({ item, index }) => {
-  const { Answer } = item;
+  const { Answer, type } = item;
   return (
     <div className="number-q" id={item.ID_QUE}>
       <div className="box-question">
         <div className="content-q">
           <RowItemQuestion itemQue={item} index={index} />
-          <RowItemAnswer Answer={Answer} />
+          <RowItemAnswer Answer={Answer} type={type} />
         </div>
       </div>
     </div>
@@ -276,7 +294,8 @@ class ExamQuestion extends Component {
       loading: false,
       payload: false,
       isNext: true,
-      scroll: 0
+      scroll: 0,
+      dataAnswers: [],
     };
   }
   componentDidMount() {
@@ -288,7 +307,7 @@ class ExamQuestion extends Component {
 
     let data = {
       id: idExam,
-      idux: idux
+      idux: idux,
     };
     if (id == "") {
       this.GetExamRequestId(data);
@@ -296,17 +315,17 @@ class ExamQuestion extends Component {
 
     this.setState({
       idExam,
-      idux
+      idux,
     });
   }
 
-  GetExamRequestId = data => {
+  GetExamRequestId = (data) => {
     axios({
       method: "POST",
       url: `${API}/GetExamQuestionId`,
-      data: data
+      data: data,
     })
-      .then(json => {
+      .then((json) => {
         const { status, Questions, data } = json.data;
         console.log("success");
         if (status == "success") {
@@ -318,17 +337,17 @@ class ExamQuestion extends Component {
                 name: data.EXAMTEXT,
                 time: data.EXTIME,
                 random: data.RANDOMEXAM,
-                List: Questions
-              }
+                List: Questions,
+              },
             })
           );
         }
       })
-      .catch(err => {
+      .catch((err) => {
         console.error(err);
       });
   };
-  Finish = e => {
+  Finish = (e) => {
     e.preventDefault();
     if (window.confirm("Bạn đã chắn chắn muốn nộp bài không?")) {
       this.setState({
@@ -338,18 +357,7 @@ class ExamQuestion extends Component {
     }
   };
   GetAnswerUserId() {
-    let inputs = document.getElementsByTagName("input");
-    let result = [];
-    if (inputs.length > 0) {
-      for (let i = 0; i < inputs.length; i++) {
-        if (inputs[i].type === "radio" && inputs[i].checked === true) {
-          result.push({
-            idAns: inputs[i].value,
-            idQue: inputs[i].name
-          });
-        }
-      }
-    }
+    const { dataAnswers } = this.state;
     var currentDate = new Date();
     var timeNow = currentDate.getHours() + ":" + currentDate.getMinutes();
     var token = localStorage.getItem("token");
@@ -358,14 +366,14 @@ class ExamQuestion extends Component {
       idux: this.state.idux,
       token: token,
       timeNow: timeNow,
-      questions: result
+      questions: dataAnswers,
     };
     axios({
       method: "POST",
       url: `${API}/GetQuestionUserId`,
-      data: Data
+      data: Data,
     })
-      .then(json => {
+      .then((json) => {
         const { data } = json;
         if (data.error) {
           console.log(data);
@@ -379,42 +387,73 @@ class ExamQuestion extends Component {
                 name: "",
                 time: "",
                 random: "",
-                List: []
-              }
+                List: [],
+              },
             })
           );
           this.setState({
-            isNext: false
+            isNext: false,
           });
         }
       })
-      .catch(err => {
+      .catch((err) => {
         console.error(err);
       });
   }
   IsCheck = () => {
     this.GetAnswerUserId();
   };
-  onChangeQuestion = id => {
+  onChangeQuestion = (e, item, i) => {
+    let { checked } = e.target;
+    let { dataAnswers } = this.state;
     const { Exam } = this.props.mainState;
-    var index = Exam.List.map(function(item) {
-      return item.ID_QUE;
-    }).indexOf(id);
+    let newList = [...Exam.List];
+    let index = newList.findIndex((que) => que.ID_QUE === item.ID_QUE);
+    if (index > -1) {
+      const ques = newList[index];
+      const userAns = {
+        idAns: item.ID_ANS,
+        idQue: item.ID_QUE,
+      };
+      if (ques.type == "2") {
+        if (checked) {
+          dataAnswers.push(userAns);
+        } else {
+          let indexAns = dataAnswers.findIndex(
+            (que) => que.idAns === item.ID_ANS
+          );
+          dataAnswers.splice(indexAns, 1);
+        }
+      } else {
+        let indexAns = dataAnswers.findIndex(
+          (que) => que.idQue === item.ID_QUE
+        );
+        if (indexAns > -1) {
+          dataAnswers.splice(indexAns, 1, userAns);
+        } else {
+          dataAnswers.push(userAns);
+        }
+      }
+    }
+    this.setState({
+      dataAnswers,
+    });
     Exam.List[index].choose = true;
     this.props.dispatch(
       updateStateData({
         ...this.props.mainState,
-        Exam: Exam
+        Exam: Exam,
       })
     );
   };
-  onChangeMove = id => {
-    var top = document.getElementById(""+id+"");
-    window.scrollTo(0,top.offsetTop);
+  onChangeMove = (id) => {
+    var top = document.getElementById("" + id + "");
+    window.scrollTo(0, top.offsetTop);
   };
   render() {
     const { Exam } = this.props.mainState;
-    const { loading, isNext, idux } = this.state;
+    const { loading, isNext, idux, dataAnswers } = this.state;
+
     if (isNext === false) {
       return (
         <Redirect to={{ pathname: `/result-test`, search: `?id=${idux}` }} />
@@ -430,8 +469,9 @@ class ExamQuestion extends Component {
             Exam: Exam ? Exam : "",
             Finish: this.Finish,
             IsCheck: this.IsCheck,
-            onChangeQuestion: id => this.onChangeQuestion(id),
-            onChangeMove: id => this.onChangeMove(id)
+            onChangeQuestion: (e, item, index) =>
+              this.onChangeQuestion(e, item, index),
+            onChangeMove: (id) => this.onChangeMove(id),
           }}
         >
           <MainExamQuestion />
@@ -445,8 +485,8 @@ class ExamQuestion extends Component {
     );
   }
 }
-export default connect(state => {
+export default connect((state) => {
   return {
-    mainState: state.updateStateData
+    mainState: state.updateStateData,
   };
 })(ExamQuestion);

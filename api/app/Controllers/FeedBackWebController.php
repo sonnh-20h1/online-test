@@ -7,6 +7,7 @@ class FeedBackWebController extends Controller{
 
     private $tableNameUser = 'users';
     private $tableName = 'ol_feedback_website';
+    private $tableNameAccountGoogle = 'ol_account_google';
     
     public function getFeedBackWebsite($request,$response){
         $sql = "SELECT * FROM ol_feedback_website  ORDER BY create_on DESC";
@@ -15,23 +16,21 @@ class FeedBackWebController extends Controller{
     }
 
     public function insertFeedBack($request, $response) {
-        $jwt = $request->getParam('token');
+        $token = $request->getParam('token');
         $content = $request->getParam('content');
         $rsData = array(
             'status' => 'error',
             'message' => 'Có lỗi sảy ra! Vui lòng kiếm tra lại!'
         );
-        $key = 'loginuser';
-        $token = (array)JWT::decode($jwt, $key, array('HS256'));
-        $idUser = $token['IDUSER'];
-        $email = $token['EMAIL'];
-    
+        $result  = $this->database->select($this->tableNameAccountGoogle,'*',['accessToken'=>$token]); 
         $date = new \DateTime();
         $create_on = $date->format('Y-m-d H:i:s');
     
         $id = $date->format('Y-md-His');
-        $result  = $this->database->select($this->tableNameUser,'*',['IDUSER'=>$idUser]);
         if($result){
+            $item = $result[0];
+            $idUser = $item['id'];
+            $email = $item['email'];
             if(!empty($content) && !empty($id) && !empty($idUser)){
                 $result = $this->database->insert($this->tableName,[
                     'id'        => $id,

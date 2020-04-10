@@ -5,6 +5,8 @@ import { updateStateData } from "./../../actions/index";
 import { API } from "./../../API/API";
 import ReactLoading from "react-loading";
 import { Modal, Alert } from "react-bootstrap";
+import BraftEditor from "braft-editor";
+
 import axios from "axios";
 
 export const Loading = () => {
@@ -44,7 +46,14 @@ export const MainDetail = ({ DetailExam, GetStart, text }) => {
           </button>
         ) : (
           <p>
-            <span>{text}</span>
+            <BraftEditor
+            language="en"
+            id="editor-with-table"
+            readOnly
+            contentStyle={{ height: "auto" }}
+            controlBarStyle={{ display: "none" }}
+            value={BraftEditor.createEditorState(text)}
+          />
           </p>
         )}
       </div>

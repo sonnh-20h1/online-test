@@ -126,3 +126,16 @@ $app->group('/profile',function() use($app){
     $app->post('/GetHistoryExamUser','App\Controllers\UserController:GetHistoryExamUser');
     
 });
+
+$app->group('/personal',function() use($app){
+    $app->get('/selectCode','App\Controllers\PersonalController:selectCode');
+    $app->get('/selectPerson','App\Controllers\PersonalController:selectPerson');
+    $app->get('/getExamPerson','App\Controllers\PersonalController:getExamPerson');
+
+    $app->post('/getExamByUserId','App\Controllers\PersonalController:getExamByUserId');
+    $app->post('/createCode','App\Controllers\PersonalController:createCode');
+    $app->post('/deleteCode','App\Controllers\PersonalController:deleteCode');
+    $app->post('/confirmCode','App\Controllers\PersonalController:confirmCode');
+    $app->post('/statusPerson','App\Controllers\PersonalController:statusPerson');
+    $app->post('/CreateExamPerson','App\Controllers\CreateExamController:CreateExamPerson');
+});

@@ -6,19 +6,23 @@ import {
   Col,
   Alert,
   Breadcrumb,
-  BreadcrumbItem
+  BreadcrumbItem,
 } from "react-bootstrap";
 import ReactLoading from "react-loading";
 import axios from "axios";
 import { API } from "./../../API/API";
-import './upload.css';
+import { Link } from "react-router-dom";
+import BraftEditor from "braft-editor";
+import "./upload.css";
 
 const SecBreadcrumb = ({ Title }) => {
   return (
     <div className="ol-breadcrumb">
       <Container>
         <Breadcrumb className="breadcrumb__content">
-          <BreadcrumbItem href="/home">Trang chủ</BreadcrumbItem>
+          <BreadcrumbItem active>
+            <Link to="/home">Trang chủ</Link>
+          </BreadcrumbItem>
           <BreadcrumbItem active>{Title}</BreadcrumbItem>
         </Breadcrumb>
       </Container>
@@ -43,25 +47,25 @@ export const Loading = () => {
 class UploadFileQuestion extends Component {
   state = {
     loading: false,
-    text:''
+    text: "",
   };
-  componentDidMount(){
-    this.GetMessage()
+  componentDidMount() {
+    this.GetMessage();
   }
   async GetMessage() {
     var json = await axios({
       method: "POST",
-      url: `${API}/GetMessage`
-    }).catch(err => {
+      url: `${API}/GetMessage`,
+    }).catch((err) => {
       console.error(err);
     });
     if (json.data) {
       this.setState({
-        text: json.data[2].text
+        text: json.data[2].text,
       });
     }
   }
-  onUploadQuestion = async e => {
+  onUploadQuestion = async (e) => {
     e.preventDefault();
     var formData = new FormData();
     var target = e.target;
@@ -72,8 +76,8 @@ class UploadFileQuestion extends Component {
       var json = await axios({
         method: "POST",
         url: `${API}/upload-question`,
-        data: formData
-      }).catch(err => {
+        data: formData,
+      }).catch((err) => {
         console.error(err);
       });
       if (json.data.status == "success") {
@@ -85,14 +89,30 @@ class UploadFileQuestion extends Component {
     }
   };
   render() {
-    const { loading,text } = this.state;
+    const { loading, text } = this.state;
     return (
       <section className="ol-content">
         <SecBreadcrumb Title={"Upload file"} />
         <Container>
           <div className="page__wrapper">
             <div className="heading__box">
-              <p>{text}</p>
+              {/* <div className="bf-container">
+                <div className="bf-content" style={{ height: "auto" }}>
+                  <div
+                    className="braft-output-content"
+                    dangerouslySetInnerHTML={{ __html: text }}
+                  />
+                </div>
+              </div> */}
+
+              <BraftEditor
+                language="en"
+                id="editor-with-table"
+                readOnly
+                contentStyle={{ height: "auto" }}
+                controlBarStyle={{ display: "none" }}
+                value={BraftEditor.createEditorState(text)}
+              />
             </div>
             <div className="part_upload">
               <form

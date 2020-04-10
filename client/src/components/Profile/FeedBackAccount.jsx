@@ -1,20 +1,16 @@
-import React, { Component } from "react";
-import Pagination from "react-js-pagination";
-import { Route, Link } from "react-router-dom";
+import React from "react";
 import { connect } from "react-redux";
 import axios from "axios";
 import { updateStateData } from "./../../actions/index";
-import { API } from "./../../API/API";
-import { WrapMaxTable } from "./BaseAccount";
-import { Button, Container, Form, Row, Col } from "react-bootstrap";
-import imgFeed from "./../../img/imgFeedBack.jpg";
-import { toast } from "react-toastify";
+import { API } from "./../../API/API"; 
+import {Form, Row, Col } from "react-bootstrap";
+import BraftEditor from "braft-editor";
 
 const FeedBackAccountContext = React.createContext();
 
 class FeedBackAccount extends React.Component {
   state = {
-    text: ""
+    text: "",
   };
   componentDidMount() {
     // this.onShowHistory(data);
@@ -24,22 +20,22 @@ class FeedBackAccount extends React.Component {
   async GetMessage() {
     var json = await axios({
       method: "POST",
-      url: `${API}/GetMessage`
-    }).catch(err => {
+      url: `${API}/GetMessage`,
+    }).catch((err) => {
       console.error(err);
     });
     if (json.data) {
       this.setState({
-        text: json.data[3].text
+        text: json.data[3].text,
       });
     }
   }
-  onShowHistory = async data => {
+  onShowHistory = async (data) => {
     var json = await axios({
       method: "POST",
       url: `${API}/GetHistoryExamUser`,
-      data: data
-    }).catch(err => {
+      data: data,
+    }).catch((err) => {
       console.error(err);
     });
     if (json) {
@@ -47,12 +43,12 @@ class FeedBackAccount extends React.Component {
       this.props.dispatch(
         updateStateData({
           ...this.props.mainState,
-          ListAccountHistory: data
+          ListAccountHistory: data,
         })
       );
     }
   };
-  onFeedBack = async e => {
+  onFeedBack = async (e) => {
     e.preventDefault();
     var form = new FormData(e.target);
     var contentFeedBack = form.get("feedback");
@@ -62,16 +58,16 @@ class FeedBackAccount extends React.Component {
     var json = await axios({
       method: "POST",
       url: `${API}/add-feedbackwebsite`,
-      data: data
-    }).catch(err => {
+      data: data,
+    }).catch((err) => {
       console.error(err);
     });
-    if(json){
-      const {data} = json
-      if(data.status == 'success'){
-        alert('Cám ơn bạn đã đóng góp ý kiến về website của chúng tôi.');
+    if (json) {
+      const { data } = json;
+      if (data.status == "success") {
+        alert("Cám ơn bạn đã đóng góp ý kiến về website của chúng tôi.");
         window.location.reload();
-      }else{
+      } else {
         alert(data.message);
       }
     }
@@ -83,18 +79,21 @@ class FeedBackAccount extends React.Component {
         <FeedBackAccountContext.Provider
           value={{
             dispatch: this.props.dispatch,
-            mainState: this.props.mainState
+            mainState: this.props.mainState,
           }}
         >
-          <Row className="title_feedback">
-            <h4>Thông tin đáng chú ý</h4>
-            <Col md={2}>
-              <img src={imgFeed} alt="anh feed back" />
-            </Col>
-            <Col md={10}>
-              <p>{text}</p>
-            </Col>
-          </Row>
+          {/* <div
+            className="braft-output-content"
+            dangerouslySetInnerHTML={{ __html: text }}
+          /> */}
+          <BraftEditor
+            language="en"
+            id="editor-with-table"
+            readOnly
+            contentStyle={{ height: "auto" }}
+            controlBarStyle={{ display: "none" }}
+            value={BraftEditor.createEditorState(text)}
+          />
           <Row className="content_feedback">
             <Col md={12}>
               <h4>Nội dung phản hồi của bạn</h4>
@@ -119,8 +118,8 @@ class FeedBackAccount extends React.Component {
   }
 }
 
-export default connect(state => {
+export default connect((state) => {
   return {
-    mainState: state.updateStateData
+    mainState: state.updateStateData,
   };
 })(FeedBackAccount);

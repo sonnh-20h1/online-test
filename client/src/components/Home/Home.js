@@ -26,7 +26,7 @@ class Home extends Component {
     }
 
     return (
-      <Container>
+      <Container className="flex-home">
         <Row>
           <Col className="flex_display">
             <div className="content_home">

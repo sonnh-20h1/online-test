@@ -163,7 +163,7 @@ class DetailExamsController extends Controller{
                     $rsData['status'] = 'success';
                     $rsData['message'] = 'Đã lấy dữ liệu thành công!';
                     $rsData['data'] = $result[0];
-                    if($result[0]['status'] == 1){
+                    if($result[0]['status'] == 1 || $result[0]['status'] == 3){
                         $rsData['correct'] = 1;
                     }else if($result[0]['status'] == 2){
                         $checkStatus =$this->database->query($sqlStatus,[ ":id_user" => $iduser,":id_exam" => $id])->fetchAll();

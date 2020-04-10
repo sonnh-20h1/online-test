@@ -7,7 +7,7 @@ import {
   Alert,
   Breadcrumb,
   BreadcrumbItem,
-  Card
+  Card,
 } from "react-bootstrap";
 import { Link, Redirect } from "react-router-dom";
 import itemImg from "../../img/icon-3.png";
@@ -24,9 +24,11 @@ const SecBreadcrumb = ({ Title }) => {
     <div className="ol-breadcrumb">
       <Container>
         <Breadcrumb className="breadcrumb__content">
-          <BreadcrumbItem href="/home">Trang chủ</BreadcrumbItem>
-          <BreadcrumbItem href="/chu-de-trac-nghiem">
-            Chủ đề trắc nghiệm
+          <BreadcrumbItem active>
+            <Link to="/home">Trang chủ</Link>
+          </BreadcrumbItem>
+          <BreadcrumbItem active>
+            <Link to="/chu-de-trac-nghiem">Chủ đề trắc nghiệm</Link>
           </BreadcrumbItem>
           <BreadcrumbItem active>{Title ? Title.SUBTEXT : ""}</BreadcrumbItem>
         </Breadcrumb>
@@ -90,7 +92,7 @@ const TitleSubject = ({ Title, onBackFolder }) => {
   return (
     <div className="heading__box ">
       <Button onClick={onBackFolder}>
-        <i class="fa fa-step-backward"></i> Quay lại
+        <i class="fa fa-step-backward" /> Quay lại
       </Button>
       <h1 className="page__heading">Môn {Title.SUBTEXT}</h1>
       <p>{Title.DESCRIPT}</p>
@@ -277,7 +279,7 @@ class SubjectDetail extends Component {
                           className="folder-icon"
                           onClick={() => this.handleFilter(1)}
                         >
-                          <i class="fa fa-folder-open"></i>
+                          <i class="fa fa-folder-open" />
                           <p>Đề miễn phí</p>
                         </div>
                       </Card>
@@ -288,7 +290,7 @@ class SubjectDetail extends Component {
                           className="folder-icon"
                           onClick={() => this.handleFilter(2)}
                         >
-                          <i class="fa fa-folder-open"></i>
+                          <i class="fa fa-folder-open" />
                           <p>Đề trả phí</p>
                         </div>
                       </Card>
