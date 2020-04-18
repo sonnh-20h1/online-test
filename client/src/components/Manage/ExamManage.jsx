@@ -19,6 +19,7 @@ import {
   Select
 } from "./BaseManage";
 
+import PersonalModal from "./createExams/PersonalModal";
 const ExamManageContext = React.createContext();
 
 const FormAddExam = ({ readonly }) => {
@@ -318,7 +319,9 @@ class ExamManage extends Component {
     super();
     this.state = {
       status: false,
-      loading: false
+      loading: false,
+      edit: false,
+      exam_id: ""
     };
   }
   componentDidMount() {
@@ -539,52 +542,12 @@ class ExamManage extends Component {
     }
   };
   onEditExam = id => {
+    console.log(id);
     this.setState({
-      loading: true
+      exam_id: id,
+      edit: true,
+      status: true
     });
-    if (id) {
-      var data = { id: id };
-      axios({
-        method: "POST",
-        url: `${API}/SelectExamId`,
-        data: data
-      })
-        .then(json => {
-          const {
-            questions,
-            idExam,
-            TimeExam,
-            SubjectExam,
-            RandomQues,
-            NameExam,
-            status
-          } = json.data[0];
-          this.props.dispatch(
-            updateStateData({
-              ...this.props.mainState,
-              ItemExamManage: {
-                IdExam: idExam,
-                NameExam,
-                TimeExam,
-                RandomNumber: RandomQues,
-                SubjectExam,
-                status
-              },
-              ShowUpdate: true,
-              ListQuestions: questions
-            })
-          );
-          this.setState({
-            loading: false,
-            status: true
-          });
-        })
-        .catch(err => {
-          console.error(err);
-          // console.log(id)
-          this.onEditExam(id);
-        });
-    }
   };
   onUpdateExam = e => {
     e.preventDefault();
@@ -659,7 +622,7 @@ class ExamManage extends Component {
       });
   };
   render() {
-    const { status, loading } = this.state;
+    const { status, loading, edit, exam_id } = this.state;
     return (
       <React.Fragment>
         <ExamManageContext.Provider
@@ -682,7 +645,7 @@ class ExamManage extends Component {
               <HeaderTable>
                 <ButtonPrimary
                   onClick={() => {
-                    this.setState({ status: true });
+                    this.setState({ status: true, edit: false });
                   }}
                 >
                   Thêm đề thi
@@ -691,8 +654,17 @@ class ExamManage extends Component {
               <ContentTable />
             </ContentManage>
           </div>
-          {status ? (
-            <ModalManage
+          {status && (
+            <div>
+              <PersonalModal
+                open={status}
+                edit={edit}
+                exam_id={exam_id}
+                onCancel={() => this.setState({ status: false })}
+              />
+            </div>
+          )}
+          {/* <ModalManage
               onClick={() => {
                 this.setState({ status: false });
                 this.props.dispatch(
@@ -712,10 +684,7 @@ class ExamManage extends Component {
                   })
                 );
               }}
-            />
-          ) : (
-            ""
-          )}
+            />  */}
           {loading ? <Loading /> : ""}
         </ExamManageContext.Provider>
       </React.Fragment>

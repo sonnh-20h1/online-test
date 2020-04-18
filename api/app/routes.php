@@ -127,6 +127,8 @@ $app->group('/profile',function() use($app){
     
 });
 
+$app->post('/CreateExamAdmin','App\Controllers\CreateExamController:CreateExamAdmin');
+
 $app->group('/personal',function() use($app){
     $app->get('/selectCode','App\Controllers\PersonalController:selectCode');
     $app->get('/selectPerson','App\Controllers\PersonalController:selectPerson');

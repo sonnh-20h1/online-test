@@ -55,6 +55,54 @@ class CreateExamController extends Controller{
 
         }
     }
+    public function CreateExamAdmin($request,$response){
+        $idExam = $request->getParam('idExam'); 
+        $TimeExam = $request->getParam('TimeExam'); 
+        $NameExam = $request->getParam('NameExam'); 
+        $SubjectExam = $request->getParam('SubjectExam');
+        $RandomNumber = $request->getParam('RandomQues'); 
+        $status = $request->getParam('status'); 
+        $data = $request->getParam('data');
+        $numberExam = count($data);
+        if(empty($idExam)||  empty($TimeExam) || empty($NameExam) || empty($SubjectExam) || empty($status)){
+            $message['error'] = 'Chưa nhận được dữ liệu!';
+            echo json_encode($message);
+        }else{
+           $result = $this->database->select('exam','*',['IDEXAM' => $idExam]);
+            if(empty($result)){
+                $this->database->insert('exam',[
+                    'IDEXAM'    => $idExam,
+                    'EXAMTEXT'  => $NameExam,
+                    'SUBID'     => $SubjectExam,
+                    'EXTIME'    => $TimeExam,
+                    'EXNUM'     => $numberExam,
+                    'RANDOMEXAM'  => $RandomNumber, 
+                    'status'  => $status
+                ]);
+                $this->InsertQuestionExam($data,$idExam,$SubjectExam);
+                $message['success'] ='created';
+                echo json_encode($message);
+            }else if(!empty($result)){
+                $this->database->update('exam',[ 
+                    'EXAMTEXT'  => $NameExam,
+                    'SUBID'     => $SubjectExam,
+                    'EXTIME'    => $TimeExam,
+                    'EXNUM'     => $numberExam,
+                    'RANDOMEXAM'  => $RandomNumber,
+                    'status'  => $status,
+                ],['IDEXAM'    => $idExam]);
+
+                $message['success'] ='updated';
+                $this->DeleteQuetionExam($idExam);
+                $this->InsertQuestionExam($data,$idExam,$SubjectExam);
+                echo json_encode($message);
+            }else{
+                $message['error'] ='Có lỗi sảy ra!';
+                echo json_encode($message);
+            }
+
+        }
+    }
     private function DeleteQuetionExam($idExam){
         $result = $this->database->select('detail_exam','*',['IDEXAM' => $idExam]);
         if(!empty($result)){
