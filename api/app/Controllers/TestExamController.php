@@ -75,6 +75,7 @@ class TestExamController extends Controller{
         $token     = $request->getParam('token');
         $timeNow    = $request->getParam('timeNow');
         $QueID  = $request->getParam('questions');
+        $score  = $request->getParam('score');
         $number     = count($QueID);
 
         $idUser = null;
@@ -82,32 +83,16 @@ class TestExamController extends Controller{
         if(!empty($checkAccount)){
             $idUser = $checkAccount[0]['id'];
         }
-
-        $sqlAns = " SELECT question.ID_QUE,answer.ID_ANS 
-                    FROM question INNER JOIN detail_exam ON detail_exam.ID_QUE = question.ID_QUE 
-                    INNER JOIN answer ON answer.ID_QUE = question.ID_QUE
-                    WHERE detail_exam.IDEXAM = :idExam AND answer.CORRECT = 'true'";
-        $resultAns = $this->database->query($sqlAns,[
-            ":idExam" => $idExam
-        ])->fetchAll();
-        $m = count($resultAns);
         
         if(!empty($idExam) && !empty($idUser)){
             $checkConfirm = $this->database->select('user_exam','*',['ID_UX ' => $idux]);
             $arr = $checkConfirm[0];
             if($arr['CONFIRM'] == null){
-                $dem = 0;
-                for($i = 0;$i < $m; $i++){
-                    for($j = 0;$j < $number;$j++){
-                        if($QueID[$j]['idQue'] == $resultAns[$i]['ID_QUE'] && $QueID[$j]['idAns'] == $resultAns[$i]['ID_ANS']){
-                            $dem += 1;
-                        }
-                    }
-                }  
+                 
                 $this->database->update('user_exam',[
                     'TIMEEND'   => $timeNow,
                     'CONFIRM'   => 'true',
-                    'SCORE'     => $dem
+                    'SCORE'     => $score
                 ],[
                     'ID_UX' => $idux
                 ]);   

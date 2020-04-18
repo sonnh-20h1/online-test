@@ -36,6 +36,7 @@ class PersonalExam extends Component {
     text: "",
     useDay: 0,
     status: 1,
+    subjects: [],
   };
   componentDidMount() {
     var token = localStorage.getItem("token");
@@ -43,6 +44,7 @@ class PersonalExam extends Component {
     this.onShowData(data);
     this.GetMessage();
     this.statusPerson(data);
+    this.getSubject();
   }
 
   statusPerson = async (data) => {
@@ -62,6 +64,20 @@ class PersonalExam extends Component {
         useDay: day,
         permission: true,
         status,
+      });
+    }
+  };
+
+  getSubject = async () => {
+    var json = await axios({
+      method: "POST",
+      url: `${API}/display_sub`,
+    }).catch((err) => {
+      console.error(err);
+    });
+    if (json) {
+      this.setState({
+        subjects: json.data,
       });
     }
   };
@@ -101,6 +117,7 @@ class PersonalExam extends Component {
             stt: index + 1,
             id: ele.IDEXAM,
             text: ele.EXAMTEXT,
+            sub: ele.SUBID,
             time: ele.EXTIME,
           };
         });
@@ -144,14 +161,20 @@ class PersonalExam extends Component {
         key: "stt",
       },
       {
-        title: "Mã đề",
-        dataIndex: "id",
-        key: "id",
-      },
-      {
         title: "Tên đề",
         dataIndex: "text",
         key: "text",
+      },
+      {
+        title: "Môn học",
+        key: "sub",
+        render: (record) => (
+          <span>
+            {this.state.subjects &&
+              this.state.subjects.filter((ele) => ele.SUBID == record.sub)[0]
+                .SUBTEXT}
+          </span>
+        ),
       },
       {
         title: "Thời gian",
@@ -175,8 +198,8 @@ class PersonalExam extends Component {
                 this.openModel(true, record.id);
               }}
             />
-            <Divider type="vertical" />
-            <Icon type="delete" />
+            {/* <Divider type="vertical" />
+            <Icon type="delete" /> */}
           </span>
         ),
       },
@@ -190,6 +213,7 @@ class PersonalExam extends Component {
       text,
       useDay,
       status,
+      subjects,
     } = this.state;
     return (
       <section className="PersonalExam">
@@ -216,37 +240,40 @@ class PersonalExam extends Component {
                 </div>
               </React.Fragment>
             )}
-            {permission && (
-              <div className="create-exams">
-                <div className="button-add">
-                  <div>
-                    <span>Thời gian sử dụng: {useDay} ngày </span>
-                    <br />
-                    <span>Loại: {status == "1" ? "Miễn phí" : "Trả phí"}</span>
-                    <br />
-                    <Button
-                      type="primary"
-                      onClick={() => this.setState({ permission: false })}
-                    >
-                      Nhập mã
-                    </Button>
-                  </div>
-                  <div>
-                    {useDay > 0 && (
+            {permission &&
+              subjects.length > 0 && (
+                <div className="create-exams">
+                  <div className="button-add">
+                    <div>
+                      <span>Thời gian sử dụng: {useDay} ngày </span>
+                      <br />
+                      <span>
+                        Loại: {status == "1" ? "Miễn phí" : "Trả phí"}
+                      </span>
+                      <br />
                       <Button
                         type="primary"
-                        onClick={() => this.openModel(false, "")}
+                        onClick={() => this.setState({ permission: false })}
                       >
-                        <Icon type="plus" /> Thêm đề thi
+                        Nhập mã
                       </Button>
-                    )}
+                    </div>
+                    <div>
+                      {useDay > 0 && (
+                        <Button
+                          type="primary"
+                          onClick={() => this.openModel(false, "")}
+                        >
+                          <Icon type="plus" /> Thêm đề thi
+                        </Button>
+                      )}
+                    </div>
+                  </div>
+                  <div style={{ paddingTop: "20px" }}>
+                    <Table bordered columns={columns} dataSource={data} />
                   </div>
                 </div>
-                <div style={{ paddingTop: "20px" }}>
-                  <Table bordered columns={columns} dataSource={data} />
-                </div>
-              </div>
-            )}
+              )}
           </div>
         </Container>
         {open && (

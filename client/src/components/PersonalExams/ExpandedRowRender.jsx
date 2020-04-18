@@ -12,7 +12,7 @@ function ExpandedRowRender(props) {
       <div style={{ paddingLeft: "70px" }}>
         <Button type="primary" onClick={props.createRowAnswer}>
           <Icon type="plus" />
-          Thêm mới
+          Thêm đáp án
         </Button>
       </div>
       {type == "2" ? (

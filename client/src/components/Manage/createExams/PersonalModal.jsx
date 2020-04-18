@@ -9,7 +9,7 @@ import {
   Form,
   Row,
   Col,
-  notification
+  notification,
 } from "antd";
 import { API } from "./../../../API/API";
 import axios from "axios";
@@ -25,9 +25,9 @@ class PersonalModal extends Component {
     data: [],
     loading: false,
     idExam: "",
-    status: "3",
+    status: "",
     subjects: [],
-    importExcel: false
+    importExcel: false,
   };
   componentDidMount() {
     const { edit, exam_id } = this.props;
@@ -43,30 +43,30 @@ class PersonalModal extends Component {
     notification.info({
       message: `Thông báo`,
       description: "Đề thi đã được cập nhật!",
-      placement: "topRight"
+      placement: "topRight",
     });
   };
 
   getSubject = async () => {
     var json = await axios({
       method: "POST",
-      url: `${API}/display_sub`
-    }).catch(err => {
+      url: `${API}/display_sub`,
+    }).catch((err) => {
       console.error(err);
     });
     if (json) {
       this.setState({
-        subjects: json.data
+        subjects: json.data,
       });
     }
   };
 
-  getExamId = async data => {
+  getExamId = async (data) => {
     var json = await axios({
       method: "POST",
       url: `${API}/SelectExamId`,
-      data: data
-    }).catch(err => {
+      data: data,
+    }).catch((err) => {
       console.error(err);
     });
     if (json) {
@@ -77,7 +77,7 @@ class PersonalModal extends Component {
           ID_QUE: item.ID_QUE,
           QUE_TEXT: item.QUE_TEXT,
           type: item.type ? item.type : "",
-          Answer: item.Answer
+          Answer: item.Answer,
         };
       });
       const {
@@ -86,11 +86,11 @@ class PersonalModal extends Component {
         SubjectExam,
         TimeExam,
         RandomQues,
-        status
+        status,
       } = json.data[0];
       this.setState({
         idExam,
-        data: questions
+        data: questions,
       });
       this.props.form.setFieldsValue({
         NameExam,
@@ -98,45 +98,45 @@ class PersonalModal extends Component {
         TimeExam,
         RandomQues,
         status,
-        idExam
+        idExam,
       });
     }
   };
   onChangeType = (type, record) => {
     const newData = [...this.state.data];
-    const index = newData.findIndex(item => record.key === item.key);
+    const index = newData.findIndex((item) => record.key === item.key);
     if (index > -1) {
       const item = newData[index];
       newData.splice(index, 1, {
         ...item,
         type,
-        Answer: item.Answer.map(ans => {
+        Answer: item.Answer.map((ans) => {
           return {
             ...ans,
-            CORRECT: "false"
+            CORRECT: "false",
           };
-        })
+        }),
       });
     }
     this.setState({ data: newData });
   };
   onChangeQue = (text, record) => {
     const newData = [...this.state.data];
-    const index = newData.findIndex(item => record.key === item.key);
+    const index = newData.findIndex((item) => record.key === item.key);
     if (index > -1) {
       const item = newData[index];
       newData.splice(index, 1, {
         ...item,
-        QUE_TEXT: text
+        QUE_TEXT: text,
       });
     }
     this.setState({ data: newData });
   };
 
-  createRowAnswer = record => {
+  createRowAnswer = (record) => {
     console.log(record);
     const newData = [...this.state.data];
-    const index = newData.findIndex(item => record.key === item.key);
+    const index = newData.findIndex((item) => record.key === item.key);
     if (index > -1) {
       const item = newData[index];
       let anwsers = item.Answer;
@@ -145,11 +145,11 @@ class PersonalModal extends Component {
         ID_ANS: "",
         ID_QUE: item.ID_QUE,
         ANS_TEXT: "",
-        CORRECT: "false"
+        CORRECT: "false",
       });
       newData.splice(index, 1, {
         ...item,
-        Answer: anwsers
+        Answer: anwsers,
       });
     }
     this.setState({ data: newData });
@@ -159,7 +159,7 @@ class PersonalModal extends Component {
       ID_QUE: "",
       QUE_TEXT: "",
       type: "",
-      Answer: []
+      Answer: [],
     };
     const newData = [...this.state.data];
     newData.splice(0, 0, newQuestion);
@@ -170,7 +170,7 @@ class PersonalModal extends Component {
         ID_QUE: item.ID_QUE,
         QUE_TEXT: item.QUE_TEXT,
         type: item.type ? item.type : "",
-        Answer: item.Answer
+        Answer: item.Answer,
       };
     });
     this.setState({ data: questions, loading: true });
@@ -179,71 +179,71 @@ class PersonalModal extends Component {
     if (prevState.data.length !== this.state.data.length) {
       setTimeout(() => {
         this.setState({
-          loading: false
+          loading: false,
         });
       }, 0);
     }
   }
   onChangeText = (text, record, i) => {
     const newData = [...this.state.data];
-    const index = newData.findIndex(item => record.key === item.key);
+    const index = newData.findIndex((item) => record.key === item.key);
     if (index > -1) {
       const item = newData[index];
       const answers = [...item.Answer];
       answers.splice(i, 1, {
         ...answers[i],
-        ANS_TEXT: text
+        ANS_TEXT: text,
       });
       newData.splice(index, 1, {
         ...item,
-        Answer: answers
+        Answer: answers,
       });
     }
     this.setState({ data: newData });
   };
   onChangeTypeAnswers = (checked, type, record, i) => {
     const newData = [...this.state.data];
-    const index = newData.findIndex(item => record.key === item.key);
+    const index = newData.findIndex((item) => record.key === item.key);
     console.log(checked);
 
     if (index > -1) {
       const item = newData[index];
       let answers = [];
       if (type === "radio") {
-        answers = item.Answer.map(ans => {
+        answers = item.Answer.map((ans) => {
           return {
             ...ans,
-            CORRECT: "false"
+            CORRECT: "false",
           };
         });
         answers.splice(i, 1, {
           ...answers[i],
-          CORRECT: "true"
+          CORRECT: "true",
         });
       } else if (type == "checkbox") {
         answers = [...item.Answer];
         if (checked) {
           answers.splice(i, 1, {
             ...answers[i],
-            CORRECT: "true"
+            CORRECT: "true",
           });
         } else {
           answers.splice(i, 1, {
             ...answers[i],
-            CORRECT: "false"
+            CORRECT: "false",
           });
         }
       }
       newData.splice(index, 1, {
         ...item,
-        Answer: answers
+        Answer: answers,
       });
     }
     this.setState({ data: newData });
   };
   onDeleteAnswer = (record, i) => {
     const newData = [...this.state.data];
-    const index = newData.findIndex(item => record.key === item.key);
+    const index = newData.findIndex((item) => record.key === item.key);
     if (index > -1) {
       const item = newData[index];
       console.log(i);
@@ -253,20 +253,20 @@ class PersonalModal extends Component {
 
       newData.splice(index, 1, {
         ...item,
-        Answer: newAnswer
+        Answer: newAnswer,
       });
     }
     this.setState({ data: newData });
   };
-  onDeleteQue = record => {
+  onDeleteQue = (record) => {
     const newData = [...this.state.data];
-    const index = newData.findIndex(item => record.key === item.key);
+    const index = newData.findIndex((item) => record.key === item.key);
     if (index > -1) {
       newData.splice(index, 1);
     }
     this.setState({ data: newData });
   };
-  handleSubmit = e => {
+  handleSubmit = (e) => {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
       if (!err) {
@@ -274,10 +274,10 @@ class PersonalModal extends Component {
       }
     });
   };
-  handleSave = async values => {
+  handleSave = async (values) => {
     const { data, idExam } = this.state;
     this.setState({
-      loading: true
+      loading: true,
     });
     var token = localStorage.getItem("token");
     let random =
@@ -287,13 +287,13 @@ class PersonalModal extends Component {
       RandomQues: random,
       idExam: idExam ? idExam : uuidv4(),
       data,
-      token
+      token,
     };
     var json = await axios({
       method: "POST",
       url: `${API}/CreateExamAdmin`,
-      data: dataSave
-    }).catch(err => {
+      data: dataSave,
+    }).catch((err) => {
       console.error(err);
     });
     if (json.status == 200) {
@@ -301,72 +301,62 @@ class PersonalModal extends Component {
       this.props.onCancel();
     }
     this.setState({
-      loading: false
+      loading: false,
     });
   };
   importExcel = () => {
     this.setState({
-      importExcel: true
+      importExcel: true,
     });
   };
-  ChangeExcel = RowObject => {
+
+  filterAnswer = (answer, arrayCorrect, correct) => {
+    return (
+      answer && {
+        ID_ANS: "",
+        ANS_TEXT: answer,
+        CORRECT:
+          arrayCorrect.filter((ele) => ele == correct).length > 0
+            ? "true"
+            : "false",
+      }
+    );
+  };
+
+  convertAnswers = (ele, arrayCorrect) => {
+    return [
+      this.filterAnswer(ele.answer_a, arrayCorrect, "A"),
+      this.filterAnswer(ele.answer_b, arrayCorrect, "B"),
+      this.filterAnswer(ele.answer_c, arrayCorrect, "C"),
+      this.filterAnswer(ele.answer_d, arrayCorrect, "D"),
+      this.filterAnswer(ele.answer_e, arrayCorrect, "E"),
+    ];
+  };
+
+  ChangeExcel = (RowObject) => {
     var data = [];
-    RowObject.forEach(ele => {
-      data.push({
-        ID_QUE: "",
-        QUE_TEXT: ele.questions,
-        Answer: [
-          ele.answer_a && {
-            ID_ANS: "",
-            ANS_TEXT: ele.answer_a ? ele.answer_a : "",
-            CORRECT: ele.answer_a
-              ? ele.da.toUpperCase() == "A"
-                ? "true"
-                : "false"
-              : ""
-          },
-          ele.answer_b && {
-            ID_ANS: "",
-            ANS_TEXT: ele.answer_b ? ele.answer_b : "",
-            CORRECT: ele.answer_b
-              ? ele.da.toUpperCase() == "B"
-                ? "true"
-                : "false"
-              : ""
-          },
-          ele.answer_c && {
-            ID_ANS: "",
-            ANS_TEXT: ele.answer_c ? ele.answer_c : "",
-            CORRECT: ele.answer_c
-              ? ele.da.toUpperCase() == "C"
-                ? "true"
-                : "false"
-              : ""
-          },
-          ele.answer_d && {
-            ID_ANS: "",
-            ANS_TEXT: ele.answer_d ? ele.answer_d : "",
-            CORRECT: ele.answer_d
-              ? ele.da.toUpperCase() == "D"
-                ? "true"
-                : "false"
-              : ""
-          },
-          ele.answer_e && {
-            ID_ANS: "",
-            ANS_TEXT: ele.answer_e ? ele.answer_e : "",
-            CORRECT: ele.answer_e
-              ? ele.da.toUpperCase() == "E"
-                ? "true"
-                : "false"
-              : ""
-          }
-        ]
-      });
-    });
+    RowObject.forEach((ele) => {
+      let ans = ele.da.toUpperCase().split(",");
+      if (ans.length > 1) {
+        data.push({
+          ID_QUE: "",
+          type: "2",
+          QUE_TEXT: ele.questions,
+          Answer: this.convertAnswers(ele, ans),
+        });
+      } else {
+        data.push({
+          ID_QUE: "",
+          type: "",
+          QUE_TEXT: ele.questions,
+          Answer: this.convertAnswers(ele, ans)
+        });
+      } 
+    }); 
+
     return data;
   };
-  onChangeReadFile = e => {
+  onChangeReadFile = (e) => {
     var file = e.target.files[0];
     if (file.name.split(".")[1] == "xlsx") {
       var reader = new window.FileReader();
@@ -378,10 +368,18 @@ class PersonalModal extends Component {
           wb.Sheets["Sheet1"]
         );
         var dataExcel = this.ChangeExcel(RowObject);
+        console.log(dataExcel);
+        
         const dataMap = dataExcel.map((item, index) => {
           let Answers = [];
-          item.Answer.forEach(ans => {
-            if (typeof ans !== "undefined") Answers.push(ans);
+          item.Answer.forEach((ans) => {
+            if (ans && typeof ans !== "undefined") {
+              let obj = {
+                ...ans,
+                key: uuidv4(),
+              };
+              Answers.push(obj);
+            }
           });
           return {
             stt: index + 1,
@@ -389,13 +387,14 @@ class PersonalModal extends Component {
             ID_QUE: item.ID_QUE,
             QUE_TEXT: item.QUE_TEXT,
             type: item.type ? item.type : "",
-            Answer: Answers
+            Answer: Answers,
           };
         });
+        console.log(dataMap);
 
         this.setState({
           data: dataMap,
-          importExcel: false
+          importExcel: false,
         });
       };
     }
@@ -407,40 +406,40 @@ class PersonalModal extends Component {
         title: "Câu hỏi",
         key: "QUE_TEXT",
         width: "60%",
-        render: record => (
+        render: (record) => (
           <Input
             placeholder="Câu hỏi"
             defaultValue={record.QUE_TEXT}
-            onChange={event => this.onChangeQue(event.target.value, record)}
+            onChange={(event) => this.onChangeQue(event.target.value, record)}
           />
-        )
+        ),
       },
       {
         title: "Loại câu hỏi",
         key: "type",
-        render: record => (
+        render: (record) => (
           <Select
             defaultValue={record.type}
-            onChange={event => this.onChangeType(event, record)}
+            onChange={(event) => this.onChangeType(event, record)}
             style={{ width: 120 }}
           >
             <Option value="">Một đáp án</Option>
             <Option value={"2"}>Nhiều đáp án</Option>
           </Select>
-        )
+        ),
       },
       {
         title: "Action",
         key: "operation",
-        render: record => (
+        render: (record) => (
           <Icon
             type="delete"
             theme="twoTone"
             twoToneColor="red"
             onClick={() => this.onDeleteQue(record)}
           />
-        )
-      }
+        ),
+      },
     ];
     const { data, loading, subjects, importExcel } = this.state;
     const { getFieldDecorator } = this.props.form;
@@ -473,9 +472,9 @@ class PersonalModal extends Component {
                       rules: [
                         {
                           required: true,
-                          message: "Vui lòng nhập thông tin!"
-                        }
-                      ]
+                          message: "Vui lòng nhập thông tin!",
+                        },
+                      ],
                     })(<Input />)}
                   </Form.Item>
                 </Col>
@@ -485,9 +484,9 @@ class PersonalModal extends Component {
                       rules: [
                         {
                           required: true,
-                          message: "Vui lòng nhập thông tin!"
-                        }
-                      ]
+                          message: "Vui lòng nhập thông tin!",
+                        },
+                      ],
                     })(
                       <Select placeholder="Chọn môn học">
                         {subjects &&
@@ -506,9 +505,9 @@ class PersonalModal extends Component {
                       rules: [
                         {
                           required: true,
-                          message: "Vui lòng nhập thông tin!"
-                        }
-                      ]
+                          message: "Vui lòng nhập thông tin!",
+                        },
+                      ],
                     })(<Input type="number" />)}
                   </Form.Item>
                 </Col>
@@ -518,9 +517,9 @@ class PersonalModal extends Component {
                       rules: [
                         {
                           required: true,
-                          message: "Vui lòng nhập thông tin!"
-                        }
-                      ]
+                          message: "Vui lòng nhập thông tin!",
+                        },
+                      ],
                     })(<Input type="number" />)}
                   </Form.Item>
                 </Col>
@@ -530,9 +529,9 @@ class PersonalModal extends Component {
                       rules: [
                         {
                           required: true,
-                          message: "Vui lòng nhập thông tin!"
-                        }
-                      ]
+                          message: "Vui lòng nhập thông tin!",
+                        },
+                      ],
                     })(
                       <Select placeholder="Chọn trạng thái">
                         <Option value={"1"}>Đề miễn phí</Option>
@@ -564,7 +563,7 @@ class PersonalModal extends Component {
             <Table
               className="components-table-demo-nested"
               columns={columns}
-              expandedRowRender={record => (
+              expandedRowRender={(record) => (
                 <ExpandedRowRender
                   record={record}
                   createRowAnswer={() => this.createRowAnswer(record)}
@@ -586,8 +585,8 @@ class PersonalModal extends Component {
 const WrappedPersonalModal = Form.create({ name: "normal_personal" })(
   PersonalModal
 );
-export default connect(state => {
+export default connect((state) => {
   return {
-    mainState: state.updateStateData
+    mainState: state.updateStateData,
   };
 })(WrappedPersonalModal);

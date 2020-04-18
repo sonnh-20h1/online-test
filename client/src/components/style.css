@@ -528,3 +528,18 @@ h3.list__title:hover {
   max-width: 300px;
   margin: auto;
 }
+.bf-container .public-DraftEditor-content {
+  word-wrap: unset;
+  word-break: unset;
+}
+.grid-answers-review {
+  display: grid;
+  grid-template-columns: auto auto 1fr;
+  grid-column-gap: 15px;
+  padding: 5px 0;
+}
+.header-exams-flex{
+  padding-bottom: 15px;
+  display: flex;
+  justify-content: space-between;
+}

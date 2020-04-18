@@ -13,7 +13,8 @@ class Result extends Component {
       TimeEnd: 0,
       Score: 0,
       NumQuestion: 0,
-      subId: ""
+      subId: "",
+      status: 0,
     };
   }
   componentDidMount() {
@@ -23,12 +24,12 @@ class Result extends Component {
     this.GetResultRequest(id);
   }
 
-  GetResultRequest = id => {
+  GetResultRequest = (id) => {
     return fetch(`${API}/GetResultRequest/${id}`, {
-      method: "GET"
+      method: "GET",
     })
-      .then(res => res.json())
-      .then(data => {
+      .then((res) => res.json())
+      .then((data) => {
         this.setState({
           idexam: data[0].IDEXAM,
           idux: data[0].ID_UX,
@@ -37,10 +38,11 @@ class Result extends Component {
           TimeEnd: data[0].TIMEEND,
           Score: data[0].SCORE,
           NumQuestion: data[0].RANDOMEXAM,
-          subId: data[0].SUBID
+          subId: data[0].SUBID,
+          status: data[0].status,
         });
       })
-      .catch(err => {
+      .catch((err) => {
         console.error(err);
       });
   };
@@ -54,7 +56,8 @@ class Result extends Component {
       NumQuestion,
       idexam,
       idux,
-      subId
+      subId,
+      status,
     } = this.state;
     return (
       <div className="result-exam online-test">
@@ -107,7 +110,7 @@ class Result extends Component {
                             className="btn primary"
                             to={{
                               pathname: "review-test",
-                              search: `?id=${idexam}&idux=${idux}`
+                              search: `?id=${idexam}&idux=${idux}`,
                             }}
                           >
                             Next
@@ -121,7 +124,11 @@ class Result extends Component {
             </div>
             <div className="col-md-12">
               <div className="btn_complete">
-                <Link to={`/chu-de-trac-nghiem/${subId}`}>Hoàn thành</Link>
+                {status == "3" ? (
+                  <Link to={`/personal-exams`}>Hoàn thành</Link>
+                ) : (
+                  <Link to={`/chu-de-trac-nghiem/${subId}`}>Hoàn thành</Link>
+                )}
               </div>
             </div>
           </div>

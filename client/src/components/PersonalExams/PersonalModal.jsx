@@ -5,7 +5,7 @@ import {
   Button,
   Icon,
   Input,
-  Select, 
+  Select,
   Form,
   Row,
   Col,
@@ -14,7 +14,9 @@ import {
 import { API } from "./../../API/API";
 import axios from "axios";
 import { connect } from "react-redux";
-import { v4 as uuidv4 } from "uuid"; 
+import * as XLSX from "xlsx";
+import { v4 as uuidv4 } from "uuid";
+import { Link } from "react-router-dom";
 import ExpandedRowRender from "./ExpandedRowRender";
 const { Option } = Select;
 
@@ -25,6 +27,7 @@ class PersonalModal extends Component {
     idExam: "",
     status: "3",
     subjects: [],
+    importExcel: false,
   };
   componentDidMount() {
     const { edit, exam_id } = this.props;
@@ -268,6 +271,53 @@ class PersonalModal extends Component {
       }
     });
   };
+
+  filterAnswer = (answer, arrayCorrect, correct) => {
+    return (
+      answer && {
+        ID_ANS: "",
+        ANS_TEXT: answer,
+        CORRECT:
+          arrayCorrect.filter((ele) => ele == correct).length > 0
+            ? "true"
+            : "false",
+      }
+    );
+  };
+
+  convertAnswers = (ele, arrayCorrect) => {
+    return [
+      this.filterAnswer(ele.answer_a, arrayCorrect, "A"),
+      this.filterAnswer(ele.answer_b, arrayCorrect, "B"),
+      this.filterAnswer(ele.answer_c, arrayCorrect, "C"),
+      this.filterAnswer(ele.answer_d, arrayCorrect, "D"),
+      this.filterAnswer(ele.answer_e, arrayCorrect, "E"),
+    ];
+  };
+
+  ChangeExcel = (RowObject) => {
+    var data = [];
+    RowObject.forEach((ele) => {
+      let ans = ele.da.toUpperCase().split(",");
+      if (ans.length > 1) {
+        data.push({
+          ID_QUE: "",
+          type: "2",
+          QUE_TEXT: ele.questions,
+          Answer: this.convertAnswers(ele, ans),
+        });
+      } else {
+        data.push({
+          ID_QUE: "",
+          type: "",
+          QUE_TEXT: ele.questions,
+          Answer: this.convertAnswers(ele, ans),
+        });
+      }
+    });
+
+    return data;
+  };
   handleSave = async (values) => {
     const { data, status, idExam } = this.state;
     var token = localStorage.getItem("token");
@@ -290,7 +340,55 @@ class PersonalModal extends Component {
     });
     if (json.status == 200) {
       this.openNotification();
-      this.props.onCancel()
+      this.props.onCancel();
+    }
+  };
+  importExcel = () => {
+    this.setState({
+      importExcel: true,
+    });
+  };
+  onChangeReadFile = (e) => {
+    var file = e.target.files[0];
+    if (file.name.split(".")[1] == "xlsx") {
+      var reader = new window.FileReader();
+      reader.readAsArrayBuffer(file);
+      reader.onload = () => {
+        var data = new Uint8Array(reader.result);
+        var wb = XLSX.read(data, { type: "array" });
+        var RowObject = XLSX.utils.sheet_to_row_object_array(
+          wb.Sheets["Sheet1"]
+        );
+        var dataExcel = this.ChangeExcel(RowObject);
+        console.log(dataExcel);
+
+        const dataMap = dataExcel.map((item, index) => {
+          let Answers = [];
+          item.Answer.forEach((ans) => {
+            if (ans && typeof ans !== "undefined") {
+              let obj = {
+                ...ans,
+                key: uuidv4(),
+              };
+              Answers.push(obj);
+            }
+          });
+          return {
+            stt: index + 1,
+            key: index,
+            ID_QUE: item.ID_QUE,
+            QUE_TEXT: item.QUE_TEXT,
+            type: item.type ? item.type : "",
+            Answer: Answers,
+          };
+        });
+        console.log(dataMap);
+
+        this.setState({
+          data: dataMap,
+          importExcel: false,
+        });
+      };
     }
   };
   render() {
@@ -335,7 +433,7 @@ class PersonalModal extends Component {
         ),
       },
     ];
-    const { data, loading, subjects } = this.state;
+    const { data, loading, subjects, importExcel } = this.state;
     const { getFieldDecorator } = this.props.form;
     return (
       <div>
@@ -416,25 +514,48 @@ class PersonalModal extends Component {
             </Form>
           </div>
           <div className="text-align-right">
+            <Button type="primary" style={{ marginRight: "20px" }}>
+              <a href="/api/public/upload/2020/04/18/1587198747_test.xlsx">
+                <Icon type="download" /> Tải Đề thi mẫu
+              </a>
+            </Button>
+            <Button
+              type="primary"
+              style={{ marginRight: "20px" }}
+              onClick={this.importExcel}
+            >
+              <Icon type="import" /> Import excel
+            </Button>
             <Button type="primary" onClick={this.createRowQuestion}>
               <Icon type="plus" /> Thêm câu hỏi
             </Button>
           </div>
-          <Table
-            className="components-table-demo-nested"
-            columns={columns}
-            expandedRowRender={(record) => (
-              <ExpandedRowRender
-                record={record}
-                createRowAnswer={() => this.createRowAnswer(record)}
-                onChangeText={this.onChangeText}
-                onDeleteAnswer={this.onDeleteAnswer}
-                onChangeType={this.onChangeTypeAnswers}
+          {importExcel ? (
+            <div className="form-group mag15">
+              <input
+                type="file"
+                className="form-control"
+                name="readfile"
+                onChange={this.onChangeReadFile}
               />
-            )}
-            loading={loading}
-            dataSource={data}
-          />
+            </div>
+          ) : (
+            <Table
+              className="components-table-demo-nested"
+              columns={columns}
+              expandedRowRender={(record) => (
+                <ExpandedRowRender
+                  record={record}
+                  createRowAnswer={() => this.createRowAnswer(record)}
+                  onChangeText={this.onChangeText}
+                  onDeleteAnswer={this.onDeleteAnswer}
+                  onChangeType={this.onChangeTypeAnswers}
+                />
+              )}
+              loading={loading}
+              dataSource={data}
+            />
+          )}
         </Modal>
       </div>
     );

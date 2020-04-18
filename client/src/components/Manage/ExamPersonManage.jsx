@@ -1,13 +1,16 @@
 import React, { Component } from "react";
 import { API } from "./../../API/API";
 import axios from "axios";
-import { Table, Icon } from "antd";
+import { Table, Icon, Divider, Modal } from "antd";
 import { Breadcrumb } from "./BaseManage";
-import PersonalModal from './components/PersonModal'
+import PersonalModal from "./components/PersonModal";
+import ExportExcel from "./components/ExportExcel";
 class PersonManage extends Component {
   state = {
     data: [],
     open: false,
+    exportEx: false,
+    dataExport: [],
     record: "",
     editorState: null,
   };
@@ -37,6 +40,39 @@ class PersonManage extends Component {
   onView = (record) => {
     this.setState({ record, open: true });
   };
+  exportExcel = async (record) => {
+    let data = { id: record.IDEXAM };
+    var json = await axios({
+      method: "POST",
+      url: `${API}/SelectExamId`,
+      data: data,
+    }).catch((err) => {
+      console.error(err);
+    });
+    const { questions } = json.data[0];
+    const convertQue = questions.map((que) => {
+      let result = [];
+      let answer = que.Answer.flatMap((item, index) => {
+        if (item.CORRECT == "true") {
+          if(index == 0) result.push("A");
+          if(index == 1) result.push("B");
+          if(index == 2) result.push("C");
+          if(index == 3) result.push("D");
+          if(index == 4) result.push("E");
+          if(index == 5) result.push("F");
+          if(index == 6) result.push("G");
+          
+        };
+        return item.ANS_TEXT;
+      });
+      return {
+        question: que.QUE_TEXT,
+        result: result.join(","),
+        answer,
+      };
+    });
+    this.setState({ dataExport: convertQue, exportEx: true });
+  };
   render() {
     const columns = [
       {
@@ -58,11 +94,15 @@ class PersonManage extends Component {
         title: "Xem chi tiết",
         key: "status",
         render: (record) => (
-          <Icon type="eye" onClick={() => this.onView(record)} />
+          <span>
+            <Icon type="eye" onClick={() => this.onView(record)} />
+            <Divider type="vertical" />
+            <Icon type="export" onClick={() => this.exportExcel(record)} />
+          </span>
         ),
       },
     ];
-    const { data ,record ,open} = this.state;
+    const { data, record, open, exportEx, dataExport } = this.state;
     console.log(record);
 
     return (
@@ -73,6 +113,14 @@ class PersonManage extends Component {
             <Table columns={columns} dataSource={data} />
           </div>
         </div>
+
+        <Modal
+          centered
+          visible={exportEx}
+          onCancel={() => this.setState({ exportEx: false })}
+        >
+          {exportEx && <ExportExcel dataExport={dataExport} />}
+        </Modal>
         {open && (
           <PersonalModal
             open={open}

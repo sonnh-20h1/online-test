@@ -5,7 +5,7 @@ function ExpandedRowRender(props) {
   const value = Answer.filter((item) => item.CORRECT === "true").map((item) => {
     return item.ID_ANS ? item.ID_ANS : item.key;
   });
-  console.log(value);
+  console.log(props.record);
 
   return (
     <div>

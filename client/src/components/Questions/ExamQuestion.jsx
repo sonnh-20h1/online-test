@@ -296,6 +296,7 @@ class ExamQuestion extends Component {
       isNext: true,
       scroll: 0,
       dataAnswers: [],
+      Questions: [],
     };
   }
   componentDidMount() {
@@ -327,8 +328,11 @@ class ExamQuestion extends Component {
     })
       .then((json) => {
         const { status, Questions, data } = json.data;
+        console.log(Questions);
+        
         console.log("success");
         if (status == "success") {
+          this.setState({ Questions });
           this.props.dispatch(
             updateStateData({
               ...this.props.mainState,
@@ -349,14 +353,32 @@ class ExamQuestion extends Component {
   };
   Finish = (e) => {
     e.preventDefault();
+    const { dataAnswers, Questions } = this.state;
+    console.log(this.state);
+    let score = 0;
+    Questions.forEach((ele) => {
+      let ansTrue = ele.Answer.filter((ans) => ans.CORRECT == "true").length;
+      ele.Answer.forEach((ans) => {
+        let userAns = dataAnswers.filter((ua) => ans.ID_ANS == ua.idAns);
+        if (userAns.length > 0 && ans.CORRECT == "true") {
+          ansTrue = ansTrue - 1;
+        }
+        if (userAns.length > 0 && ans.CORRECT == "false") {
+          ansTrue = 1000;
+        }
+      });
+      if (ansTrue == 0) score++;
+    });
+    console.log(score);
+    
     if (window.confirm("Bạn đã chắn chắn muốn nộp bài không?")) {
       this.setState({
-        loading: true
+        loading: true,
       });
-      this.GetAnswerUserId();
+      this.GetAnswerUserId(score);
     }
   };
-  GetAnswerUserId() {
+  GetAnswerUserId(score) {
     const { dataAnswers } = this.state;
     var currentDate = new Date();
     var timeNow = currentDate.getHours() + ":" + currentDate.getMinutes();
@@ -367,6 +389,7 @@ class ExamQuestion extends Component {
       token: token,
       timeNow: timeNow,
       questions: dataAnswers,
+      score: score,
     };
     axios({
       method: "POST",
@@ -453,7 +476,7 @@ class ExamQuestion extends Component {
   render() {
     const { Exam } = this.props.mainState;
     const { loading, isNext, idux, dataAnswers } = this.state;
-
+    
     if (isNext === false) {
       return (
         <Redirect to={{ pathname: `/result-test`, search: `?id=${idux}` }} />

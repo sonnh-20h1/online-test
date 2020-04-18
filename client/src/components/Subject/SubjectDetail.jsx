@@ -154,8 +154,8 @@ const ItemExam = ({ exam, index, type }) => {
               <div className="item_left_text">
                 <h3 className="list__title">{exam.EXAMTEXT}</h3>
                 <p>
-                  Số câu: {exam.RANDOMEXAM} - chế độ:{" "}
-                  {exam.status == 1 ? "Công khai" : "Riêng tư"}
+                  Số câu: {exam.RANDOMEXAM} - Trạng thái:{" "}
+                  {exam.status == 1 ? "Đề miễn phí" : "Đề trả phí"}
                 </p>
               </div>
             </div>

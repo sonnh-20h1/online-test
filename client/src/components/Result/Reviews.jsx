@@ -44,13 +44,17 @@ class Answer extends Component {
     const { answer, UserAnswer, type } = this.props;
     const obj = UserAnswer.filter((ele) => ele.ID_ANS == answer.ID_ANS);
     return (
-      <tr>
-        <td>
-          <div className="image-check">
-            <img src={answer.CORRECT === "true" ? checkTrue : ""} alt="" />
-          </div>
-        </td>
-        <td>
+      <div
+        className="grid-answers-review"
+        style={{
+          background:
+            answer.CORRECT === "false" && obj.length > 0 ? "#f46b6b" : "",
+        }}
+      >
+        <div className="image-check">
+          <img src={answer.CORRECT === "true" ? checkTrue : ""} alt="" />
+        </div>
+        <div>
           {type == "2" ? (
             <Checkbox checked={obj.length > 0 ? true : false} />
           ) : (
@@ -63,8 +67,8 @@ class Answer extends Component {
               className="option_que radio_que"
             />
           )}
-        </td>
-        <td>
+        </div>
+        <div>
           <p
             className={
               answer.ID_ANS === UserAnswer
@@ -77,8 +81,8 @@ class Answer extends Component {
           >
             {answer.ANS_TEXT}
           </p>
-        </td>
-      </tr>
+        </div>
+      </div>
     );
   }
 }
@@ -113,11 +117,7 @@ class ItemQuestion extends Component {
         <div>
           <p>Câu trả lời của bạn là:</p>
         </div>
-        <div className="answer-q">
-          <table>
-            <tbody>{this.ListAnswer(question)}</tbody>
-          </table>
-        </div>
+        <div className="answer-q">{this.ListAnswer(question)}</div>
       </div>
     );
   }
