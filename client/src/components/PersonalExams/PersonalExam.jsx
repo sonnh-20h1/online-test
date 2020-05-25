@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Container, Breadcrumb, BreadcrumbItem } from "react-bootstrap";
-import { Button, Table, Icon, Divider, Input } from "antd";
+import { Button, Table, Icon, Divider, Input, notification } from "antd";
 import axios from "axios";
 import { connect } from "react-redux";
 import { updateStateData } from "./../../actions/index";
@@ -46,6 +46,22 @@ class PersonalExam extends Component {
     this.statusPerson(data);
     this.getSubject();
   }
+
+  openNotification = (type) => {
+    if (type == true) {
+      notification.info({
+        message: `Thông báo`,
+        description: "Bạn đã nhập mã thành công!",
+        placement: "topRight",
+      });
+    } else {
+      notification.error({
+        message: `Thông báo`,
+        description: "Mã xác nhận đã hết hạn hoặc chưa chính xác!",
+        placement: "topRight",
+      });
+    }
+  };
 
   statusPerson = async (data) => {
     var json = await axios({
@@ -149,11 +165,23 @@ class PersonalExam extends Component {
     });
     if (json.data) {
       this.statusPerson({ token });
+      this.openNotification(true);
     } else {
-      alert("Mã xác nhận không đúng!");
+      this.openNotification(false);
     }
   };
   render() {
+    const {
+      permission,
+      data,
+      open,
+      edit,
+      exam_id,
+      text,
+      useDay,
+      status,
+      subjects,
+    } = this.state;
     const columns = [
       {
         title: "STT",
@@ -186,11 +214,13 @@ class PersonalExam extends Component {
         key: "action",
         render: (record) => (
           <span>
-            <Link to={`/detail-exam/${record.id}`}>
-              <Button type="primary" shape="round">
-                Thi <Icon type="arrow-right" />
-              </Button>
-            </Link>
+            {useDay > 0 && (
+              <Link to={`/detail-exam/${record.id}`}>
+                <Button type="primary" shape="round">
+                  Thi <Icon type="arrow-right" />
+                </Button>
+              </Link>
+            )}
             <Divider type="vertical" />
             <Icon
               type="edit"
@@ -204,17 +234,7 @@ class PersonalExam extends Component {
         ),
       },
     ];
-    const {
-      permission,
-      data,
-      open,
-      edit,
-      exam_id,
-      text,
-      useDay,
-      status,
-      subjects,
-    } = this.state;
+
     return (
       <section className="PersonalExam">
         <SecBreadcrumb />
@@ -259,14 +279,12 @@ class PersonalExam extends Component {
                       </Button>
                     </div>
                     <div>
-                      {useDay > 0 && (
-                        <Button
-                          type="primary"
-                          onClick={() => this.openModel(false, "")}
-                        >
-                          <Icon type="plus" /> Thêm đề thi
-                        </Button>
-                      )}
+                      <Button
+                        type="primary"
+                        onClick={() => this.openModel(false, "")}
+                      >
+                        <Icon type="plus" /> Thêm đề thi
+                      </Button>
                     </div>
                   </div>
                   <div style={{ paddingTop: "20px" }}>

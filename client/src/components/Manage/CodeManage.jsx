@@ -39,10 +39,14 @@ class CodeManage extends Component {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
       if (!err) {
+        let data = {
+          ...values,
+          createDate: Date.now(),
+        };
         axios({
           method: "POST",
           url: `${API}/personal/createCode`,
-          data: values,
+          data: data,
         })
           .then((json) => {
             this.setState({
@@ -74,6 +78,13 @@ class CodeManage extends Component {
     this.setState({ open: true });
   };
 
+  timeConverter = (time) => {
+    var a = new Date(Number(time));
+
+    return `${a.getDate()}-${a.getMonth() +
+      1}-${a.getFullYear()} ${a.getHours()}:${a.getMinutes()}`;
+  };
+
   render() {
     const columns = [
       {
@@ -87,9 +98,21 @@ class CodeManage extends Component {
         key: "code",
       },
       {
+        title: "Hạn sử dụng",
+        dataIndex: "expiryDay",
+        key: "expiryDay",
+      },
+      {
         title: "Ngày dùng",
         dataIndex: "useDay",
         key: "useDay",
+      },
+      {
+        title: "Ngày tạo",
+        key: "create_date",
+        render: (record) => (
+          <span>{this.timeConverter(record.create_date)}</span>
+        ),
       },
       {
         title: "Loại mã",
@@ -141,11 +164,16 @@ class CodeManage extends Component {
             </Button>
           }
         >
-          <Form className="login-form">
+          <Form>
             <Form.Item label="Mã">
               {getFieldDecorator("code", {
                 rules: [{ required: true, message: "Nhập mã!" }],
               })(<Input placeholder="code" />)}
+            </Form.Item>
+            <Form.Item label="Hạn sử dụng">
+              {getFieldDecorator("expiryDay", {
+                rules: [{ required: true, message: "Vui lòng nhập đủ" }],
+              })(<Input type="number" />)}
             </Form.Item>
             <Form.Item label="Ngày sử dụng">
               {getFieldDecorator("useDay", {

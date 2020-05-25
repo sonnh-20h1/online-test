@@ -20,11 +20,12 @@ class PersonManage extends Component {
     })
       .then((json) => {
         const data = json.data.map((item, index) => {
+          let dayNow = Math.floor((Date.now() - item.create_time) / 1000 / 60 / 60 / 24);
+          let day = 0;
+          if (item.useDay - dayNow > 0) day = item.useDay - dayNow;
           return {
             ...item,
-            usedDay: Math.floor(
-              (Date.now() - item.create_time) / 1000 / 60 / 60 / 24
-            ),
+            usedDay: day,
             stt: index + 1,
           };
         });

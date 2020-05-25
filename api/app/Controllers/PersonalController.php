@@ -35,10 +35,14 @@ class PersonalController extends Controller{
         $code = $request->getParam('code');
         $useDay = $request->getParam('useDay');
         $type = $request->getParam('type');
+        $expiryDay = $request->getParam('expiryDay');
+        $createDate = $request->getParam('createDate');
         $this->database->insert($this->tableCode,[
             'code' => $code,
             'useDay' => $useDay,
+            'expiryDay' => $expiryDay,
             'type' => $type,
+            'create_date' => $createDate ,
             'status' => 1,
         ]);
         echo json_encode(true);
@@ -75,26 +79,33 @@ class PersonalController extends Controller{
         $rlCode = $this->database->select($this->tableCode,'*',['code' => $code]);
         $rlUser  = $this->database->select($this->tableNameAccountGoogle,'*',['accessToken'=>$token]);
         $rlPerson = $this->database->select($this->tablePerson,'*',['user_id'=> $rlUser[0]['id']]);
-        if($rlCode && $rlUser && empty($rlPerson)) {
-            $this->database->insert($this->tablePerson,[
-                'user_id' => $rlUser[0]['id'],
-                'email' => $rlUser[0]['email'],
-                'create_time' => $datetime,
-                'useDay' => $rlCode[0]['useDay'],
-                'status' => 1,
-            ]);
-            echo json_encode(true);
-        } else if($rlCode && $rlUser && $rlPerson) {
-            if($rlCode[0]['type'] == 2 && $rlCode[0]['status'] == 1){
-                $this->database->update($this->tablePerson,[
+
+        $useDay = floor(($datetime - $rlCode[0]['create_date'])/ 1000 / 60 / 60 / 24);
+        $deadline = $rlCode[0]['expiryDay'] - $useDay; 
+        if($deadline > 0){
+            if($rlCode && $rlUser && empty($rlPerson)) {
+                $this->database->insert($this->tablePerson,[
+                    'user_id' => $rlUser[0]['id'],
+                    'email' => $rlUser[0]['email'],
                     'create_time' => $datetime,
                     'useDay' => $rlCode[0]['useDay'],
-                    'status' => 2,
-                ],['user_id' => $rlUser[0]['id']]);
-                $this->database->update($this->tableCode,[
-                    'status' => 2
-                ],['id' => $rlCode[0]['id']]);
+                    'status' => $rlCode[0]['type'],
+                ]);
                 echo json_encode(true);
+            } else if($rlCode && $rlUser && $rlPerson) {
+                if($rlCode[0]['type'] == 2 && $rlCode[0]['status'] == 1){
+                    $this->database->update($this->tablePerson,[
+                        'create_time' => $datetime,
+                        'useDay' => $rlCode[0]['useDay'],
+                        'status' => 2,
+                    ],['user_id' => $rlUser[0]['id']]);
+                    $this->database->update($this->tableCode,[
+                        'status' => 2
+                    ],['id' => $rlCode[0]['id']]);
+                    echo json_encode(true);
+                }else{
+                    echo json_encode(false);
+                }
             }else{
                 echo json_encode(false);
             }
