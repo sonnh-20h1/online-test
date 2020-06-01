@@ -7,6 +7,7 @@ class PersonalController extends Controller{
     private $tableName = 'exam';
     private $tablePerson = 'ol_personal_exams';
     private $tableCode = 'ol_code_exams';
+    private $tableCodeUsers = 'ol_code_users';
     private $tableNameAccountGoogle = 'ol_account_google';
 
     public function getExamByUserId($request,$response){
@@ -79,37 +80,52 @@ class PersonalController extends Controller{
         $rlCode = $this->database->select($this->tableCode,'*',['code' => $code]);
         $rlUser  = $this->database->select($this->tableNameAccountGoogle,'*',['accessToken'=>$token]);
         $rlPerson = $this->database->select($this->tablePerson,'*',['user_id'=> $rlUser[0]['id']]);
+        $codeUsers = $this->database->select($this->tableCodeUsers,'*',[
+                'user_id'=> $rlUser[0]['id'],
+                'code' => $code
+            ]
+        );
 
-        $useDay = floor(($datetime - $rlCode[0]['create_date'])/ 1000 / 60 / 60 / 24);
-        $deadline = $rlCode[0]['expiryDay'] - $useDay; 
-        if($deadline > 0){
-            if($rlCode && $rlUser && empty($rlPerson)) {
-                $this->database->insert($this->tablePerson,[
-                    'user_id' => $rlUser[0]['id'],
-                    'email' => $rlUser[0]['email'],
-                    'create_time' => $datetime,
-                    'useDay' => $rlCode[0]['useDay'],
-                    'status' => $rlCode[0]['type'],
-                ]);
-                echo json_encode(true);
-            } else if($rlCode && $rlUser && $rlPerson) {
-                if($rlCode[0]['type'] == 2 && $rlCode[0]['status'] == 1){
-                    $this->database->update($this->tablePerson,[
-                        'create_time' => $datetime,
-                        'useDay' => $rlCode[0]['useDay'],
-                        'status' => 2,
-                    ],['user_id' => $rlUser[0]['id']]);
-                    $this->database->update($this->tableCode,[
-                        'status' => 2
-                    ],['id' => $rlCode[0]['id']]);
-                    echo json_encode(true);
+        try{
+            if(!empty($rlCode)){
+                $useDay = floor(($datetime - $rlCode[0]['create_date'])/ 1000 / 60 / 60 / 24);
+                $deadline = $rlCode[0]['expiryDay'] - $useDay; 
+                if($deadline && $deadline > 0){
+                    if($rlCode && $rlUser && empty($rlPerson) && empty($codeUsers)) {
+                        $this->database->insert($this->tablePerson,[
+                            'user_id' => $rlUser[0]['id'],
+                            'email' => $rlUser[0]['email'],
+                            'create_time' => $datetime,
+                            'useDay' => $rlCode[0]['useDay'],
+                            'status' => $rlCode[0]['type'],
+                        ]);
+                        $this->database->insert($this->tableCodeUsers,[
+                            'user_id' => $rlUser[0]['id'],
+                            'code' => $code
+                        ]);
+                        echo json_encode(true);
+                    } else if($rlCode && $rlUser && $rlPerson && empty($codeUsers)) {
+                        $this->database->update($this->tablePerson,[
+                            'create_time' => $datetime,
+                            'useDay' => $rlCode[0]['useDay'],
+                            'status' => 2,
+                        ],['user_id' => $rlUser[0]['id']]);
+                        $this->database->update($this->tableCode,[
+                            'status' => 2
+                        ],['id' => $rlCode[0]['id']]);
+                        $this->database->insert($this->tableCodeUsers,[
+                            'user_id' => $rlUser[0]['id'],
+                            'code' => $code
+                        ]);
+                        echo json_encode(true);
+                    }else{
+                        echo json_encode(false);
+                    }
                 }else{
                     echo json_encode(false);
                 }
-            }else{
-                echo json_encode(false);
             }
-        }else{
+        }catch (\Exception $e) {
             echo json_encode(false);
         }
     }

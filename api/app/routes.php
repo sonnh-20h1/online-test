@@ -50,7 +50,6 @@ $app->post('/UpdateExamId','App\Controllers\ImportExamController:UpdateExamId');
 $app->post('/UpdateQuestionId','App\Controllers\ImportExamController:UpdateQuestionId');
 $app->post('/ShowExams','App\Controllers\ImportExamController:ShowExams');
 $app->post('/SelectExamId','App\Controllers\ImportExamController:SelectExamId');
-$app->post('/DeleteExamId','App\Controllers\ImportExamController:DeleteExamId');
 $app->post('/RandomTestExam','App\Controllers\ImportExamController:RandomTestExam');
 
 //Account  
@@ -141,3 +140,4 @@ $app->group('/personal',function() use($app){
     $app->post('/statusPerson','App\Controllers\PersonalController:statusPerson');
     $app->post('/CreateExamPerson','App\Controllers\CreateExamController:CreateExamPerson');
 });
+$app->post('/DeleteExamId','App\Controllers\CreateExamController:DeleteExamId');

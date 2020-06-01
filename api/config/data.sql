@@ -32,3 +32,9 @@ CREATE TABLE ol_code_exams(
     status INT(5) /*2- đã được sử dụnng*/
 );
 
+CREATE TABLE ol_code_users(
+	id INT(11) PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    user_id VARCHAR(200),
+    code VARCHAR(200)
+);
+

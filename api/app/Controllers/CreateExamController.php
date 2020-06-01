@@ -103,6 +103,11 @@ class CreateExamController extends Controller{
 
         }
     }
+    public function DeleteExamId($request,$response){
+        $id = $request->getParam('id');
+        $this->DeleteQuetionExam($id);
+        $this->database->delete('exam',['IDEXAM' => $id]);
+    }
     private function DeleteQuetionExam($idExam){
         $result = $this->database->select('detail_exam','*',['IDEXAM' => $idExam]);
         if(!empty($result)){
