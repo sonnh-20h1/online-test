@@ -1,21 +1,11 @@
 import React, { Component } from "react";
-import { connect } from "react-redux"; 
+import { connect } from "react-redux";
 import * as XLSX from "xlsx";
 import axios from "axios";
 import { updateStateData } from "./../../actions/index";
 import { API } from "./../../API/API";
-import {
-  Breadcrumb, 
-  ContentManage,
-  Loading, 
-} from "./BaseManage";
-import { 
-  Table,
-  Button,
-  Icon, 
-  Select,
-  Divider, 
-} from "antd";
+import { Breadcrumb, ContentManage, Loading } from "./BaseManage";
+import { Table, Button, Icon, Select, Divider } from "antd";
 
 import PersonalModal from "./createExams/PersonalModal";
 const { Option } = Select;
@@ -61,17 +51,21 @@ class ExamManage extends Component {
       url: `${API}/ShowExams`,
     })
       .then((json) => {
-        const data = json.data.map((item, index) => {
-          return {
-            stt: index + 1,
-            ...item,
-          };
+        const data = [];
+        json.data.map((item, index) => {
+          if (item.status != 3)
+            data.push({
+              stt: index + 1,
+              ...item,
+            });
         });
+        console.log(data);
+
         this.setState({ data });
         this.props.dispatch(
           updateStateData({
             ...this.props.mainState,
-            ExamManage: json.data,
+            ExamManage: data,
             pageMainNumber: 1,
           })
         );
@@ -80,7 +74,7 @@ class ExamManage extends Component {
         console.error(err);
       });
   };
- 
+
   onDeleteExam = (id) => {
     if (window.confirm("Do you want to delete this exam ?")) {
       var data = { id: id };
@@ -128,7 +122,13 @@ class ExamManage extends Component {
         title: "Trạng thái",
         key: "status",
         render: (record) => (
-          <span>{record.status == "1" ? "Miễn phí" : "Trả phí"}</span>
+          <span>
+            {record.status == "1"
+              ? "Miễn phí"
+              : record.status == "4"
+                ? "VIP"
+                : "Trả phí"}
+          </span>
         ),
       },
       {
@@ -138,7 +138,10 @@ class ExamManage extends Component {
           <span>
             <Icon type="edit" onClick={() => this.onEditExam(record.IDEXAM)} />
             <Divider type="vertical" />
-            <Icon type="delete" onClick={() => this.onDeleteExam(record.IDEXAM)} />
+            <Icon
+              type="delete"
+              onClick={() => this.onDeleteExam(record.IDEXAM)}
+            />
           </span>
         ),
       },
@@ -172,6 +175,7 @@ class ExamManage extends Component {
                       </Option>
                     ))}
                 </Select>
+                <div>Tổng số đề: {data.length}</div>
                 <Button
                   type="primary"
                   onClick={() => {

@@ -51,9 +51,17 @@ class ListSubject extends Component {
             <React.Fragment>
               <Col md={8}>
                 <Row className="list__subject">
-                  {mainState.ListSubject.data ? mainState.ListSubject.data.map((subject, index) => {
-                    return <ItemSubject key={index} SubName={subject.SUBTEXT} id={subject.SUBID} />
-                  }) : ""}
+                  {mainState.ListSubject.data
+                    ? mainState.ListSubject.data.map((subject, index) => {
+                        return (
+                          <ItemSubject
+                            key={index}
+                            SubName={subject.SUBTEXT}
+                            id={subject.SUBID}
+                          />
+                        );
+                      })
+                    : ""}
                 </Row>
                 <Row style={{ textAlign: "center" }}>
                   <Pagination
@@ -65,7 +73,6 @@ class ListSubject extends Component {
                   />
                 </Row>
               </Col>
-
             </React.Fragment>
           )}
         </SubjectContext.Consumer>
@@ -93,8 +100,8 @@ class ItemSubject extends Component {
 }
 class Subject extends Component {
   state = {
-    search: ""
-  }
+    search: "",
+  };
   componentDidMount() {
     this.getSubject();
   }
@@ -105,7 +112,7 @@ class Subject extends Component {
     var json = await axios({
       method: "GET",
       url: `${API}/getSubject?${search}&${pageNumber}`,
-    }).catch(err => {
+    }).catch((err) => {
       console.error(err);
     });
     if (json) {
@@ -117,13 +124,13 @@ class Subject extends Component {
             page,
             CountPerPage,
             pageSize,
-            data
-          }
+            data,
+          },
         })
       );
     }
-  }
-  onSearch = e => {
+  };
+  onSearch = (e) => {
     e.preventDefault();
     const data = new FormData(e.target);
     var search = data.get("search");
@@ -132,17 +139,17 @@ class Subject extends Component {
         ...this.props.mainState,
         ListSubject: {
           ...this.props.mainState.ListSubject,
-          search
-        }
+          search,
+        },
       })
     );
 
     this.getSubject(search);
-  }
+  };
   handlePageChange = (pageNumber) => {
     const { search } = this.props.mainState.ListSubject;
     this.getSubject(search, pageNumber);
-  }
+  };
   render() {
     return (
       <div className="vk-content" data-layout="full-height">
@@ -151,7 +158,7 @@ class Subject extends Component {
             dispatch: this.props.dispatch,
             mainState: this.props.mainState,
             handlePageChange: this.handlePageChange,
-            onSearch: this.onSearch
+            onSearch: this.onSearch,
           }}
         >
           <Container>
@@ -166,8 +173,8 @@ class Subject extends Component {
   }
 }
 
-export default connect(state => {
+export default connect((state) => {
   return {
-    mainState: state.updateStateData
+    mainState: state.updateStateData,
   };
 })(Subject);

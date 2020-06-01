@@ -176,7 +176,7 @@ export const ItemAnswerCheckBox = ({ Answer }) => {
           <React.Fragment>
             {Answer &&
               Answer.map((item, index) => (
-                <div key={index} style={{ display: "flex" }}>
+                <div key={index} style={{ display: "flex", padding: "5px"}}>
                   <Checkbox
                     value={item.ID_ANS}
                     onChange={(e) => onChangeQuestion(e, item, index)}
@@ -200,7 +200,7 @@ export const ItemAnswerChildren = ({ Answer }) => {
             <Radio.Group>
               {Answer &&
                 Answer.map((item, index) => (
-                  <div key={index} style={{ display: "flex" }}>
+                  <div key={index} style={{ display: "flex", padding: "5px" }}>
                     <Radio
                       value={item.ID_ANS}
                       onChange={(e) => onChangeQuestion(e, item, index)}
@@ -320,6 +320,12 @@ class ExamQuestion extends Component {
     });
   }
 
+  generateArrayAndRandomize = (array) => {
+    const data = [...array];
+    data.sort(() => Math.random() - 0.6);
+    return data;
+  };
+
   GetExamRequestId = (data) => {
     axios({
       method: "POST",
@@ -329,7 +335,15 @@ class ExamQuestion extends Component {
       .then((json) => {
         const { status, Questions, data } = json.data;
         console.log(Questions);
-        
+        let list = this.generateArrayAndRandomize(Questions);
+        list = list.map((l) => {
+          let Answer = this.generateArrayAndRandomize(l.Answer);
+          return {
+            ...l,
+            Answer: Answer,
+          };
+        });
+
         console.log("success");
         if (status == "success") {
           this.setState({ Questions });
@@ -341,7 +355,7 @@ class ExamQuestion extends Component {
                 name: data.EXAMTEXT,
                 time: data.EXTIME,
                 random: data.RANDOMEXAM,
-                List: Questions,
+                List: list,
               },
             })
           );
@@ -370,7 +384,7 @@ class ExamQuestion extends Component {
       if (ansTrue == 0) score++;
     });
     console.log(score);
-    
+
     if (window.confirm("Bạn đã chắn chắn muốn nộp bài không?")) {
       this.setState({
         loading: true,
@@ -476,7 +490,7 @@ class ExamQuestion extends Component {
   render() {
     const { Exam } = this.props.mainState;
     const { loading, isNext, idux, dataAnswers } = this.state;
-    
+
     if (isNext === false) {
       return (
         <Redirect to={{ pathname: `/result-test`, search: `?id=${idux}` }} />

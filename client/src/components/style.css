@@ -210,6 +210,7 @@ body {
   color: #fff;
   position: relative;
   overflow: hidden;
+  border-radius: 30%;
 }
 /* .item__subject:nth-child(4n+2) .item_item.green{
     background:#57b9ff;
@@ -232,6 +233,7 @@ body {
   bottom: 5px;
   border: #fff solid 1px;
   z-index: 1;
+  border-radius: 30%;
 }
 .item__subject {
   padding: 10px;
@@ -277,7 +279,6 @@ body {
 .item_left_img {
   width: 90px;
   height: 90px;
-  background-color: #e7e7e7;
 }
 .item_left_text {
   padding-left: 20px;
@@ -314,12 +315,14 @@ h3.list__title:hover {
   display: flex;
   align-items: center;
   cursor: pointer;
+  width: 100px;
 }
 .start_thi a {
   color: #fff !important;
   font-size: 16px;
-  line-height: 1.25;
-  padding: 10px 25px;
+  line-height: 1.25; 
+  justify-content: center;
+  width: 100%;
   display: grid;
   height: 100%;
   align-items: center;

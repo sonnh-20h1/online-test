@@ -95,7 +95,7 @@ class GroupController extends Controller{
             $create_on = $date->format('Y-m-d');
 
             $id = $date->format('Y-md-His');
-            $checkExam = $this->database->select('exam','*',['IDEXAM' => $id_exam, 'status' => 2]);
+            $checkExam = $this->database->select('exam','*',['IDEXAM' => $id_exam]);
             if(!empty($checkExam)){
                 $checkGroup = $this->database->select($this->tableNameSame,'*',[
                         'id_exam' => $id_exam,

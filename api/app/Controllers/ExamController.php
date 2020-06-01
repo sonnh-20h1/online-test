@@ -66,7 +66,22 @@ class ExamController extends Controller{
         $search = isset($params['search'])?$params['search']:'';
         $page = isset($params['page'])?$params['page']:1;
         $CountPerPage = 20;
-        if(!empty($id)){
+
+        $token = isset($params['token']) ? $params['token'] : '';
+        $account = $this->database->select($this->tableNameAccountGoogle,'*',['accessToken' => $token]);
+        
+        if(!empty($id) && !empty($account)){
+            $iduser = $account[0]['id'];
+            $sql = "SELECT  gu.limit, gu.doing,ge.id_exam FROM 
+                            ol_groups as g 
+                            INNER JOIN ol_groups_exam as ge ON g.id = ge.id_group
+                            INNER JOIN ol_groups_user as gu ON g.id = gu.id_group
+                            WHERE   gu.id_user = :id_user  
+                                    AND g.status = 1
+                                    AND gu.limit > gu.doing";
+
+            $permisson =$this->database->query($sql,[ ":id_user" => $iduser])->fetchAll();
+
             $count = $this->database->count('exam',[
                 "[>]subjects" => "SUBID"
             ],'*',[
@@ -88,7 +103,8 @@ class ExamController extends Controller{
                     'pageSize' => $count,
                     'page' => (int)$page,
                     'title' => $title[0],
-                    'exams' => $result
+                    'exams' => $result,
+                    'permisson' => $permisson
                 ];
                 echo json_encode($data);exit;
             }else{

@@ -42,13 +42,14 @@ class Answer extends Component {
   onChange = (e) => {};
   render() {
     const { answer, UserAnswer, type } = this.props;
-    const obj = UserAnswer.filter((ele) => ele.ID_ANS == answer.ID_ANS);
+    const obj = UserAnswer.filter((ele) => ele.ID_ANS == answer.ID_ANS); 
+    
     return (
       <div
         className="grid-answers-review"
         style={{
           background:
-            answer.CORRECT === "false" && obj.length > 0 ? "#f46b6b" : "",
+            answer.CORRECT === "false" && obj.length > 0 ? "#f46b6b" : answer.CORRECT === "true" && obj.length > 0 ? "#5dae6a":"",
         }}
       >
         <div className="image-check">

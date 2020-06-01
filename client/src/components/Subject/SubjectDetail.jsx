@@ -10,7 +10,7 @@ import {
   Card,
 } from "react-bootstrap";
 import { Link, Redirect } from "react-router-dom";
-import itemImg from "../../img/icon-3.png";
+import itemImg from "../../img/exam.svg";
 import { connect } from "react-redux";
 import { updateStateData } from "./../../actions/index";
 import axios from "axios";
@@ -149,14 +149,25 @@ const ItemExam = ({ exam, index, type }) => {
           <div className="item_grid">
             <div className="item__left grid_left">
               <div className="item_left_img">
-                <img src={itemImg} alt="" />
+                <img
+                  style={{
+                    width: "100%",
+                  }}
+                  src={itemImg}
+                  alt=""
+                />
               </div>
-              <div className="item_left_text">
-                <h3 className="list__title">{exam.EXAMTEXT}</h3>
-                <p>
-                  Số câu: {exam.RANDOMEXAM} - Trạng thái:{" "}
-                  {exam.status == 1 ? "Đề miễn phí" : "Đề trả phí"}
-                </p>
+              <div
+                className="item_left_text"
+                style={{ display: "flex", alignItems: "center" }}
+              >
+                <div>
+                  <h3 className="list__title">{exam.EXAMTEXT}</h3>
+                  <p>
+                    Số câu: {exam.RANDOMEXAM} - Trạng thái:{" "}
+                    {exam.status == 1 ? "Đề miễn phí" : "Đề trả phí"}
+                  </p>
+                </div>
               </div>
             </div>
             <div className="item__right">
@@ -166,7 +177,15 @@ const ItemExam = ({ exam, index, type }) => {
                 <span>Phút</span>
               </div>
               <div className="start_thi btn-primary">
-                <Link to={`/detail-exam/${exam.IDEXAM}`}>Vào thi</Link>
+                {exam.status == 1 ? (
+                  <Link to={`/detail-exam/${exam.IDEXAM}`}>Vào thi</Link>
+                ) : exam.permisson == 1 ? (
+                  <Link to={`/detail-exam/${exam.IDEXAM}`}>Vào thi</Link>
+                ) : (
+                  <a>
+                    <i class="fa fa-lock" style={{ fontSize: "30px" }} />
+                  </a>
+                )}
               </div>
             </div>
           </div>
@@ -207,21 +226,31 @@ class SubjectDetail extends Component {
   GetExamSubjectId = async (id, search, pageNumber) => {
     search = search ? `search=${search}` : ``;
     pageNumber = pageNumber ? `page=${pageNumber}` : ``;
+    let token = `token=${localStorage.getItem("token")}`;
 
     var json = await axios({
       method: "GET",
-      url: `${API}/getExamBySubjectId/${id}?${search}&${pageNumber}`,
+      url: `${API}/getExamBySubjectId/${id}?${token}&${search}&${pageNumber}`,
     }).catch((err) => {
       console.error(err);
     });
-    console.log(json);
     if (json) {
+      let { exams, permisson } = json.data;
+      exams = exams.map((item) => {
+        let view = permisson.filter((p) => p.id_exam == item.IDEXAM);
+        return {
+          ...item,
+          permisson: view.length > 0 ? 1 : 0,
+        };
+      });
+
       this.props.dispatch(
         updateStateData({
           ...this.props.mainState,
           ListExamBySubject: {
             ...this.props.mainState.ListExamBySubject,
             ...json.data,
+            exams: exams,
           },
         })
       );
@@ -254,7 +283,6 @@ class SubjectDetail extends Component {
     this.setState({ type: 0 });
   };
   render() {
-    console.log(this.props.mainState.ListExamBySubject);
     return (
       <section className="ol-content">
         <SubjectDetailContext.Provider
@@ -272,30 +300,40 @@ class SubjectDetail extends Component {
             <Container>
               <div className="page__wrapper">
                 <div>
-                  <Row>
-                    <Col sm="6">
-                      <Card body style={{ textAlign: "right" }}>
-                        <div
-                          className="folder-icon"
-                          onClick={() => this.handleFilter(1)}
-                        >
-                          <i class="fa fa-folder-open" />
-                          <p>Đề miễn phí</p>
-                        </div>
-                      </Card>
-                    </Col>
-                    <Col sm="6">
-                      <Card body>
-                        <div
-                          className="folder-icon"
-                          onClick={() => this.handleFilter(2)}
-                        >
-                          <i class="fa fa-folder-open" />
-                          <p>Đề trả phí</p>
-                        </div>
-                      </Card>
-                    </Col>
-                  </Row>
+                  <div
+                    style={{
+                      display: "grid",
+                      gridTemplateColumns: "auto auto auto",
+                    }}
+                  >
+                    <Card body style={{ textAlign: "right" }}>
+                      <div
+                        className="folder-icon"
+                        onClick={() => this.handleFilter(1)}
+                      >
+                        <i class="fa fa-folder-open" />
+                        <p>Đề miễn phí</p>
+                      </div>
+                    </Card>
+                    <Card body style={{ textAlign: "center" }}>
+                      <div
+                        className="folder-icon"
+                        onClick={() => this.handleFilter(2)}
+                      >
+                        <i class="fa fa-folder-open" />
+                        <p>Đề trả phí</p>
+                      </div>
+                    </Card>
+                    <Card body>
+                      <div
+                        className="folder-icon"
+                        onClick={() => this.handleFilter(4)}
+                      >
+                        <i class="fa fa-folder-open" />
+                        <p>Đề VIP</p>
+                      </div>
+                    </Card>
+                  </div>
                 </div>
               </div>
             </Container>

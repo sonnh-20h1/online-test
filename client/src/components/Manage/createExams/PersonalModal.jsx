@@ -536,6 +536,7 @@ class PersonalModal extends Component {
                       <Select placeholder="Chọn trạng thái">
                         <Option value={"1"}>Đề miễn phí</Option>
                         <Option value={"2"}>Đề trả phí</Option>
+                        <Option value={"4"}>Đề VIP</Option>
                       </Select>
                     )}
                   </Form.Item>
