@@ -138,7 +138,7 @@ class ExamManage extends Component {
           <span>
             <Icon type="edit" onClick={() => this.onEditExam(record.IDEXAM)} />
             <Divider type="vertical" />
-            {/* <Icon type="delete" /> */}
+            <Icon type="delete" onClick={() => this.onDeleteExam(record.IDEXAM)} />
           </span>
         ),
       },

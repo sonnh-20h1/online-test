@@ -57,7 +57,7 @@ class PersonalExam extends Component {
     } else {
       notification.error({
         message: `Thông báo`,
-        description: "Mã xác nhận đã hết hạn hoặc chưa chính xác!",
+        description: "Mã xác nhận đã dùng hoặc đã hết hạn hoặc chưa chính xác!",
         placement: "topRight",
       });
     }
@@ -215,21 +215,21 @@ class PersonalExam extends Component {
         render: (record) => (
           <span>
             {useDay > 0 && (
-              <Link to={`/detail-exam/${record.id}`}>
-                <Button type="primary" shape="round">
-                  Thi <Icon type="arrow-right" />
-                </Button>
-              </Link>
+              <React.Fragment>
+                <Link to={`/detail-exam/${record.id}`}>
+                  <Button type="primary" shape="round">
+                    Thi <Icon type="arrow-right" />
+                  </Button>
+                </Link>
+                <Divider type="vertical" />
+                <Icon
+                  type="edit"
+                  onClick={() => {
+                    this.openModel(true, record.id);
+                  }}
+                />
+              </React.Fragment>
             )}
-            <Divider type="vertical" />
-            <Icon
-              type="edit"
-              onClick={() => {
-                this.openModel(true, record.id);
-              }}
-            />
-            {/* <Divider type="vertical" />
-            <Icon type="delete" /> */}
           </span>
         ),
       },
