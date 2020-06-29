@@ -64,6 +64,7 @@ class UploadFileQuestion extends Controller{
                 if($result->rowCount()) {
                     $rsData['message'] ='ok';
                     $rsData['status'] = 'success';
+                    $rsData['path'] = $pathName;
                 } else {
                     $rsData['message'] = 'Dữ liệu chưa được cập nhật vào cơ sở dữ liệu!';
                 }

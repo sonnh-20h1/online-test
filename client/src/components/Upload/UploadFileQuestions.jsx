@@ -80,9 +80,11 @@ class UploadFileQuestion extends Component {
       }).catch((err) => {
         console.error(err);
       });
+      console.log(json.data);
+      
       if (json.data.status == "success") {
         alert("Đã gửi file thành công!");
-        window.location.reload();
+        // window.location.reload();
       }
     } else {
       alert("Bạn vui lòng chọn file!");

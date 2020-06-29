@@ -23,6 +23,9 @@ import Subjects from "./Subject/Subjects";
 import SubjectDetail from "./Subject/SubjectDetail";
 import UploadFileQuestions from "./Upload/UploadFileQuestions";
 import PersonalExam from "./PersonalExams/PersonalExam";
+import DataPacket from "./DataPacket/DataPacket";
+import MakeMoney from "./MakeMoney/MakeMoney";
+
 import "braft-editor/dist/output.css";
 
 class Footer extends Component {
@@ -108,6 +111,9 @@ class MainComponent extends Component {
           component={(location) => <Reviews location={location} />}
         />
         <PrivateRoute path="/personal-exams" component={PersonalExam} />
+        <PrivateRoute path="/data-packet" component={DataPacket} />
+        <PrivateRoute path="/make-money" component={MakeMoney} />
+
         <Redirect to="/login-google" />
       </Switch>
     );

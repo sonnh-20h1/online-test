@@ -24,12 +24,22 @@ const menus = [
     name: "Đóng góp",
     to: "/upload-question",
     exact: false
-  },
+  }, 
   {
     name: "Đề thi cá nhân",
     to: "/personal-exams",
     exact: false
-  }
+  },
+  {
+    name: "Gói cước",
+    to: "/data-packet",
+    exact: false
+  },
+  {
+    name: "Kiếm tiền",
+    to: "/make-money",
+    exact: false
+  },
 ];
 class Profile extends Component {
   state = {
