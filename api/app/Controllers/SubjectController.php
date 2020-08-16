@@ -10,20 +10,14 @@ class SubjectController extends Controller{
     }
 
     public function getSubject($req,$res){
-        $params = $req->getParams();
-        $CountPerPage = 12;
-        $page = isset($params['page'])?$params['page']:1;
-        $search = isset($params['search'])?$params['search']:'';
-        $count = $this->database->count('subjects',[
-            'SUBTEXT[~]' => $search
-        ]);
-        $result  = $this->database->select('subjects','*',[
-            'SUBTEXT[~]' => $search,
-            "LIMIT" => [($page - 1)*$CountPerPage, $CountPerPage]
-        ]);
-        $rsData['page'] = (int)$page;
-        $rsData['pageSize'] = $count;
-        $rsData['CountPerPage'] = $CountPerPage;
+        // $params = $req->getParams();
+        // $CountPerPage = 12;
+        // $page = isset($params['page'])?$params['page']:1;
+        // $search = isset($params['search'])?$params['search']:'';
+        // $count = $this->database->count('subjects',[
+        //     'SUBTEXT[~]' => $search
+        // ]);
+        $result  = $this->database->select('subjects','*'); 
         $rsData['data'] = $result;
         echo json_encode($rsData);
     }

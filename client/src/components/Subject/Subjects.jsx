@@ -5,7 +5,7 @@ import { connect } from "react-redux";
 import { updateStateData } from "./../../actions/index";
 import axios from "axios";
 import { API } from "./../../API/API";
-import item_img from "../../img/shop-item-1.jpg";
+import item_img from "../../img/yhoc.png";
 import Pagination from "react-js-pagination";
 
 const SubjectContext = React.createContext();
@@ -16,7 +16,7 @@ class HeaderSearch extends Component {
       <Row className="justify-content-center text-center">
         <Col md={8} className="page__heading">
           <h1>Chủ đề trắc nghiệm</h1>
-          <div className="form__search">
+          {/* <div className="form__search">
             <SubjectContext.Consumer>
               {({ onSearch }) => (
                 <form onSubmit={onSearch}>
@@ -36,6 +36,7 @@ class HeaderSearch extends Component {
               )}
             </SubjectContext.Consumer>
           </div>
+         */}
         </Col>
       </Row>
     );
@@ -49,7 +50,7 @@ class ListSubject extends Component {
         <SubjectContext.Consumer>
           {({ mainState, handlePageChange }) => (
             <React.Fragment>
-              <Col md={8}>
+              <Col md={12}>
                 <Row className="list__subject">
                   {mainState.ListSubject.data
                     ? mainState.ListSubject.data.map((subject, index) => {
@@ -63,7 +64,7 @@ class ListSubject extends Component {
                       })
                     : ""}
                 </Row>
-                <Row style={{ textAlign: "center" }}>
+                {/* <Row style={{ textAlign: "center" }}>
                   <Pagination
                     activePage={mainState.ListSubject.page}
                     itemsCountPerPage={mainState.ListSubject.CountPerPage}
@@ -71,7 +72,7 @@ class ListSubject extends Component {
                     pageRangeDisplayed={5}
                     onChange={handlePageChange}
                   />
-                </Row>
+                </Row> */}
               </Col>
             </React.Fragment>
           )}
@@ -106,12 +107,10 @@ class Subject extends Component {
     this.getSubject();
   }
 
-  getSubject = async (search, pageNumber) => {
-    search = search ? `search=${search}` : ``;
-    pageNumber = pageNumber ? `page=${pageNumber}` : ``;
+  getSubject = async () => { 
     var json = await axios({
       method: "GET",
-      url: `${API}/getSubject?${search}&${pageNumber}`,
+      url: `${API}/getSubject`,
     }).catch((err) => {
       console.error(err);
     });
@@ -129,36 +128,14 @@ class Subject extends Component {
         })
       );
     }
-  };
-  onSearch = (e) => {
-    e.preventDefault();
-    const data = new FormData(e.target);
-    var search = data.get("search");
-    this.props.dispatch(
-      updateStateData({
-        ...this.props.mainState,
-        ListSubject: {
-          ...this.props.mainState.ListSubject,
-          search,
-        },
-      })
-    );
-
-    this.getSubject(search);
-  };
-  handlePageChange = (pageNumber) => {
-    const { search } = this.props.mainState.ListSubject;
-    this.getSubject(search, pageNumber);
-  };
+  }; 
   render() {
     return (
       <div className="vk-content" data-layout="full-height">
         <SubjectContext.Provider
           value={{
             dispatch: this.props.dispatch,
-            mainState: this.props.mainState,
-            handlePageChange: this.handlePageChange,
-            onSearch: this.onSearch,
+            mainState: this.props.mainState
           }}
         >
           <Container>

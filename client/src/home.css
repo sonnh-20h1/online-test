@@ -1,245 +1,251 @@
-.App>.test-online{
-    min-height: 670px;
-  }
-  .home-page::before{
-    position: absolute;
-    content:"";
-    top: 0;
-    left: 0;
-    height: 100%;
-    width: 100%;
-    background: rgba(0, 0,0, 0.4);
-  }
+.App > .test-online {
+  min-height: 670px;
+}
+.home-page::before {
+  position: absolute;
+  content: "";
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background: rgba(0, 0, 0, 0.4);
+}
 
-  .home-page{
-    min-height: 600px;
-    /* background: url("./img/home.jpg") no-repeat; */
-    position: relative;
-    background-position-y: -50px;
-    background-size: cover;
-  }
-.mag-t100{
+.home-page {
+  min-height: 600px;
+  /* background: url("./img/home.jpg") no-repeat; */
+  position: relative;
+  background-position-y: -50px;
+  background-size: cover;
+}
+.mag-t100 {
   margin-top: 110px;
 }
-.profile{
-  display: inline-block
+.profile {
+  display: inline-block;
 }
-.profile .profile-name button{
+.profile .profile-name button {
   border: none;
   background: none;
 }
-.profile .profile-name button:hover{
+.profile .profile-name button:hover {
   background: #ddd;
   border-radius: 5px;
 }
-.profile .profile-name{
-  padding:5px 10px;
+.profile .profile-name {
+  padding: 5px 10px;
 }
-.sign-online p{
+.sign-online p {
   display: inline-block;
 }
-.pad-right-10{
+.pad-right-10 {
   padding-right: 10px;
 }
-.btnFocus:focus{
+.btnFocus:focus {
   outline: none;
   border: none;
 }
-.borderErr{
+.borderErr {
   border: red solid 1px;
 }
 
-.Review-exam .box-question{
+.Review-exam .box-question {
   position: relative;
   user-select: none;
 }
-.Review-exam .box-question::after{
+.Review-exam .box-question::after {
   position: absolute;
   content: "";
-  top:0;
+  top: 0;
   left: 0;
   right: 0;
   bottom: 0;
   width: 100%;
 }
-.choose_exam .box-question{
+.choose_exam .box-question {
   position: relative;
   user-select: none;
   z-index: 1;
 }
-.choose_exam .box-question::after{
+.choose_exam .box-question::after {
   position: absolute;
   content: "";
-  top:0;
+  top: 0;
   left: 0;
   right: 0;
   bottom: 0;
   width: 100%;
   z-index: 0;
 }
-.image-check{
-  width:20px;
-  height:20px;
+.image-check {
+  width: 20px;
+  height: 20px;
 }
-.image-check img{
-  width:100%;
+.image-check img {
+  width: 100%;
 }
-.true-green{
-  color:rgb(27, 219, 27);
+.true-green {
+  color: rgb(27, 219, 27);
 }
-.login_wrapper{
+.login_wrapper {
   min-height: 700px;
   position: relative;
   background-size: cover;
   padding-top: 50px;
 }
-.max-wrapper{
+.max-wrapper {
   max-width: 950px;
-  margin:auto;
-  background: #fff
+  margin: auto;
+  background: #fff;
 }
-.max-wrapper .col-md-6{
-  padding:0;
+.max-wrapper .col-md-6 {
+  padding: 0;
 }
-.background_image{
+.background_image {
   background: url("./img/loginBanner.jpg") no-repeat;
   position: relative;
   background-position-x: -210px;
   background-size: cover;
 }
-.background_image::before{
+.background_image::before {
   position: absolute;
-  content:"";
+  content: "";
   top: 0;
   left: 0;
   height: 100%;
   width: 100%;
-  background: rgba(0, 0,0, 0.7);
+  background: rgba(0, 0, 0, 0.7);
 }
-.background_border::before{
+.background_border::before {
   position: absolute;
-  content:"";
+  content: "";
   top: 20px;
   left: 20px;
   right: 20px;
   bottom: 20px;
   border: #eee solid 1px;
 }
-.text-position{
+.text-position {
   position: relative;
   text-align: center;
   padding: 0 30px;
 }
 
-.text-position h3{
+.text-position h3 {
   font-size: 35px;
   padding: 0 22px;
-  color:#fff;
+  color: #fff;
 }
-.text-position p{
+.text-position p {
   padding: 25px 0;
   font-size: 22px;
-  color:#fff;
+  color: #fff;
 }
-.text_cursive{
+.text_cursive {
 }
-.text-position button{
+.text-position button {
   padding: 8px 30px;
   font-size: 17px;
   background: #c06c84;
   border: none;
-  color:#fff;
+  color: #fff;
 }
-.MinHeight{
+.MinHeight {
   min-height: 550px;
 }
-.padTopLogin{
+.padTopLogin {
   padding-top: 130px;
 }
 .Login_banner {
   box-shadow: 2px 10px 16px 3px #3333;
 }
-.border-title{
+.border-title {
   padding-bottom: 10px;
-  padding-right:10px;
+  padding-right: 10px;
   border-bottom: #333 solid 1px;
-  display:inline-block;
+  display: inline-block;
 }
-.grid-name{
+.grid-name {
   display: grid;
   grid-template-columns: 1fr 1fr;
 }
-.padLeft10{
+.padLeft10 {
   padding-left: 10px;
 }
-.left-text a{
+.left-text a {
   color: #fff;
 }
-.magTop20{
-  margin-top:20px; 
+.magTop20 {
+  margin-top: 20px;
 }
-.Profile-user{
-  background:#f5f5f5;
+.Profile-user {
+  background: #f5f5f5;
   min-height: 600px;
-  margin-bottom:50px; 
+  margin-bottom: 50px;
 }
-.user-page-container{
-  padding-top:20px
+.user-page-container {
+  padding-top: 20px;
 }
-.Profile-user .section-exam{
+.Profile-user .section-exam {
   background: #fff;
   padding: 0 20px;
   min-height: 550px;
 }
-.account-section-header{
+.account-section-header {
   padding: 20px 10px;
 }
-.account-section-header p{
+.account-section-header p {
   font-size: 20px;
 }
 .account-section-content .exam-item:nth-child(2n) {
   background-color: #ededed;
 }
-.user-image{
-  width:40px;
+.user-image {
+  display: flex;
+  justify-content: center;
+  padding: 20px 0px;
 }
-.user-image img{
-  width:100%;
+.user-image img {
+  width: 100px;
+  border-radius: 50%;
 }
-.account-infomation{
+.account-user-content p {
+  margin: 0;
+}
+.account-infomation {
   display: flex;
 }
-.user-name-text{
+.user-name-text {
   padding-left: 20px;
 }
-.user-name-text h6{
+.user-name-text h6 {
   font-size: 16px;
 }
-.Profile-user .dropdown-list{
-  padding-top:25px;
+.Profile-user .dropdown-list {
+  padding-top: 25px;
 }
-.Profile-user .dropdown-list li{
-  padding:5px 10px;
+.Profile-user .dropdown-list li {
+  padding: 5px 10px;
 }
-.Profile-user .dropdown-list li:hover{
+.Profile-user .dropdown-list li:hover {
   background: #ddd;
 }
-.list-user-exam tr:hover{
+.list-user-exam tr:hover {
   background: #f5f5f5;
 }
 
-.account-section-content .table_list tr{
+.account-section-content .table_list tr {
   display: grid;
   grid-template-columns: 50px 300px 100px 100px 100px 100px 200px 100px;
 }
-.account-section-content .table_list{
+.account-section-content .table_list {
   overflow: auto;
   display: inline-block;
 }
 .account-section-content .table_list th {
-  border-right: #ddd solid 1px!important;
-  border-top: #ddd solid 1px!important;
-  border-bottom: none!important;
+  border-right: #ddd solid 1px !important;
+  border-top: #ddd solid 1px !important;
+  border-bottom: none !important;
   text-align: center;
   font-weight: 300;
   background: #eee;
@@ -248,21 +254,21 @@
   border: #ddd solid 1px;
   border-top: none;
 }
-.active-account{
+.active-account {
   background: #ddd;
 }
-.not-allow{
+.not-allow {
   cursor: not-allowed;
 }
-.max600{
+.max600 {
   max-width: 600px;
 }
-.get-time p{
+.get-time p {
   text-align: center;
 }
-.haicham{
-  background: #fff!important;
-  color: #091674!important;
+.haicham {
+  background: #fff !important;
+  color: #091674 !important;
 }
 .option_que {
   -webkit-appearance: none;
@@ -287,7 +293,7 @@
   background: #9faab7;
 }
 .option_que:checked {
-  outline: none!important;
+  outline: none !important;
 }
 .option_que:checked::before {
   height: 20px;
@@ -295,10 +301,10 @@
   position: absolute;
   top: -2px;
   left: -2px;
-  content: '';
+  content: "";
   display: inline-block;
   font-size: 18px;
-  background: #028C87;
+  background: #028c87;
   border-radius: 50%;
   text-align: center;
   line-height: 20px;
@@ -307,17 +313,37 @@
   height: 20px;
   width: 20px;
   position: absolute;
-  content: '';
+  content: "";
   display: inline-block;
-  border-radius:50%; 
+  border-radius: 50%;
   font-size: 18px;
-  background: #028C87;
+  background: #028c87;
   text-align: center;
   line-height: 20px;
 }
-.false_red{
-  color:red;
+.false_red {
+  color: red;
 }
-.panel-quiz-info,.bord0{
-  border-radius: 0!important;
+.panel-quiz-info,
+.bord0 {
+  border-radius: 0 !important;
+}
+.dot-green {
+  width: 10px;
+  height: 10px;
+  background: #0fc20f;
+  display: inline-block;
+  border-radius: 50%;
+}
+.dot-expired{
+  width: 10px;
+  height: 10px;
+  background: #a19e9e;
+  display: inline-block;
+  border-radius: 50%;
+}
+.icon-user img{
+  width: 40px;
+  border: #fff solid 2px;
+  border-radius: 50%;
 }

@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Route, Link, withRouter } from "react-router-dom";
-import { connect } from "react-redux";
+import axios from "axios";
 import {
   Dropdown,
   UncontrolledDropdown,
@@ -8,6 +8,7 @@ import {
   DropdownToggle
 } from "reactstrap";
 import fakeAuth from "./../Login/fakeAuth";
+import { API } from "./../../API/API";
 
 const menus = [
   {
@@ -24,7 +25,7 @@ const menus = [
     name: "Đóng góp",
     to: "/upload-question",
     exact: false
-  }, 
+  },
   {
     name: "Đề thi cá nhân",
     to: "/personal-exams",
@@ -40,11 +41,39 @@ const menus = [
     to: "/make-money",
     exact: false
   },
+  {
+    name: "Tài khoản",
+    to: "/accounts/user",
+    exact: false
+  },
 ];
 class Profile extends Component {
   state = {
-    showhide: false
+    showhide: false,
+    info: null
   };
+
+  componentDidMount() {
+    var token = localStorage.getItem("token");
+    let data = { token: token };
+    this.onShowData(data);
+  }
+
+  onShowData = async (data) => {
+    var json = await axios({
+      method: "POST",
+      url: `${API}/profile/GetUserId`,
+      data: data,
+    }).catch((err) => {
+      console.error(err);
+    });
+    if (json && json.data) {
+      this.setState({
+        info: json.data,
+      });
+    }
+  };
+
   Logout = () => {
     const { history } = this.props;
     window.localStorage.removeItem("token");
@@ -57,13 +86,13 @@ class Profile extends Component {
     });
   };
   render() {
-    var { showhide } = this.state;
+    var { showhide, info } = this.state;
     return (
       <div className="header_profile">
         <Dropdown isOpen={showhide} toggle={this.show}>
           <DropdownToggle caret nav>
-            <div className="icon_toggle">
-              <i className="glyphicon glyphicon-user" />
+            <div className="icon-user">
+              {info && <img src={info.imageUrl} alt="" />}
             </div>
           </DropdownToggle>
           <DropdownMenu right>

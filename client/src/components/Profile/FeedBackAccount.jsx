@@ -94,10 +94,7 @@ class FeedBackAccount extends React.Component {
             controlBarStyle={{ display: "none" }}
             value={BraftEditor.createEditorState(text)}
           />
-          <Row className="content_feedback">
-            <Col md={12}>
-              <h4>Nội dung phản hồi của bạn</h4>
-            </Col>
+          <Row className="content_feedback"> 
             <Col md={12}>
               <Form onSubmit={this.onFeedBack}>
                 <textarea

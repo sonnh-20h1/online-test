@@ -1,138 +1,97 @@
-import React, { Component } from "react";
-import Pagination from "react-js-pagination";
+import React, { Component } from "react"; 
 import { Route, Link } from "react-router-dom";
 import axios from "axios";
-import { updateStateData } from "./../../actions/index";
+import { Table, Icon, Button } from "antd"; 
 import { API } from "./../../API/API";
-import { WrapMaxTable } from "./BaseAccount";
-
-const HistoryAccountContext = React.createContext();
-
-const ContentTable = () => {
-  return (
-    <React.Fragment>
-      <HistoryAccountContext.Consumer>
-        {({ mainState, handlePageChangeMain }) => (
-          <React.Fragment>
-            <WrapMaxTable
-              columns={[
-                "STT",
-                "Tên đề",
-                "Câu đúng",
-                "Bắt đầu",
-                "Kết thúc",
-                "Ngày thi",
-                "Môn học",
-                "Nộp bài"
-              ]}
-            >
-              <React.Fragment>
-                {mainState.ListAccountHistory
-                  ? mainState.ListAccountHistory.map((ah, index) => {
-                      return (mainState.pageMainNumber - 1) * 15 <= index &&
-                        index < mainState.pageMainNumber * 15 ? (
-                        <HistoryRowTable key={index} ah={ah} index={index} />
-                      ) : null;
-                    })
-                  : ""}
-              </React.Fragment>
-            </WrapMaxTable>
-            {mainState.ListAccountHistory ? (
-              <Pagination
-                activePage={mainState.pageMainNumber}
-                itemsCountPerPage={15}
-                totalItemsCount={mainState.ListAccountHistory.length}
-                pageRangeDisplayed={5}
-                onChange={handlePageChangeMain}
-              />
-            ) : (
-              ""
-            )}
-          </React.Fragment>
-        )}
-      </HistoryAccountContext.Consumer>
-    </React.Fragment>
-  );
-};
-
-const HistoryRowTable = ({ ah, index }) => {
-  const {
-    CONFIRM,
-    ID_UX,
-    EXAMTEXT,
-    SCORE,
-    TIMESTART,
-    TIMEEND,
-    DATEEXAM,
-    SUBTEXT
-  } = ah;
-  return (
-    <tr>
-      <td>{index + 1}</td>
-      <td>
-        {CONFIRM ? (
-          <Link to={`/result-test?id=${ID_UX}`}>{EXAMTEXT}</Link>
-        ) : (
-          <p>{EXAMTEXT}</p>
-        )}
-      </td>
-      <td>{SCORE > 0 ? SCORE : 0}</td>
-      <td>{TIMESTART}</td>
-      <td>{TIMEEND}</td>
-      <td>{DATEEXAM}</td>
-      <td>{SUBTEXT}</td>
-      <td>{CONFIRM ? "Đã nộp" : "Chưa nộp"}</td>
-    </tr>
-  );
-};
+ 
 
 class HistoryAccount extends React.Component {
+  state = {
+    data: [],
+  };
   componentDidMount() {
     var token = localStorage.getItem("token");
     let data = { token: token };
     this.onShowHistory(data);
   }
-  onShowHistory = async data => {
+  onShowHistory = async (data) => {
     var json = await axios({
       method: "POST",
       url: `${API}/profile/GetHistoryExamUser`,
-      data: data
-    }).catch(err => {
+      data: data,
+    }).catch((err) => {
       console.error(err);
     });
     if (json) {
-      const { data } = json;
-      this.props.dispatch(
-        updateStateData({
-          ...this.props.mainState,
-          ListAccountHistory: data
-        })
-      );
+      let { data } = json;
+      data = data.filter((d) => d.CONFIRM);
+      data = data.map((d, index) => {
+        return {
+          ...d,
+          stt: index + 1,
+        };
+      });
+      this.setState({ data });
     }
-  };
-  handlePageChangeMain = pageNumber => {
-    this.props.dispatch(
-      updateStateData({
-        ...this.props.mainState,
-        pageMainNumber: pageNumber
-      })
-    );
-  };
+  }; 
   render() {
+    const columns = [
+      {
+        title: "STT",
+        dataIndex: "stt",
+        key: "stt",
+        width: "70px",
+      },
+      {
+        title: "Tên đề",
+        dataIndex: "EXAMTEXT",
+        key: "EXAMTEXT",
+        ellipsis: true,
+        width: "30%",
+      },
+      {
+        title: "Môn học",
+        dataIndex: "SUBTEXT",
+        key: "SUBTEXT",
+        ellipsis: true,
+      },
+      {
+        title: "Câu đúng",
+        key: "answerSussess",
+        width: "100px",
+        render: (text, record) => (
+          <span>
+            {record.SCORE ? record.SCORE : 0} / {record.RANDOMEXAM}
+          </span>
+        ),
+      },
+      {
+        title: "Ngày làm",
+        dataIndex: "DATEEXAM",
+        key: "DATEEXAM",
+        ellipsis: true,
+      },
+      {
+        title: "Hành động",
+        key: "action",
+        render: (text, record) => (
+          <span>
+            <Link to={`/result-test?id=${record.ID_UX}`}>
+              <Button type="primary" shape="round">
+                Xem <Icon type="arrow-right" />
+              </Button>
+            </Link>
+          </span>
+        ),
+      },
+    ];
+    const { data } = this.state; 
     return (
       <div className="section-test">
-        <HistoryAccountContext.Provider
-          value={{
-            dispatch: this.props.dispatch,
-            mainState: this.props.mainState,
-            handlePageChangeMain: this.handlePageChangeMain
-          }}
-        >
-          <div className="account-section-header">
-            <p>Các đề thi đã làm</p>
-          </div>
-          <ContentTable />
-        </HistoryAccountContext.Provider>
+        <div className="account-section-header">
+          <h3 style={{ textAlign: "center" }}>Các đề thi đã làm</h3>
+        </div>
+        <Table bordered columns={columns} dataSource={data} />
       </div>
     );
   }

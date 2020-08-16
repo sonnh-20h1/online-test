@@ -1,332 +1,100 @@
 import React, { Component } from "react";
-import Pagination from "react-js-pagination";
 import { connect } from "react-redux";
 import axios from "axios";
-import './style.css';
-import userImage from "./../../img/user.svg";
-import { updateStateData } from "./../../actions/index";
-import { API } from "./../../API/API";
-import HistoryAccount from "./HistoryAccount";
+import { Layout, Menu } from "antd";
+import "./style.css";
+import { account } from "./../../constants/config";
+import { Link, Redirect } from "react-router-dom";
+
+import InfoAccount from "./InfoAccount";
 import FeedBackAccount from "./FeedBackAccount";
-import { account } from './../../constants/config';
-import {
-  WrapContentProfile,
-  MenuLink,
-  ProfileContainer,
-  ListMenuItem,
-  WrapTable,
-  ModalBackground
-} from "./BaseAccount";
+import HistoryAccount from "./HistoryAccount";
+import { Container, Breadcrumb, BreadcrumbItem } from "react-bootstrap";
+const { Header, Content, Sider } = Layout;
 
-const AccountContext = React.createContext();
-
-const WrapMenuProfile = () => {
+const SecBreadcrumb = () => {
   return (
-    <React.Fragment>
-      <AccountContext.Consumer>
-        {({ ProfileUser }) => (
-          <div className="menu-left col-md-2">
-            <div className="account-infomation">
-              <div className="user-image">
-                <img src={ProfileUser.imageUrl} alt="" />
-              </div>
-            </div>
-            <ListMenuItem />
-          </div>
-        )}
-      </AccountContext.Consumer>
-    </React.Fragment>
-  );
-};
-
-const ContentTableAlowExam = () => {
-  return (
-    <React.Fragment>
-      <AccountContext.Consumer>
-        {({ ProfileUser }) => (
-          <React.Fragment>
-            {ProfileUser.groups ? (
-              <div>
-                {ProfileUser.groups.length !== 0 ?
-                  <WrapTable
-                    columns={[
-                      "STT",
-                      "Tên nhóm",
-                      "Trạng thái",
-                      "Số lượt thi",
-                      "Đã thi",
-                      "Ngày bắt đầu",
-                      "Số ngày SD",
-                      "Đề thi"
-                    ]}
-                  >
-                    {ProfileUser.groups.map((group, index) => {
-                      return (
-                        <RowTableGroup key={index} index={index} group={group} />
-                      );
-                    })}
-                  </WrapTable> : <p>Bạn chưa tham gia nhóm nào</p>}
-              </div>
-            ) : ''}
-          </React.Fragment>
-        )}
-      </AccountContext.Consumer>
-    </React.Fragment>
-  );
-};
-
-const RowTableGroup = ({ group, index }) => {
-  const { id, name, limit_group, doing, limit,status, createDate } = group;
-  return (
-    <React.Fragment>
-      <AccountContext.Consumer>
-        {({ onClickView }) => (
-          <tr>
-            <td>{index + 1}</td>
-            <td>{name}</td>
-            <td>{status==1?"Hoạt động":"Hết hạn"}</td>
-            <td>{limit}</td>
-            <td>{doing}</td>
-            <td>{createDate}</td>
-            <td>{limit_group}</td>
-            <td>
-              <button
-                style={{ padding: "0 5px" }}
-                onClick={() => onClickView(id)}
-                className="btn btn_primary"
-              >
-                xem
-              </button>
-            </td>
-          </tr>
-        )}
-      </AccountContext.Consumer>
-    </React.Fragment>
-  );
-};
-
-const UserText = () => {
-  return (
-    <React.Fragment>
-      <AccountContext.Consumer>
-        {({ ProfileUser }) => (
-          <div>
-            <div className="account-section-header">
-              <p>Thông tin tài khoản</p>
-            </div>
-            <div className="account-user-content row">
-              <div className="col-md-6">
-                <p>
-                  Họ tên:{" "}
-                  <span>
-                    {ProfileUser.name}
-                  </span>
-                </p>
-              </div>
-              <div className="col-md-6">
-                  {/* <p>{ProfileUser.type}</p> */}
-                  <p>Loại tài khoản: <span>{ProfileUser.type?account.filter(ac => ac.key == (ProfileUser.type))[0].name:""}</span></p>
-              </div>
-              <div className="col-md-12">
-                <p>
-                  Email: <span>{ProfileUser.email}</span>
-                </p>
-              </div>
-              <div className="col-md-6">
-                <p>
-                  {" "}
-                  Tổng Số lượt thi: <span>{ProfileUser.do_limit}</span>
-                </p>
-              </div>
-              <div className="col-md-6">
-                <p>
-                  Số lượt đã thi: <span>{ProfileUser.do_number}</span>
-                </p>
-              </div>
-            </div>
-          </div>
-        )}
-      </AccountContext.Consumer>
-    </React.Fragment>
-  );
-};
-
-const ExamModalTable = ({ onClick }) => {
-  return (
-    <ModalBackground width={1000} onClick={onClick} title="Chi tiết các đề">
-      <WrapTable
-        columns={[
-          "STT",
-          "Mã đề thi",
-          "Tên đề",
-          "Môn",
-          "Số câu",
-          "Thời gian",
-          "Ngày thêm"
-        ]}
-      >
-        <AccountContext.Consumer>
-          {({ mainState }) => (
-            <React.Fragment>
-              {mainState.ListAccountExam
-                ? mainState.ListAccountExam.map((ae, index) => {
-                  return <ExamRowTable key={index} ae={ae} index={index} />;
-                })
-                : ""}
-            </React.Fragment>
-          )}
-        </AccountContext.Consumer>
-      </WrapTable>
-    </ModalBackground>
-  );
-};
-
-const ExamRowTable = ({ ae, index }) => {
-  const { create_on, subject, id_exam, number, time, name, random } = ae;
-  return (
-    <tr>
-      <td>{index + 1}</td>
-      <td>{id_exam}</td>
-      <td>{name}</td>
-      <td>{subject}</td>
-      <td>{random}</td>
-      <td>{time}</td>
-      <td>{create_on}</td>
-    </tr>
-  );
-};
-
-const InfomationUser = () => {
-  return (
-    <React.Fragment>
-      <UserText />
-      <ContentTableAlowExam />
-    </React.Fragment>
+    <div className="ol-breadcrumb">
+      <Container>
+        <Breadcrumb className="breadcrumb__content">
+          <BreadcrumbItem active>
+            <Link to="/home">Trang chủ</Link>
+          </BreadcrumbItem>
+          <BreadcrumbItem active>Tài khoản</BreadcrumbItem>
+        </Breadcrumb>
+      </Container>
+    </div>
   );
 };
 
 class Accounts extends Component {
   state = {
-    showUser: false,
-    showHistory: false,
-    showFeedback: false,
-    status: false
+    page: 1,
   };
-  componentDidMount() {
-    var token = localStorage.getItem("token");
-    let data = { token: token };
-    this.onShowData(data);
-    this.onCheckRoute();
-  }
-  onCheckRoute = () => {
-    var { match } = this.props;
-    var name = "";
-    if (match) {
-      name = match.match.params.name;
-      if (name === "user") {
-        this.setState({
-          showUser: true
-        });
-      }
-      if (name === "history") {
-        this.setState({
-          showHistory: true
-        });
-      }
-      if (name === "feedback-website") {
-        this.setState({
-          showFeedback: true
-        });
-      }
-    }
-  };
-  onShowData = async data => {
-    var json = await axios({
-      method: "POST",
-      url: `${API}/profile/GetUserId`,
-      data: data
-    }).catch(err => {
-      console.error(err);
-    });
-    if (json) {
-      this.props.dispatch(
-        updateStateData({
-          ...this.props.mainState,
-          ProfileUser: json.data
-        })
-      );
-    }
-  };
-  onClickView = async id => {
-    this.setState({
-      status: true
-    });
-    var json = await axios({
-      method: "POST",
-      url: `${API}/SelectAccountGroupId`,
-      data: { id: id }
-    }).catch(err => {
-      console.error(err);
-    });
-    if (json.data) {
-      const { data } = json.data;
-      this.props.dispatch(
-        updateStateData({
-          ...this.props.mainState,
-          ListAccountExam: data
-        })
-      );
-    }
-  };
+
   render() {
-    const { showUser, showHistory, showFeedback, status } = this.state;
-    // console.log(this.props.mainState.ProfileUser);
+    const { page } = this.state;
     return (
-      <ProfileContainer>
-        <AccountContext.Provider
-          value={{
-            dispatch: this.props.dispatch,
-            mainState: this.props.mainState,
-            ProfileUser: this.props.mainState.ProfileUser,
-            onClickView: id => this.onClickView(id)
-          }}
-        >
-          <WrapMenuProfile />
-          <WrapContentProfile>
-            {showUser ? <InfomationUser /> : ""}
-            {showFeedback ? <FeedBackAccount /> : ""}
-            {showHistory ? (
-              <HistoryAccount
-                dispatch={this.props.dispatch}
-                mainState={this.props.mainState}
-              />
-            ) : (
-                ""
-              )}
-            {status ? (
-              <ExamModalTable
-                onClick={() => {
-                  this.setState({ status: false });
-                  this.props.dispatch(
-                    updateStateData({
-                      ...this.props.mainState,
-                      ListAccountExam: []
-                    })
-                  );
-                }}
-              />
-            ) : (
-                ""
-              )}
-          </WrapContentProfile>
-        </AccountContext.Provider>
-      </ProfileContainer>
+      <section className="PersonalExam">
+        <SecBreadcrumb />
+        <Container>
+          <div className="page__wrapper" style={{ padding: 0 }}>
+            <Layout style={{ height: "100%" }}>
+              <Sider width={200} style={{ background: "#fff" }}>
+                <Menu
+                  mode="inline"
+                  defaultSelectedKeys={["1"]}
+                  style={{ height: "100%" }}
+                >
+                  <Menu.Item
+                    onClick={() => {
+                      this.setState({ page: 1 });
+                    }}
+                    key="1"
+                  >
+                    Thông tin tài khoản
+                  </Menu.Item>
+                  <Menu.Item
+                    onClick={() => {
+                      this.setState({ page: 2 });
+                    }}
+                    key="2"
+                  >
+                    Các đề thi đã làm
+                  </Menu.Item>
+                  <Menu.Item
+                    onClick={() => {
+                      this.setState({ page: 3 });
+                    }}
+                    key="3"
+                  >
+                    Phản hồi trang website
+                  </Menu.Item>
+                </Menu>
+              </Sider>
+              <Layout>
+                <Content
+                  style={{
+                    background: "rgba(255, 255, 255, 0.9)",
+                    padding: 24,
+                    margin: 0,
+                  }}
+                >
+                  {page == 1 && <InfoAccount />}
+                  {page == 2 && <HistoryAccount />}
+                  {page == 3 && <FeedBackAccount />}
+                </Content>
+              </Layout>
+            </Layout>
+          </div>
+        </Container>
+      </section>
     );
   }
 }
 
-export default connect(state => {
+export default connect((state) => {
   return {
-    mainState: state.updateStateData
+    mainState: state.updateStateData,
   };
 })(Accounts);

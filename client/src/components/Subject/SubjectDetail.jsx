@@ -15,6 +15,7 @@ import { connect } from "react-redux";
 import { updateStateData } from "./../../actions/index";
 import axios from "axios";
 import { API } from "./../../API/API";
+import money from "../../img/money.jpg";
 import Pagination from "react-js-pagination";
 
 const SubjectDetailContext = React.createContext();
@@ -129,10 +130,13 @@ const SearchExam = () => {
 };
 
 const ListExams = ({ Exams, type }) => {
+  let data = Exams.sort((a, b) => {
+    return a.EXAMTEXT.localeCompare(b.EXAMTEXT);
+  });
   return (
     <Row className="shop__list">
-      {Exams.length > 0
-        ? Exams.map((exam, index) => {
+      {data.length > 0
+        ? data.map((exam, index) => {
             return (
               <ItemExam key={index} type={type} exam={exam} index={index} />
             );
@@ -300,40 +304,47 @@ class SubjectDetail extends Component {
             <Container>
               <div className="page__wrapper">
                 <div>
-                  <div
-                    style={{
-                      display: "grid",
-                      gridTemplateColumns: "auto auto auto",
-                    }}
-                  >
-                    <Card body style={{ textAlign: "right" }}>
-                      <div
-                        className="folder-icon"
-                        onClick={() => this.handleFilter(1)}
-                      >
-                        <i class="fa fa-folder-open" />
-                        <p>Đề miễn phí</p>
+                  <Row style={{ display: "flex", justifyContent: "center" }}>
+                    <Col md={3} className="item__subject">
+                      <div className="item_item green">
+                        <div className="item__brief-wrapper">
+                          <h3>Bộ đề miễn phí</h3>
+                          <a onClick={() => this.handleFilter(1)}>
+                            Xem chi tiết
+                          </a>
+                        </div>
+                        <div className="item_img__cover">
+                          <img src={money} alt="" />
+                        </div>
                       </div>
-                    </Card>
-                    <Card body style={{ textAlign: "center" }}>
-                      <div
-                        className="folder-icon"
-                        onClick={() => this.handleFilter(2)}
-                      >
-                        <i class="fa fa-folder-open" />
-                        <p>Đề trả phí</p>
+                    </Col>
+                    <Col md={3} className="item__subject">
+                      <div className="item_item green">
+                        <div className="item__brief-wrapper">
+                          <h3>Bộ đề trả phí</h3>
+                          <a onClick={() => this.handleFilter(2)}>
+                            Xem chi tiết
+                          </a>
+                        </div>
+                        <div className="item_img__cover">
+                          <img src={money} alt="" />
+                        </div>
                       </div>
-                    </Card>
-                    <Card body>
-                      <div
-                        className="folder-icon"
-                        onClick={() => this.handleFilter(4)}
-                      >
-                        <i class="fa fa-folder-open" />
-                        <p>Đề VIP</p>
+                    </Col>
+                    <Col md={3} className="item__subject">
+                      <div className="item_item green">
+                        <div className="item__brief-wrapper">
+                          <h3>Bộ đề VIP</h3>
+                          <a onClick={() => this.handleFilter(3)}>
+                            Xem chi tiết
+                          </a>
+                        </div>
+                        <div className="item_img__cover">
+                          <img src={money} alt="" />
+                        </div>
                       </div>
-                    </Card>
-                  </div>
+                    </Col>
+                  </Row>
                 </div>
               </div>
             </Container>

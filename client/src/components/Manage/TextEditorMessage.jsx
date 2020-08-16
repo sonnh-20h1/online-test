@@ -76,6 +76,8 @@ class TextEditorMessage extends Component {
               backgroundColor: "white",
               boxShadow: "none",
               padding: "10px",
+              height:"auto",
+              minHeight:"500px"
             }}
           />
         </Modal>

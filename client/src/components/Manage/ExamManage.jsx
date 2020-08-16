@@ -52,12 +52,12 @@ class ExamManage extends Component {
     })
       .then((json) => {
         const data = [];
+        let plus = 0;
         json.data.map((item, index) => {
-          if (item.status != 3)
-            data.push({
-              stt: index + 1,
-              ...item,
-            });
+          if (item.status != 3) {
+            data.push({ stt: plus + 1, ...item });
+            plus++;
+          }
         });
         console.log(data);
 
@@ -189,6 +189,10 @@ class ExamManage extends Component {
                 className="components-table-demo-nested"
                 columns={columns}
                 dataSource={filterData.length > 0 ? filterData : data}
+                pagination={{
+                  pageSize: 20,
+                }}
+                bordered
                 expandedRowRender={(record) => (
                   <div>
                     <p>Thời gian: {record.EXTIME} phút</p>
