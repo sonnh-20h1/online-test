@@ -28,10 +28,14 @@ class PersonalModal extends Component {
     status: "3",
     subjects: [],
     importExcel: false,
+    newSubject: false
   };
   componentDidMount() {
     const { edit, exam_id } = this.props;
-    this.getSubject();
+    var token = localStorage.getItem("token");
+    let data = { token: token };
+
+    this.getSubject(data);
 
     if (edit) {
       // let data = { id: "DC_TH_1" };
@@ -47,10 +51,19 @@ class PersonalModal extends Component {
     });
   };
 
-  getSubject = async () => {
+  openNotificationError = () => {
+    notification.error({
+      message: `Yêu cầu`,
+      description: "Vui lòng thêm câu hỏi!",
+      placement: "topRight",
+    });
+  };
+
+  getSubject = async (data) => {
     var json = await axios({
       method: "POST",
-      url: `${API}/display_sub`,
+      url: `${API}/getSubjectByUser`,
+      data: data
     }).catch((err) => {
       console.error(err);
     });
@@ -319,7 +332,13 @@ class PersonalModal extends Component {
     return data;
   };
   handleSave = async (values) => {
-    const { data, status, idExam } = this.state;
+    let { data, status, idExam } = this.state;
+
+    if (data.length == 0) {
+      this.openNotificationError();
+      return;
+    }
+
     var token = localStorage.getItem("token");
     let random =
       values.RandomQues > data.length ? data.length : values.RandomQues;
@@ -391,6 +410,17 @@ class PersonalModal extends Component {
       };
     }
   };
+  onChangeNewSubject = (value) => {
+    if (value == "more") {
+      this.setState({
+        newSubject: true
+      })
+    } else {
+      this.setState({
+        newSubject: false
+      })
+    }
+  }
   render() {
     const columns = [
       { title: "STT", width: "8%", dataIndex: "stt", key: "stt" },
@@ -433,7 +463,7 @@ class PersonalModal extends Component {
         ),
       },
     ];
-    const { data, loading, subjects, importExcel } = this.state;
+    const { data, loading, subjects, importExcel, newSubject } = this.state;
     const { getFieldDecorator } = this.props.form;
     return (
       <div>
@@ -466,25 +496,44 @@ class PersonalModal extends Component {
                   </Form.Item>
                 </Col>
                 <Col span={12}>
-                  <Form.Item label="Môn">
-                    {getFieldDecorator("SubjectExam", {
-                      rules: [
-                        {
-                          required: true,
-                          message: "Vui lòng nhập thông tin!",
-                        },
-                      ],
-                    })(
-                      <Select placeholder="Chọn môn học">
-                        {subjects &&
-                          subjects.map((sub, index) => (
-                            <Option key={index} value={sub.SUBID}>
-                              {sub.SUBTEXT}
-                            </Option>
-                          ))}
-                      </Select>
-                    )}
-                  </Form.Item>
+                  {newSubject && (
+                    <Form.Item label="Tên chủ đề mới">
+                      {getFieldDecorator("newSubjectName", {
+                        rules: [
+                          {
+                            required: true,
+                            message: "Vui lòng nhập thông tin!",
+                          },
+                        ],
+                      })(<Input />)}
+                    </Form.Item>
+                  )}
+
+                  {!newSubject && (
+                    <Form.Item label="Môn">
+                      {getFieldDecorator("SubjectExam", {
+                        rules: [
+                          {
+                            required: true,
+                            message: "Vui lòng nhập thông tin!",
+                          },
+                        ],
+                      })(
+                        <Select placeholder="Chọn môn học" onChange={this.onChangeNewSubject}>
+                          <Option key={"more"} value={"more"}>
+                            --- Thêm chủ đề mới ---
+                        </Option>
+                          {subjects &&
+                            subjects.map((sub, index) => (
+                              <Option key={index} value={sub.SUBID}>
+                                {sub.SUBTEXT}
+                              </Option>
+                            ))}
+
+                        </Select>
+                      )}
+                    </Form.Item>
+                  )}
                 </Col>
                 <Col span={12}>
                   <Form.Item label="Thời gian làm bài">
@@ -515,7 +564,7 @@ class PersonalModal extends Component {
           </div>
           <div className="text-align-right">
             <Button type="primary" style={{ marginRight: "20px" }}>
-              <a href="/api/public/upload/2020/04/18/1587198747_test.xlsx">
+              <a href="/api/public/upload/2020/08/18/1597762323_File-mau-ĐE-THI-CA-NHAN.xlsx">
                 <Icon type="download" /> Tải Đề thi mẫu
               </a>
             </Button>
@@ -540,22 +589,25 @@ class PersonalModal extends Component {
               />
             </div>
           ) : (
-            <Table
-              className="components-table-demo-nested"
-              columns={columns}
-              expandedRowRender={(record) => (
-                <ExpandedRowRender
-                  record={record}
-                  createRowAnswer={() => this.createRowAnswer(record)}
-                  onChangeText={this.onChangeText}
-                  onDeleteAnswer={this.onDeleteAnswer}
-                  onChangeType={this.onChangeTypeAnswers}
-                />
-              )}
-              loading={loading}
-              dataSource={data}
-            />
-          )}
+              <Table
+                className="components-table-demo-nested"
+                columns={columns}
+                pagination={{
+                  pageSize: 20,
+                }}
+                expandedRowRender={(record) => (
+                  <ExpandedRowRender
+                    record={record}
+                    createRowAnswer={() => this.createRowAnswer(record)}
+                    onChangeText={this.onChangeText}
+                    onDeleteAnswer={this.onDeleteAnswer}
+                    onChangeType={this.onChangeTypeAnswers}
+                  />
+                )}
+                loading={loading}
+                dataSource={data}
+              />
+            )}
         </Modal>
       </div>
     );

@@ -91,6 +91,11 @@ class PersonManage extends Component {
         key: "EXAMTEXT",
       },
       {
+        title: "Ngày tạo",
+        dataIndex: "create_on",
+        key: "create_on",
+      },
+      {
         title: "Xem chi tiết",
         key: "status",
         render: (record) => (

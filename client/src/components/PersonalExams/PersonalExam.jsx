@@ -44,7 +44,7 @@ class PersonalExam extends Component {
     this.onShowData(data);
     this.GetMessage();
     this.statusPerson(data);
-    this.getSubject();
+    this.getSubject(data);
   }
 
   openNotification = (type) => {
@@ -84,10 +84,11 @@ class PersonalExam extends Component {
     }
   };
 
-  getSubject = async () => {
+  getSubject = async (data) => {
     var json = await axios({
       method: "POST",
-      url: `${API}/display_sub`,
+      url: `${API}/getSubjectByUser`,
+      data: data
     }).catch((err) => {
       console.error(err);
     });
@@ -298,6 +299,7 @@ class PersonalExam extends Component {
           <PersonalModal
             open={open}
             edit={edit}
+            person={true}
             exam_id={exam_id}
             onCancel={() => this.setState({ open: false })}
           />

@@ -20,12 +20,20 @@ class CodeManage extends Component {
       url: `${API}/personal/selectCode`,
     })
       .then((json) => {
-        const data = json.data.map((item, index) => {
+        let data = json.data.map((item, index) => {
+          let dayNow = Math.floor((Date.now() - item.create_date) / 1000 / 60 / 60 / 24);
+          let day = 0;
+          if (item.expiryDay - dayNow > 0) day = item.expiryDay - dayNow;
           return {
             ...item,
+            usedDay: day,
             stt: index + 1,
           };
         });
+        data.sort((a, b) => {
+          return b.create_date - a.create_date;
+        });
+        console.log(data);
         this.setState({
           data,
         });
@@ -122,6 +130,23 @@ class CodeManage extends Component {
         ),
       },
       {
+        title: "Trạng thái",
+        key: "status",
+        render: (record) => (
+          <span>
+            {record.usedDay > 0 ? (
+              <span>
+                <div className="dot-green" /> Hoạt động
+              </span>
+            ) : (
+                <span>
+                  <div className="dot-expired" /> Hết hạn
+                </span>
+              )}
+          </span>
+        ),
+      },
+      {
         title: "Action",
         key: "action",
         render: (record) => (
@@ -141,7 +166,7 @@ class CodeManage extends Component {
     return (
       <React.Fragment>
         <div className="table-fx-left">
-          <Breadcrumb home="Manage" manage="code" />
+          <Breadcrumb home="Quản lý" manage="Mã xác nhận" />
           <div style={{ margin: "20px", padding: "20px", background: "#fff" }}>
             <div style={{ textAlign: "right" }}>
               <Button type="primary" onClick={this.onOpen}>

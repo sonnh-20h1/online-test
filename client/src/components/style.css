@@ -253,7 +253,7 @@ body {
   transition: all 0.3s ease-in-out;
   /* background: rgba(0, 0, 0, 0.27); */
 }
-.item__subject:hover .item_item::after{
+.item__subject:hover .item_item::after {
   transform: scale(1);
   transition: all 0.3s ease-in-out;
 }
@@ -342,7 +342,7 @@ h3.list__title:hover {
 .start_thi a {
   color: #fff !important;
   font-size: 16px;
-  line-height: 1.25; 
+  line-height: 1.25;
   justify-content: center;
   width: 100%;
   display: grid;
@@ -393,7 +393,7 @@ h3.list__title:hover {
   opacity: 0.5;
   z-index: 0;
 }
-.item_img__cover img{
+.item_img__cover img {
   width: 100%;
   height: 100%;
 }
@@ -568,8 +568,15 @@ h3.list__title:hover {
   grid-column-gap: 15px;
   padding: 5px 0;
 }
-.header-exams-flex{
+.header-exams-flex {
   padding-bottom: 15px;
   display: flex;
   justify-content: space-between;
+}
+.detail-result td {
+  padding: 10px 0;
+}
+
+.detail-result tr > td:first-child {
+  padding-right: 20px;
 }

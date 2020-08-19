@@ -16,27 +16,7 @@ class HeaderSearch extends Component {
       <Row className="justify-content-center text-center">
         <Col md={8} className="page__heading">
           <h1>Chủ đề trắc nghiệm</h1>
-          {/* <div className="form__search">
-            <SubjectContext.Consumer>
-              {({ onSearch }) => (
-                <form onSubmit={onSearch}>
-                  <div className="input-group pad10 padLR15">
-                    <input
-                      className="form-control Border0"
-                      placeholder="Tìm kiếm chủ đề"
-                      name="search"
-                    />
-                    <div className="input-group-btn">
-                      <Button className="Border0" type="submit">
-                        <i className="fa fa-search" />
-                      </Button>
-                    </div>
-                  </div>
-                </form>
-              )}
-            </SubjectContext.Consumer>
-          </div>
-         */}
+
         </Col>
       </Row>
     );
@@ -54,14 +34,14 @@ class ListSubject extends Component {
                 <Row className="list__subject">
                   {mainState.ListSubject.data
                     ? mainState.ListSubject.data.map((subject, index) => {
-                        return (
-                          <ItemSubject
-                            key={index}
-                            SubName={subject.SUBTEXT}
-                            id={subject.SUBID}
-                          />
-                        );
-                      })
+                      return (
+                        <ItemSubject
+                          key={index}
+                          SubName={subject.SUBTEXT}
+                          id={subject.SUBID}
+                        />
+                      );
+                    })
                     : ""}
                 </Row>
                 {/* <Row style={{ textAlign: "center" }}>
@@ -107,7 +87,7 @@ class Subject extends Component {
     this.getSubject();
   }
 
-  getSubject = async () => { 
+  getSubject = async () => {
     var json = await axios({
       method: "GET",
       url: `${API}/getSubject`,
@@ -115,20 +95,17 @@ class Subject extends Component {
       console.error(err);
     });
     if (json) {
-      const { data, pageSize, page, CountPerPage } = json.data;
+      const { data } = json.data;
       this.props.dispatch(
         updateStateData({
           ...this.props.mainState,
           ListSubject: {
-            page,
-            CountPerPage,
-            pageSize,
             data,
           },
         })
       );
     }
-  }; 
+  };
   render() {
     return (
       <div className="vk-content" data-layout="full-height">

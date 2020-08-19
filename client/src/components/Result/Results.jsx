@@ -1,6 +1,18 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
+
+import {
+  Container,
+  Row,
+  Col,
+  Alert,
+  Breadcrumb,
+  BreadcrumbItem,
+} from "react-bootstrap";
+import { Table, Icon, Button } from "antd";
+
 import { API } from "./../../API/API";
+import icon_result from "../../img/result_2.webp";
 class Result extends Component {
   constructor(props) {
     super(props);
@@ -60,80 +72,85 @@ class Result extends Component {
       status,
     } = this.state;
     return (
-      <div className="result-exam online-test">
-        <div className="container">
-          <div className="row">
-            <div className="col-md-12">
-              <div className="review-result">
-                <div className="panel-result">
-                  <div className="panel-heading text-center">
-                    <h3>Kết quả</h3>
-                  </div>
-                </div>
-                <div className="content-result">
-                  <table className="table-result-exam">
-                    <tbody>
-                      <tr>
-                        <td>Đề thi:</td>
-                        <td>{Exam}</td>
-                      </tr>
-                      <tr>
-                        <td>Bắt đầu:</td>
-                        <td>{TimeStart}</td>
-                      </tr>
-                      <tr>
-                        <td>Kết thúc: </td>
-                        <td>{TimeEnd}</td>
-                      </tr>
-                      <tr>
-                        <td>Đáp án đúng:</td>
-                        <td>
-                          {" "}
-                          {Score}/{NumQuestion}
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>Đáp án sai:</td>
-                        <td>
-                          {" "}
-                          {NumQuestion - Score}/{NumQuestion}
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>phần trăm đạt:</td>
-                        <td> {((Score / NumQuestion) * 100).toFixed(2)}%</td>
-                      </tr>
-                      <tr>
-                        <td>Xem chi tiết: </td>
-                        <td>
-                          <Link
-                            className="btn primary"
-                            to={{
-                              pathname: "review-test",
-                              search: `?id=${idexam}&idux=${idux}`,
-                            }}
-                          >
-                            Next
-                          </Link>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              </div>
+      <section className="PersonalExam">
+        <Container>
+          <div className="page__wrapper">
+            <div className="text-center">
+              <img style={{ width: "125px" }} src={icon_result} alt="" />
             </div>
-            <div className="col-md-12">
-              <div className="btn_complete">
-                {status == "3" ? (
-                  <Link to={`/personal-exams`}>Hoàn thành</Link>
-                ) : (
-                  <Link to={`/chu-de-trac-nghiem/${subId}`}>Hoàn thành</Link>
-                )}
+            <div className="panel-heading text-center" />
+            <div style={{ display: "flex", justifyContent: "center" }}>
+              <div style={{ maxWidth: "500px" }}>
+                <h3>Chúc mừng bạn đã hoàn thành bài thi</h3>
+                <table className="detail-result">
+                  <tbody>
+                    <tr>
+                      <td>Đề thi:</td>
+                      <td>{Exam}</td>
+                    </tr>
+                    <tr>
+                      <td>Bắt đầu:</td>
+                      <td>{TimeStart}</td>
+                    </tr>
+                    <tr>
+                      <td>Kết thúc: </td>
+                      <td>{TimeEnd}</td>
+                    </tr>
+                    <tr>
+                      <td>Đáp án đúng:</td>
+                      <td>
+                        {" "}
+                        {Score}/{NumQuestion}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Đáp án sai:</td>
+                      <td>
+                        {" "}
+                        {NumQuestion - Score}/{NumQuestion}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>phần trăm đạt:</td>
+                      <td> {((Score / NumQuestion) * 100).toFixed(2)}%</td>
+                    </tr>
+                  </tbody>
+                </table>
+                <div
+                  style={{
+                    display: "flex",
+                    paddingTop: "30px",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <Button type="primary" shape="round">
+                    <Link
+                      to={
+                        status == "3"
+                          ? `/personal-exams`
+                          : `/chu-de-trac-nghiem/${subId}`
+                      }
+                    >
+                      Hoàn thành
+                    </Link>
+                  </Button>
+
+                  <Button type="primary" shape="round">
+                    <Link
+                      to={{
+                        pathname: "review-test",
+                        search: `?id=${idexam}&idux=${idux}`,
+                      }}
+                    >
+                      Xem chi tiết
+                    </Link>
+                  </Button>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </div>
+        </Container>
+      </section>
     );
   }
 }

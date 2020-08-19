@@ -30,7 +30,8 @@ class PersonalModal extends Component {
     importExcel: false,
   };
   componentDidMount() {
-    const { edit, exam_id } = this.props;
+    const { edit, exam_id, person } = this.props;
+
     this.getSubject();
 
     if (edit) {
@@ -51,6 +52,7 @@ class PersonalModal extends Component {
     var json = await axios({
       method: "POST",
       url: `${API}/display_sub`,
+      data: { permission: 1 }
     }).catch((err) => {
       console.error(err);
     });
@@ -351,8 +353,8 @@ class PersonalModal extends Component {
           QUE_TEXT: ele.questions,
           Answer: this.convertAnswers(ele, ans)
         });
-      } 
-    }); 
+      }
+    });
 
     return data;
   };
@@ -369,7 +371,7 @@ class PersonalModal extends Component {
         );
         var dataExcel = this.ChangeExcel(RowObject);
         console.log(dataExcel);
-        
+
         const dataMap = dataExcel.map((item, index) => {
           let Answers = [];
           item.Answer.forEach((ans) => {
@@ -561,22 +563,25 @@ class PersonalModal extends Component {
           {importExcel ? (
             <ButtonReadFile onChangeReadFile={this.onChangeReadFile} />
           ) : (
-            <Table
-              className="components-table-demo-nested"
-              columns={columns}
-              expandedRowRender={(record) => (
-                <ExpandedRowRender
-                  record={record}
-                  createRowAnswer={() => this.createRowAnswer(record)}
-                  onChangeText={this.onChangeText}
-                  onDeleteAnswer={this.onDeleteAnswer}
-                  onChangeType={this.onChangeTypeAnswers}
-                />
-              )}
-              loading={loading}
-              dataSource={data}
-            />
-          )}
+              <Table
+                className="components-table-demo-nested"
+                columns={columns}
+                pagination={{
+                  pageSize: 20,
+                }}
+                expandedRowRender={(record) => (
+                  <ExpandedRowRender
+                    record={record}
+                    createRowAnswer={() => this.createRowAnswer(record)}
+                    onChangeText={this.onChangeText}
+                    onDeleteAnswer={this.onDeleteAnswer}
+                    onChangeType={this.onChangeTypeAnswers}
+                  />
+                )}
+                loading={loading}
+                dataSource={data}
+              />
+            )}
         </Modal>
       </div>
     );

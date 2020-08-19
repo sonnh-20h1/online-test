@@ -28,7 +28,7 @@ class PersonalModal extends Component {
   };
   componentDidMount() {
     const { edit, exam_id } = this.props;
-    this.getSubject();
+    this.getAllSubject();
 
     if (edit) {
       // let data = { id: "DC_TH_1" };
@@ -44,10 +44,10 @@ class PersonalModal extends Component {
     });
   };
 
-  getSubject = async () => {
+  getAllSubject = async () => {
     var json = await axios({
       method: "POST",
-      url: `${API}/display_sub`,
+      url: `${API}/getAllSubject`,
     }).catch((err) => {
       console.error(err);
     });

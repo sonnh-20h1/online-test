@@ -182,9 +182,9 @@ const ItemExam = ({ exam, index, type }) => {
               </div>
               <div className="start_thi btn-primary">
                 {exam.status == 1 ? (
-                  <Link to={`/detail-exam/${exam.IDEXAM}`}>Vào thi</Link>
+                  <Link to={`/detail-exam/${exam.IDEXAM}`}>Chi tiết</Link>
                 ) : exam.permisson == 1 ? (
-                  <Link to={`/detail-exam/${exam.IDEXAM}`}>Vào thi</Link>
+                  <Link to={`/detail-exam/${exam.IDEXAM}`}>Chi tiết</Link>
                 ) : (
                   <a>
                     <i class="fa fa-lock" style={{ fontSize: "30px" }} />

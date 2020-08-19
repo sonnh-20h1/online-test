@@ -19,7 +19,7 @@ class PersonManage extends Component {
       url: `${API}/personal/selectPerson`,
     })
       .then((json) => {
-        const data = json.data.map((item, index) => {
+        let data = json.data.map((item, index) => {
           let dayNow = Math.floor((Date.now() - item.create_time) / 1000 / 60 / 60 / 24);
           let day = 0;
           if (item.useDay - dayNow > 0) day = item.useDay - dayNow;
@@ -29,6 +29,9 @@ class PersonManage extends Component {
             stt: index + 1,
           };
         });
+        data.sort((a, b) => {
+          return b.create_time - a.create_time;
+        });
         this.setState({
           data,
         });
@@ -37,6 +40,14 @@ class PersonManage extends Component {
         console.error(err);
       });
   };
+
+  timeConverter = (time) => {
+    var a = new Date(Number(time));
+
+    return `${a.getDate()}-${a.getMonth() +
+      1}-${a.getFullYear()} ${a.getHours()}:${a.getMinutes()}`;
+  };
+  
   render() {
     const columns = [
       {
@@ -60,8 +71,32 @@ class PersonManage extends Component {
         key: "useDay",
       },
       {
+        title: "Ngày bắt đầu",
+        key: "create_time",
+        render: (record) => (
+          <span>{this.timeConverter(record.create_time)}</span>
+        ),
+      },
+      {
         title: "Trạng thái",
         key: "status",
+        render: (record) => (
+          <span>
+            {record.usedDay > 0 ? (
+              <span>
+                <div className="dot-green" /> Hoạt động
+              </span>
+            ) : (
+                <span>
+                  <div className="dot-expired" /> Hết hạn
+                </span>
+              )}
+          </span>
+        ),
+      },
+      {
+        title: "Giao dịch",
+        key: "gaiodich",
         render: (record) => (
           <span>{record.status == "1" ? "Miễn phí" : "Trả phí"}</span>
         ),

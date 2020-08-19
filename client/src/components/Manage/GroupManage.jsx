@@ -15,7 +15,7 @@ import {
   ItemQuestion,
   ButtonReadFile,
   ButtonPrimary,
-  Select
+  Select,
 } from "./BaseManage";
 
 const GroupManageContext = React.createContext();
@@ -79,11 +79,7 @@ const FormModalAddGroupManage = ({ onAdd, button, placeholder, name }) => {
                 value={mainState.ItemGroup.id}
               />
 
-              <Input
-                name={name}
-                placeholder={placeholder}
-                type="text"
-              />
+              <Input name={name} placeholder={placeholder} type="text" />
               <div className="text-left" style={{ margin: "20px 0" }}>
                 <ButtonPrimary>{button}</ButtonPrimary>
               </div>
@@ -114,22 +110,32 @@ const FormModalAddUser = ({ onAdd, button, nameEmail, nameNumber }) => {
               <input
                 type="hidden"
                 name="id"
-                value={mainState.EditUserGroup ? mainState.EditUserGroup.id : ""}
+                value={
+                  mainState.EditUserGroup ? mainState.EditUserGroup.id : ""
+                }
               />
               <Input
                 name={nameEmail}
-                value={mainState.EditUserGroup ? mainState.EditUserGroup.email : ""}
+                value={
+                  mainState.EditUserGroup ? mainState.EditUserGroup.email : ""
+                }
                 placeholder={"Chọn email ..."}
                 type="email"
               />
               <Input
                 name={nameNumber}
-                value={mainState.EditUserGroup ? mainState.EditUserGroup.limit : null}
+                value={
+                  mainState.EditUserGroup ? mainState.EditUserGroup.limit : null
+                }
                 placeholder={"Giới hạn"}
                 type="number"
               />
               <div className="text-left" style={{ margin: "20px 0" }}>
-                <ButtonPrimary>{Object.keys(mainState.EditUserGroup).length > 0 ?  "Sửa": button}</ButtonPrimary>
+                <ButtonPrimary>
+                  {Object.keys(mainState.EditUserGroup).length > 0
+                    ? "Sửa"
+                    : button}
+                </ButtonPrimary>
               </div>
             </form>
           </React.Fragment>
@@ -158,8 +164,8 @@ const UserModalManage = ({ onClick }) => {
             {mainState.ListGroupUser != "" ? (
               <UserContentTable />
             ) : (
-                <p className="text-center">Chưa có thành viên nào</p>
-              )}
+              <p className="text-center">Chưa có thành viên nào</p>
+            )}
           </React.Fragment>
         )}
       </GroupManageContext.Consumer>
@@ -169,14 +175,16 @@ const UserModalManage = ({ onClick }) => {
 
 const UserContentTable = () => {
   return (
-    <TableWrap columns={["STT", "Email", "Giới hạn", "Đã làm", "Ngày thêm", "Actions"]}>
+    <TableWrap
+      columns={["STT", "Email", "Giới hạn", "Đã làm", "Ngày thêm", "Actions"]}
+    >
       <GroupManageContext.Consumer>
         {({ mainState }) => (
           <React.Fragment>
             {mainState.ListGroupUser
               ? mainState.ListGroupUser.map((gu, index) => {
-                return <UserRowTable key={index} gu={gu} index={index} />;
-              })
+                  return <UserRowTable key={index} gu={gu} index={index} />;
+                })
               : ""}
           </React.Fragment>
         )}
@@ -190,7 +198,7 @@ const UserRowTable = ({ gu, index }) => {
   return (
     <React.Fragment>
       <GroupManageContext.Consumer>
-        {({ onEditUser,onDeleteUser }) => (
+        {({ onEditUser, onDeleteUser }) => (
           <tr>
             <td>{index + 1}</td>
             <td>{email}</td>
@@ -227,8 +235,8 @@ const ExamModalManage = ({ onClick }) => {
             {mainState.ListGroupExam != "" ? (
               <ExamContentTable />
             ) : (
-                <p className="text-center">Chưa có đề thi nào</p>
-              )}
+              <p className="text-center">Chưa có đề thi nào</p>
+            )}
           </React.Fragment>
         )}
       </GroupManageContext.Consumer>
@@ -244,8 +252,8 @@ const ExamContentTable = () => {
           <React.Fragment>
             {mainState.ListGroupExam
               ? mainState.ListGroupExam.map((gx, index) => {
-                return <ExamRowTable key={index} gx={gx} index={index} />;
-              })
+                  return <ExamRowTable key={index} gx={gx} index={index} />;
+                })
               : ""}
           </React.Fragment>
         )}
@@ -292,7 +300,7 @@ const ContentTable = () => {
                 "Trạng thái",
                 "Đề thi",
                 "Thành viên",
-                "Actions"
+                "Actions",
               ]}
             >
               <React.Fragment>
@@ -300,12 +308,12 @@ const ContentTable = () => {
                   mainState.ListGroups.map((group, index) => {
                     return (mainState.pageMainNumber - 1) * 20 <= index &&
                       index < mainState.pageMainNumber * 20 ? (
-                        <RowTable key={index} group={group} index={index} />
-                      ) : null;
+                      <RowTable key={index} group={group} index={index} />
+                    ) : null;
                   })
                 ) : (
-                    <p className="text-center">Chưa có nhóm nào</p>
-                  )}
+                  <p className="text-center">Chưa có nhóm nào</p>
+                )}
               </React.Fragment>
             </TableWrap>
             {mainState.ListGroups ? (
@@ -317,8 +325,8 @@ const ContentTable = () => {
                 onChange={handlePageChange}
               />
             ) : (
-                ""
-              )}
+              ""
+            )}
           </React.Fragment>
         )}
       </GroupManageContext.Consumer>
@@ -327,7 +335,7 @@ const ContentTable = () => {
 };
 
 const RowTable = ({ group, index }) => {
-  const { id, name,limit_group, note, create_on,status } = group;
+  const { id, name, limit_group, note, create_on, status } = group;
   return (
     <React.Fragment>
       <GroupManageContext.Consumer>
@@ -338,7 +346,17 @@ const RowTable = ({ group, index }) => {
             <td>{note}</td>
             <td style={{ width: "100px" }}>{limit_group}</td>
             <td style={{ width: "100px" }}>{create_on}</td>
-            <td style={{ width: "100px" }}>{status==1?"Hoạt động":"Hết hạn"}</td>
+            <td style={{ width: "110px" }}>
+              {status == 1 ? (
+                <span>
+                  <div className="dot-green" /> Hoạt động
+                </span>
+              ) : (
+                <span>
+                  <div className="dot-expired" /> Hết hạn
+                </span>
+              )}
+            </td>
             <td style={{ width: "60px" }}>
               <ButtonPrimary onClick={() => onShowExam(id, name)}>
                 Đề thi
@@ -368,7 +386,7 @@ class GroupManage extends Component {
       status: false,
       status_exam: false,
       status_user: false,
-      loading: false
+      loading: false,
     };
   }
   componentDidMount() {
@@ -377,25 +395,25 @@ class GroupManage extends Component {
   ShowData = () => {
     axios({
       method: "GET",
-      url: `${API}/SelectGroup`
+      url: `${API}/SelectGroup`,
     })
-      .then(json => {
+      .then((json) => {
         this.props.dispatch(
           updateStateData({
             ...this.props.mainState,
             ListGroups: json.data,
-            pageMainNumber: 1
+            pageMainNumber: 1,
           })
         );
       })
-      .catch(err => {
+      .catch((err) => {
         console.error(err);
       });
   };
-  onCreateGroup = e => {
+  onCreateGroup = (e) => {
     e.preventDefault();
     this.setState({
-      loading: true
+      loading: true,
     });
     const data = new FormData(e.target);
     var roleToken = sessionStorage.getItem("OL_TOKEN");
@@ -404,76 +422,76 @@ class GroupManage extends Component {
       name: data.get("NameGroup"),
       note: data.get("NoteGroup"),
       limit: data.get("limitGroup"),
-      id_roles: roleToken
+      id_roles: roleToken,
     };
     axios({
       method: "POST",
       url: `${API}/CreateGroup`,
-      data: dataGroup
+      data: dataGroup,
     })
-      .then(json => {
+      .then((json) => {
         const { status, message } = json.data;
         this.setState({
           loading: false,
-          status: false
+          status: false,
         });
         if (status == "success") {
           alert(message);
           this.ShowData();
         }
       })
-      .catch(err => {
+      .catch((err) => {
         console.error(err);
       });
   };
-  onShowDataExam = id => {
+  onShowDataExam = (id) => {
     axios({
       method: "POST",
       url: `${API}/SelectGroupId`,
-      data: { id: id }
+      data: { id: id },
     })
-      .then(json => {
+      .then((json) => {
         this.props.dispatch(
           updateStateData({
             ...this.props.mainState,
-            ListGroupExam: json.data
+            ListGroupExam: json.data,
           })
         );
       })
-      .catch(err => {
+      .catch((err) => {
         console.error(err);
       });
   };
-  onShowDataUser = id => {
+  onShowDataUser = (id) => {
     axios({
       method: "POST",
       url: `${API}/SelectUserGroupId`,
-      data: { id: id }
+      data: { id: id },
     })
-      .then(json => {
+      .then((json) => {
         this.props.dispatch(
           updateStateData({
             ...this.props.mainState,
-            ListGroupUser: json.data.data
+            ListGroupUser: json.data.data,
           })
         );
       })
-      .catch(err => {
+      .catch((err) => {
         console.error(err);
       });
   };
   onShowExam = (id, name) => {
     if (id) {
       this.setState({
-        status_exam: true
+        status_exam: true,
       });
       this.props.dispatch(
         updateStateData({
           ...this.props.mainState,
           ItemGroup: {
             id: id,
-            name: name
-          }
+            name: name,
+          },
         })
       );
       this.onShowDataExam(id);
@@ -482,117 +500,117 @@ class GroupManage extends Component {
   onShowUser = (id, name) => {
     if (id) {
       this.setState({
-        status_user: true
+        status_user: true,
       });
       this.props.dispatch(
         updateStateData({
           ...this.props.mainState,
           ItemGroup: {
             id: id,
-            name: name
-          }
+            name: name,
+          },
         })
       );
       this.onShowDataUser(id);
     }
   };
-  onAddExam = e => {
+  onAddExam = (e) => {
     e.preventDefault();
     const data = new FormData(e.target);
     var id = data.get("id_group");
     axios({
       method: "POST",
       url: `${API}/onAddExamGroup`,
-      data: data
+      data: data,
     })
-      .then(json => {
+      .then((json) => {
         const { message } = json.data;
         alert(message);
         this.onShowDataExam(id);
       })
-      .catch(err => {
+      .catch((err) => {
         console.error(err);
       });
   };
-  onAddUser = e => {
+  onAddUser = (e) => {
     e.preventDefault();
     const data = new FormData(e.target);
     var id = data.get("id_group");
     axios({
       method: "POST",
       url: `${API}/onAddUserGroup`,
-      data: data
+      data: data,
     })
-      .then(json => {
+      .then((json) => {
         const { message } = json.data;
         alert(message);
         this.onShowDataUser(id);
         this.props.dispatch(
           updateStateData({
             ...this.props.mainState,
-            EditUserGroup: {}
+            EditUserGroup: {},
           })
         );
       })
-      .catch(err => {
+      .catch((err) => {
         console.error(err);
       });
   };
-  handlePageChange = pageNumber => {
+  handlePageChange = (pageNumber) => {
     this.props.dispatch(
       updateStateData({
         ...this.props.mainState,
-        pageMainNumber: pageNumber
+        pageMainNumber: pageNumber,
       })
     );
   };
-  onDeleteUser = id => {
+  onDeleteUser = (id) => {
     if (window.confirm("Bạn chắc chắn muốn xóa tài khoản này khỏi nhóm?")) {
       axios({
         method: "POST",
         url: `${API}/DeleteUserGroupId`,
-        data: { id: id }
+        data: { id: id },
       })
-        .then(json => {
+        .then((json) => {
           const { message } = json.data;
           alert(message);
           this.onShowDataUser(this.props.mainState.ItemGroup.id);
         })
-        .catch(err => {
+        .catch((err) => {
           console.error(err);
         });
     }
   };
-  onDeleteExam = id => {
+  onDeleteExam = (id) => {
     if (window.confirm("Bạn chắc chắn muốn xóa đề thi này khỏi nhóm?")) {
       axios({
         method: "POST",
         url: `${API}/DeleteExamGroupId`,
-        data: { id: id }
+        data: { id: id },
       })
-        .then(json => {
+        .then((json) => {
           const { message } = json.data;
           alert(message);
           this.onShowDataExam(this.props.mainState.ItemGroup.id);
         })
-        .catch(err => {
+        .catch((err) => {
           console.error(err);
         });
     }
   };
-  onDeleteGroup = id => {
+  onDeleteGroup = (id) => {
     if (window.confirm("Bạn chắc chắn muốn nhóm này?")) {
       axios({
         method: "POST",
         url: `${API}/onDeleteGroupId`,
-        data: { id: id }
+        data: { id: id },
       })
-        .then(json => {
+        .then((json) => {
           const { message } = json.data;
           alert(message);
           this.ShowData();
         })
-        .catch(err => {
+        .catch((err) => {
           console.error(err);
         });
     }
@@ -601,13 +619,13 @@ class GroupManage extends Component {
     this.props.dispatch(
       updateStateData({
         ...this.props.mainState,
-        EditUserGroup: gu
+        EditUserGroup: gu,
       })
     );
-  }
+  };
   render() {
     const { status, status_exam, status_user, loading } = this.state;
-    console.log(this.props.mainState.EditUserGroup)
+    console.log(this.props.mainState.EditUserGroup);
     return (
       <React.Fragment>
         <GroupManageContext.Provider
@@ -620,10 +638,10 @@ class GroupManage extends Component {
             onAddUser: this.onAddUser,
             onShowUser: (id, name) => this.onShowUser(id, name),
             onShowExam: (id, name) => this.onShowExam(id, name),
-            onDeleteGroup: id => this.onDeleteGroup(id),
-            onDeleteUser: id => this.onDeleteUser(id),
-            onEditUser: gu => this.onEditUser(gu),
-            onDeleteExam: id => this.onDeleteExam(id)
+            onDeleteGroup: (id) => this.onDeleteGroup(id),
+            onDeleteUser: (id) => this.onDeleteUser(id),
+            onEditUser: (gu) => this.onEditUser(gu),
+            onDeleteExam: (id) => this.onDeleteExam(id),
           }}
         >
           <div className="table-fx-left">
@@ -651,15 +669,15 @@ class GroupManage extends Component {
                     ListGroupUser: [],
                     ItemGroup: {
                       id: "",
-                      name: ""
-                    }
+                      name: "",
+                    },
                   })
                 );
               }}
             />
           ) : (
-              ""
-            )}
+            ""
+          )}
           {status_exam ? (
             <ExamModalManage
               onClick={() => {
@@ -670,15 +688,15 @@ class GroupManage extends Component {
                     ListGroupExam: [],
                     ItemGroup: {
                       id: "",
-                      name: ""
-                    }
+                      name: "",
+                    },
                   })
                 );
               }}
             />
           ) : (
-              ""
-            )}
+            ""
+          )}
           {status ? (
             <AddModalManage
               onClick={() => {
@@ -686,8 +704,8 @@ class GroupManage extends Component {
               }}
             />
           ) : (
-              ""
-            )}
+            ""
+          )}
           {loading ? <Loading /> : ""}
         </GroupManageContext.Provider>
       </React.Fragment>
@@ -695,8 +713,8 @@ class GroupManage extends Component {
   }
 }
 
-export default connect(state => {
+export default connect((state) => {
   return {
-    mainState: state.updateStateData
+    mainState: state.updateStateData,
   };
 })(GroupManage);

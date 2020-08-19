@@ -1,11 +1,20 @@
 import React, { Component } from "react";
-import { Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 import { updateStateData } from "./../../actions/index";
 import { API } from "./../../API/API";
 import ReactLoading from "react-loading";
-import { Modal, Alert } from "react-bootstrap";
 import BraftEditor from "braft-editor";
+import {
+  Container,
+  Row,
+  Col,
+  Alert,
+  Breadcrumb,
+  BreadcrumbItem,
+} from "react-bootstrap";
+import { Link, Redirect } from "react-router-dom";
+import { Table, Icon, Button } from "antd";
+import icon_target from "../../img/target.png";
 
 import axios from "axios";
 
@@ -24,29 +33,44 @@ export const Loading = () => {
   );
 };
 
+const SecBreadcrumb = ({ detail }) => {
+  return (
+    <div className="ol-breadcrumb">
+      <Container>
+        <Breadcrumb className="breadcrumb__content">
+          <BreadcrumbItem active>
+            <Link to="/home">Trang chủ</Link>
+          </BreadcrumbItem>
+          <BreadcrumbItem active>
+            <Link to={`/chu-de-trac-nghiem/${detail.subId}`}>
+              {detail.subject}
+            </Link>
+          </BreadcrumbItem>
+          <BreadcrumbItem active>{detail ? detail.name : ""}</BreadcrumbItem>
+        </Breadcrumb>
+      </Container>
+    </div>
+  );
+};
+
 export const MainDetail = ({ DetailExam, GetStart, text }) => {
   return (
-    <React.Fragment>
-      <div className="panel-heading text-center bord0">
-        <h3>{DetailExam.name}</h3>
-      </div>
-      <div className="panel-body text-center detail-exam">
-        <h3>Môn học: {DetailExam.subject}</h3>
+    <div className="text-center detail-exam">
+      <h3>{DetailExam.name}</h3>
+      <p style={{ margin: "20px 0" }}>
+        <em>Chủ đề: {DetailExam.subject} </em>
+        <br />
+        <em>Tổng số: {DetailExam.random} câu</em>
+        <br />
+        <em>Thời gian: {DetailExam.time} phút</em>
+      </p>
+      {DetailExam.status == 1 ? (
+        <Button type="primary" shape="round" onClick={GetStart}>
+          Bắt đầu
+        </Button>
+      ) : (
         <p>
-          <em>Tổng số câu: {DetailExam.random} </em>
-          <br />
-          <em>Thời gian: {DetailExam.time} phút</em>
-        </p>
-        {DetailExam.status == 1 ? (
-          <button
-            onClick={GetStart}
-            className="btn btn-primary get-start bord0"
-          >
-            Bắt đầu
-          </button>
-        ) : (
-          <p>
-            <BraftEditor
+          <BraftEditor
             language="en"
             id="editor-with-table"
             readOnly
@@ -54,10 +78,9 @@ export const MainDetail = ({ DetailExam, GetStart, text }) => {
             controlBarStyle={{ display: "none" }}
             value={BraftEditor.createEditorState(text)}
           />
-          </p>
-        )}
-      </div>
-    </React.Fragment>
+        </p>
+      )}
+    </div>
   );
 };
 class DetailExams extends Component {
@@ -67,7 +90,7 @@ class DetailExams extends Component {
       idux: "",
       payload: false,
       loading: false,
-      text: ""
+      text: "",
     };
   }
   componentDidMount() {
@@ -76,7 +99,7 @@ class DetailExams extends Component {
       var id = match.params.id;
       var data = {
         id: id,
-        token: localStorage.getItem("token")
+        token: localStorage.getItem("token"),
       };
       this.viewDetail(data);
       this.GetMessage();
@@ -86,41 +109,44 @@ class DetailExams extends Component {
   async GetMessage() {
     var json = await axios({
       method: "POST",
-      url: `${API}/GetMessage`
-    }).catch(err => {
+      url: `${API}/GetMessage`,
+    }).catch((err) => {
       console.error(err);
     });
     if (json.data) {
       this.setState({
-        text: json.data[1].text
+        text: json.data[1].text,
       });
     }
   }
 
-  viewDetail = async data => {
+  viewDetail = async (data) => {
     var json = await axios({
       method: "POST",
       url: `${API}/detail-exam`,
-      data: data
-    }).catch(err => {
+      data: data,
+    }).catch((err) => {
       console.error(err);
     });
     if (json.data) {
       const { data, correct } = json.data;
-      this.props.dispatch(
-        updateStateData({
-          ...this.props.mainState,
-          DetailExam: {
-            id: data.IDEXAM,
-            name: data.EXAMTEXT,
-            number: data.EXNUM,
-            random: data.RANDOMEXAM,
-            time: data.EXTIME,
-            subject: data.SUBTEXT,
-            status: correct
-          }
-        })
-      );
+      if (data) {
+        this.props.dispatch(
+          updateStateData({
+            ...this.props.mainState,
+            DetailExam: {
+              id: data.IDEXAM,
+              name: data.EXAMTEXT,
+              number: data.EXNUM,
+              random: data.RANDOMEXAM,
+              time: data.EXTIME,
+              subId: data.SUBID,
+              subject: data.SUBTEXT,
+              status: correct,
+            },
+          })
+        );
+      }
     }
   };
   GetStart = () => {
@@ -139,35 +165,35 @@ class DetailExams extends Component {
       token: data,
       timeNow: timeNow,
       dateNow: dateNow,
-      score: 0
+      score: 0,
     };
     this.setState({
-      loading: true
+      loading: true,
     });
     // this.props.GetUserExam(dataExam)
     this.CreateRandomExam(dataExam);
   };
-  CreateRandomExam = data => {
+  CreateRandomExam = (data) => {
     fetch(`${API}/ChooseRandomQuestion`, {
       method: "POST",
       body: JSON.stringify(data),
       headers: {
-        "Content-Type": "application/json"
-      }
+        "Content-Type": "application/json",
+      },
     })
-      .then(response => response.json())
-      .then(json => {
+      .then((response) => response.json())
+      .then((json) => {
         if (json.status == "success") {
           this.setState({
             loading: false,
             idux: json.data,
-            payload: true
+            payload: true,
           });
         } else {
           console.log(json);
         }
       })
-      .catch(err => {
+      .catch((err) => {
         console.error(err);
       });
   };
@@ -182,32 +208,49 @@ class DetailExams extends Component {
       );
     }
     return (
-      <div className="next-start online-test">
-        <div className="container">
-          <div className="box-wrapper">
-            {loading ? <Loading /> : ""}
-            <div className="panel panel-primary panel-quiz-info">
-              {DetailExam.id ? (
-                <MainDetail
-                  DetailExam={DetailExam}
-                  text={text}
-                  GetStart={this.GetStart}
-                />
-              ) : (
-                <Alert variant="error">
-                  <i className="fa fa-check-circle" /> Đề thi này không tồn tại!
-                </Alert>
-              )}
+      <section className="PersonalExam">
+        {/* <SecBreadcrumb detail={DetailExam} /> */}
+        <Container>
+          <div
+            className="page__wrapper"
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <div>
+              <div className="text-center" style={{ paddingLeft: "20px" }}>
+                <img style={{ width: "170px" }} src={icon_target} alt="" />
+              </div>
+              <div
+                style={{
+                  paddingTop: "30px",
+                }}
+              >
+                {DetailExam.id ? (
+                  <MainDetail
+                    DetailExam={DetailExam}
+                    text={text}
+                    GetStart={this.GetStart}
+                  />
+                ) : (
+                  <Alert variant="error">
+                    <i className="fa fa-check-circle" /> Đề thi này không tồn
+                    tại!
+                  </Alert>
+                )}
+              </div>
             </div>
           </div>
-        </div>
-      </div>
+        </Container>
+      </section>
     );
   }
 }
 
-export default connect(state => {
+export default connect((state) => {
   return {
-    mainState: state.updateStateData
+    mainState: state.updateStateData,
   };
 })(DetailExams);

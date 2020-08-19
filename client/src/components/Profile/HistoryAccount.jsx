@@ -1,9 +1,8 @@
-import React, { Component } from "react"; 
+import React, { Component } from "react";
 import { Route, Link } from "react-router-dom";
 import axios from "axios";
-import { Table, Icon, Button } from "antd"; 
+import { Table, Icon, Button } from "antd";
 import { API } from "./../../API/API";
- 
 
 class HistoryAccount extends React.Component {
   state = {
@@ -33,7 +32,7 @@ class HistoryAccount extends React.Component {
       });
       this.setState({ data });
     }
-  }; 
+  };
   render() {
     const columns = [
       {
@@ -50,7 +49,7 @@ class HistoryAccount extends React.Component {
         width: "30%",
       },
       {
-        title: "Môn học",
+        title: "Chủ đề",
         dataIndex: "SUBTEXT",
         key: "SUBTEXT",
         ellipsis: true,
@@ -71,21 +70,21 @@ class HistoryAccount extends React.Component {
         key: "DATEEXAM",
         ellipsis: true,
       },
-      {
-        title: "Hành động",
-        key: "action",
-        render: (text, record) => (
-          <span>
-            <Link to={`/result-test?id=${record.ID_UX}`}>
-              <Button type="primary" shape="round">
-                Xem <Icon type="arrow-right" />
-              </Button>
-            </Link>
-          </span>
-        ),
-      },
+      // {
+      //   title: "Hành động",
+      //   key: "action",
+      //   render: (text, record) => (
+      //     <span>
+      //       <Link to={`/result-test?id=${record.ID_UX}`}>
+      //         <Button type="primary" shape="round">
+      //           Xem <Icon type="arrow-right" />
+      //         </Button>
+      //       </Link>
+      //     </span>
+      //   ),
+      // },
     ];
-    const { data } = this.state; 
+    const { data } = this.state;
     return (
       <div className="section-test">
         <div className="account-section-header">

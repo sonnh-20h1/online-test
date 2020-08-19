@@ -81,15 +81,21 @@ class InfoAccount extends Component {
         width: "30%",
       },
       {
-        title: "Số lượt thi",
+        title: "Lần thi",
         dataIndex: "limit",
-        key: "limit",
-        ellipsis: true,
+        key: "limit", 
+        width: "80px",
+      },
+      {
+        title: "Đã thi",
+        dataIndex: "doing",
+        key: "doing", 
+        width: "80px",
       },
       {
         title: "Ngày bắt đầu",
-        dataIndex: "createDate",
-        key: "createDate",
+        dataIndex: "create_on",
+        key: "create_on",
         ellipsis: true,
       },
       {
@@ -203,12 +209,12 @@ class InfoAccount extends Component {
               <div className="col-md-6">
                 <p>
                   {" "}
-                  Tổng Số lượt thi: <span>{info.do_limit}</span>
+                  Tổng Số lần thi: <span>{info.do_limit}</span>
                 </p>
               </div>
               <div className="col-md-6">
                 <p>
-                  Số lượt đã thi: <span>{info.do_number}</span>
+                  Số lần đã thi: <span>{info.do_number}</span>
                 </p>
               </div>
             </div>

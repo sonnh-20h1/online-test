@@ -2,6 +2,11 @@
 namespace App\Controllers;
 use \Firebase\JWT\JWT;
 
+//From PHPMailer
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\Exception;
+
 class AccountController extends Controller{
 
     private $tableName = 'ol_account_google';
@@ -129,6 +134,35 @@ class AccountController extends Controller{
             }
         }
         echo json_encode($rsData);
+    }
+
+    public function sendEmail($request,$response){
+        $mail = new PHPMailer;
+
+        // $mail->SMTPDebug=3;
+        $mail->isSMTP();
+
+        $mail->Host="smtp.gmail.com";
+        $mail->Port=587;
+        $mail->SMTPSecure="tls";
+        $mail->SMTPAuth=true;
+        $mail->Username="sonnh0998@gmail.com";
+        $mail->Password="son09111998";
+
+        $email = "nguyenson09111998@gmail.com";
+
+        $mail->addAddress($email,"Son Nguyen");
+        $mail->Subject="Online test";
+        $mail->isHTML(true);
+        $mail->Body=" Welcome to StackOverFlow.<b><b> Please verify your email adress to continue..";
+        $mail->From="sonnh0998@gmail.com";
+        $mail->FromName="Nguyen Hoai Son";
+
+        if($mail->send()) {
+            echo json_encode( "Email Has Been Sent Your Email Address");
+        } else {
+            echo json_encode( "Failed To Sent An Email To Your Email Address");
+        } 
     }
 
 }
