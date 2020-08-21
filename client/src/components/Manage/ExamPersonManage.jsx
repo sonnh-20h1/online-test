@@ -23,12 +23,20 @@ class PersonManage extends Component {
       url: `${API}/personal/getExamPerson`,
     })
       .then((json) => {
-        const data = json.data.map((item, index) => {
+        let data = json.data;
+
+        data.sort((a, b) => {
+          return b.create_date - a.create_date
+        });
+
+        data = data.map((item, index) => {
           return {
             ...item,
             stt: index + 1,
+            create_date: this.timeConverter(item.create_date)
           };
         });
+
         this.setState({
           data,
         });
@@ -54,14 +62,14 @@ class PersonManage extends Component {
       let result = [];
       let answer = que.Answer.flatMap((item, index) => {
         if (item.CORRECT == "true") {
-          if(index == 0) result.push("A");
-          if(index == 1) result.push("B");
-          if(index == 2) result.push("C");
-          if(index == 3) result.push("D");
-          if(index == 4) result.push("E");
-          if(index == 5) result.push("F");
-          if(index == 6) result.push("G");
-          
+          if (index == 0) result.push("A");
+          if (index == 1) result.push("B");
+          if (index == 2) result.push("C");
+          if (index == 3) result.push("D");
+          if (index == 4) result.push("E");
+          if (index == 5) result.push("F");
+          if (index == 6) result.push("G");
+
         };
         return item.ANS_TEXT;
       });
@@ -72,6 +80,12 @@ class PersonManage extends Component {
       };
     });
     this.setState({ dataExport: convertQue, exportEx: true });
+  };
+  timeConverter = (time) => {
+    var a = new Date(Number(time));
+
+    return `${a.getDate()}-${a.getMonth() +
+      1}-${a.getFullYear()} ${a.getHours()}:${a.getMinutes()}`;
   };
   render() {
     const columns = [
@@ -92,8 +106,8 @@ class PersonManage extends Component {
       },
       {
         title: "Ngày tạo",
-        dataIndex: "create_on",
-        key: "create_on",
+        dataIndex: "create_date",
+        key: "create_date",
       },
       {
         title: "Xem chi tiết",
@@ -113,9 +127,15 @@ class PersonManage extends Component {
     return (
       <React.Fragment>
         <div className="table-fx-left">
-          <Breadcrumb home="Manage" manage="Tạo đề thi cá nhân" />
+          <Breadcrumb home="Manage" manage="Các đề thi cá nhân" />
           <div style={{ margin: "20px", padding: "20px", background: "#fff" }}>
-            <Table columns={columns} dataSource={data} />
+            <Table
+              columns={columns}
+              dataSource={data}
+              pagination={{
+                pageSize: 20,
+              }}
+            />
           </div>
         </div>
 

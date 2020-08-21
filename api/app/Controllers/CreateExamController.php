@@ -13,6 +13,7 @@ class CreateExamController extends Controller
         $idExam = $request->getParam('idExam');
         $TimeExam = $request->getParam('TimeExam');
         $NameExam = $request->getParam('NameExam');
+        $createDate = $request->getParam('createDate');
 
         //subject
         $SubjectExam = $request->getParam('SubjectExam');
@@ -50,6 +51,7 @@ class CreateExamController extends Controller
                     'EXTIME' => $TimeExam,
                     'EXNUM' => $numberExam,
                     'RANDOMEXAM' => $RandomNumber,
+                    'create_date' => $createDate,
                     'user_id' => $rlUser[0]['id'],
                     'status' => $status,
                 ]);
@@ -81,11 +83,14 @@ class CreateExamController extends Controller
         $idExam = $request->getParam('idExam');
         $TimeExam = $request->getParam('TimeExam');
         $NameExam = $request->getParam('NameExam');
+        $createDate = $request->getParam('createDate');
+
         $SubjectExam = $request->getParam('SubjectExam');
         $RandomNumber = $request->getParam('RandomQues');
         $status = $request->getParam('status');
         $data = $request->getParam('data');
         $numberExam = count($data);
+
         if (empty($idExam) || empty($TimeExam) || empty($NameExam) || empty($SubjectExam) || empty($status)) {
             $message['error'] = 'Chưa nhận được dữ liệu!';
             echo json_encode($message);
@@ -98,6 +103,7 @@ class CreateExamController extends Controller
                     'SUBID' => $SubjectExam,
                     'EXTIME' => $TimeExam,
                     'EXNUM' => $numberExam,
+                    'create_date' => $createDate,
                     'RANDOMEXAM' => $RandomNumber,
                     'status' => $status,
                 ]);

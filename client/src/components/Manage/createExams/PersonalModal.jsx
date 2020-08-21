@@ -290,6 +290,7 @@ class PersonalModal extends Component {
       idExam: idExam ? idExam : uuidv4(),
       data,
       token,
+      createDate: Date.now(),
     };
     var json = await axios({
       method: "POST",

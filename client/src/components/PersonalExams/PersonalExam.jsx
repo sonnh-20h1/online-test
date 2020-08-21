@@ -129,18 +129,29 @@ class PersonalExam extends Component {
         })
       );
       if (json.data) {
-        const data = json.data.map((ele, index) => {
+        let data = json.data;
+        data.sort((a, b) => {
+          return b.create_date - a.create_date;
+        });
+        data = data.map((ele, index) => {
           return {
             stt: index + 1,
             id: ele.IDEXAM,
             text: ele.EXAMTEXT,
             sub: ele.SUBID,
             time: ele.EXTIME,
+            create_date: this.timeConverter(ele.create_date)
           };
         });
         this.setState({ data });
       }
     }
+  };
+
+  timeConverter = (time) => {
+    var a = new Date(Number(time));
+
+    return `${a.getDate()}-${a.getMonth() + 1}-${a.getFullYear()}`;
   };
 
   getStart = (record) => {
@@ -209,6 +220,11 @@ class PersonalExam extends Component {
         title: "Thời gian",
         dataIndex: "time",
         key: "time",
+      },
+      {
+        title: "Ngày tạo",
+        dataIndex: "create_date",
+        key: "create_date",
       },
       {
         title: "Action",

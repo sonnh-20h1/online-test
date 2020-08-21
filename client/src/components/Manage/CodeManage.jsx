@@ -20,7 +20,11 @@ class CodeManage extends Component {
       url: `${API}/personal/selectCode`,
     })
       .then((json) => {
-        let data = json.data.map((item, index) => {
+        let data = json.data;
+        data.sort((a, b) => {
+          return b.create_date - a.create_date;
+        });
+        data = data.map((item, index) => {
           let dayNow = Math.floor((Date.now() - item.create_date) / 1000 / 60 / 60 / 24);
           let day = 0;
           if (item.expiryDay - dayNow > 0) day = item.expiryDay - dayNow;
@@ -30,10 +34,6 @@ class CodeManage extends Component {
             stt: index + 1,
           };
         });
-        data.sort((a, b) => {
-          return b.create_date - a.create_date;
-        });
-        console.log(data);
         this.setState({
           data,
         });
@@ -174,7 +174,13 @@ class CodeManage extends Component {
                 Tạo mã
               </Button>
             </div>
-            <Table columns={columns} dataSource={data} />
+            <Table
+              columns={columns}
+              dataSource={data}
+              pagination={{
+                pageSize: 20,
+              }}
+            />
           </div>
         </div>
         <Modal

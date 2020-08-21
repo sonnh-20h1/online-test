@@ -31,6 +31,7 @@ class ExamManage extends Component {
     axios({
       method: "POST",
       url: `${API}/display_sub`,
+      data: { permission: 1 }
     })
       .then((json) => {
         this.setState({ subjects: json.data });
@@ -66,7 +67,6 @@ class ExamManage extends Component {
           updateStateData({
             ...this.props.mainState,
             ExamManage: data,
-            pageMainNumber: 1,
           })
         );
       })
@@ -112,11 +112,20 @@ class ExamManage extends Component {
     const filterData = data.filter((ele) => ele.SUBID == value);
     this.setState({ filterData });
   };
+  handleTableChange = (pagination, filters, sorter) => {
+    console.log(sorter);
+  }
   render() {
     const columns = [
       { title: "STT", width: "8%", dataIndex: "stt", key: "stt" },
       { title: "Mã đề", dataIndex: "IDEXAM", key: "IDEXAM" },
-      { title: "Tên đề", dataIndex: "EXAMTEXT", key: "EXAMTEXT" },
+      {
+        title: "Tên đề",
+        dataIndex: "EXAMTEXT",
+        key: "EXAMTEXT",
+        // defaultSortOrder: 'ascend',
+        sorter: (a, b) => a.EXAMTEXT.localeCompare(b.EXAMTEXT),
+      },
       { title: "Môn", dataIndex: "SUBTEXT", key: "SUBTEXT" },
       {
         title: "Trạng thái",
@@ -192,7 +201,10 @@ class ExamManage extends Component {
                 pagination={{
                   pageSize: 20,
                 }}
+                // onChange={this.handleTableChange}
                 bordered
+                expandRowByClick={true}
+                defaultExpandAllRows={true}
                 expandedRowRender={(record) => (
                   <div>
                     <p>Thời gian: {record.EXTIME} phút</p>

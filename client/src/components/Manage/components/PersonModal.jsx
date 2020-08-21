@@ -5,7 +5,7 @@ import {
   Button,
   Icon,
   Input,
-  Select, 
+  Select,
   Form,
   Row,
   Col,
@@ -14,7 +14,7 @@ import {
 import { API } from "../../../API/API";
 import axios from "axios";
 import { connect } from "react-redux";
-import { v4 as uuidv4 } from "uuid"; 
+import { v4 as uuidv4 } from "uuid";
 import ExpandedRowRender from "./ExpandedRowRender";
 const { Option } = Select;
 
@@ -301,12 +301,12 @@ class PersonalModal extends Component {
         key: "QUE_TEXT",
         width: "60%",
         render: (record) => (
-        //   <Input
-        //     placeholder="Câu hỏi"
-        //     defaultValue={record.QUE_TEXT}
-        //     onChange={(event) => this.onChangeQue(event.target.value, record)}
-        //   />
-        <span>{record.QUE_TEXT}</span>
+          //   <Input
+          //     placeholder="Câu hỏi"
+          //     defaultValue={record.QUE_TEXT}
+          //     onChange={(event) => this.onChangeQue(event.target.value, record)}
+          //   />
+          <span>{record.QUE_TEXT}</span>
 
         ),
       },
@@ -427,6 +427,9 @@ class PersonalModal extends Component {
             columns={columns}
             expandRowByClick
             defaultExpandAllRows={true}
+            pagination={{
+              pageSize: 20,
+            }}
             expandedRowRender={(record) => (
               <ExpandedRowRender
                 record={record}
