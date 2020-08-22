@@ -67,6 +67,7 @@ $app->post('/loading_login', 'App\Controllers\UserController:loading_login');
 $app->post('/SelectAccountGroupId', 'App\Controllers\UserController:SelectAccountGroupId');
 $app->post('/GetHistoryExamUser', 'App\Controllers\UserController:GetHistoryExamUser');
 $app->post('/GetInfomationUserId', 'App\Controllers\UserController:GetInfomationUserId');
+$app->get('/GetUserAction', 'App\Controllers\UserController:GetUserAction');
 
 //notification
 $app->get('/mng_noti', 'App\Controllers\NotiController:index');

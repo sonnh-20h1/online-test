@@ -78,7 +78,7 @@ class Profile extends Component {
     const { history } = this.props;
     window.localStorage.removeItem("token");
     window.localStorage.removeItem("term");
-    fakeAuth.signout(() => history.push("/login-google"));
+    fakeAuth.signout(() => history.push("/login"));
   };
   show = () => {
     this.setState({

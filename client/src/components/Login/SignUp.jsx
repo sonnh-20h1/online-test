@@ -17,7 +17,7 @@ class SignIn extends Component {
       accessToken: response.accessToken,
       ...response.profileObj
     };
-    const {history} = this.props;
+    const { history } = this.props;
     var json = await axios({
       method: "POST",
       url: `${API}/login-google/login`,
@@ -41,9 +41,8 @@ class SignIn extends Component {
       <div className="loginWrapper">
         <div className="viewWapper">
           <div className="viewLogin">
-            <p>
-              Test y dược online
-          </p>
+            <h1>Trắc Nghiệm Y Dược</h1>
+            <p>( Tổng hợp và chia sẻ các đề thi trắc nghiệm về y dược )</p>
             <div className="viewWithEmail">
               <div className="viewWithEmailText">Đăng nhập bằng tài khoản google</div>
             </div>
@@ -64,7 +63,7 @@ class SignIn extends Component {
           </div>
         </div>
         <div className="footerTest">
-          <p>Test y dược online - Hệ thống thi trắc nghiệm y dược của Test y dược online</p>
+          <p>Trắc nghiệm Y Dược - Hệ thống luyện thi trắc nghiệm trực tuyến về y dược</p>
         </div>
       </div>
     );

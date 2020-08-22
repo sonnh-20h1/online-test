@@ -114,7 +114,7 @@ class MainComponent extends Component {
         <PrivateRoute path="/data-packet" component={DataPacket} />
         <PrivateRoute path="/make-money" component={MakeMoney} />
 
-        <Redirect to="/login-google" />
+        <Redirect to="/login" />
       </Switch>
     );
   };

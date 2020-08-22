@@ -46,10 +46,10 @@ class App extends Component {
       <Router>
         <React.Fragment>
           <Switch>
-            <Route path="/login" render={props => <LoginUser {...props} />} />
+            {/* <Route path="/login" render={props => <LoginUser {...props} />} /> */}
             
             <Route
-              path="/login-google"
+              path="/login"
               exact
               render={props => <LoginGoogle {...props} />}
             />
@@ -57,7 +57,7 @@ class App extends Component {
               path="/term"
               render={props => <Term {...props} />}
             />
-            <Route path="/sign-in" component={() => <SignIn />} />
+            {/* <Route path="/sign-in" component={() => <SignIn />} /> */}
             <Route path="/manage" component={MainManage} />
             <Route path="/" component={MainComponents} />
           </Switch>

@@ -15,12 +15,19 @@ import FeedBackWebsite from "./FeedBackWebsite";
 import { PrivateRoute, MenuManages } from "./BaseManage";
 import CodeManage from "./CodeManage";
 import PersonManage from "./PersonManage";
-import ExamPersonManage from './ExamPersonManage'
+import ExamPersonManage from './ExamPersonManage';
+import UserActionManage from './UserActionManage';
 
 const Menus = [
   {
     name: "Thông báo",
     to: "/manage/message",
+    icon: "fa fa-bell-o",
+    exact: false,
+  },
+  {
+    name: "Hoạt động",
+    to: "/manage/user-action",
     icon: "fa fa-bell-o",
     exact: false,
   },
@@ -78,6 +85,7 @@ const ComponentManage = () => {
   return (
     <Switch>
       <PrivateRoute path="/manage/admin" component={AccountManage} />
+      <PrivateRoute path="/manage/user-action" component={UserActionManage} />
       <PrivateRoute path="/manage/message" component={MessageManage} />
       <PrivateRoute
         path="/manage/upload-file-question"

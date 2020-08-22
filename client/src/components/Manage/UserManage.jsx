@@ -97,7 +97,7 @@ const RowTable = ({ user, index }) => {
   return (
     <React.Fragment>
       <UserManageContext.Consumer>
-        {({ onDetailUser,onChangeSelect }) => (
+        {({ onDetailUser, onChangeSelect }) => (
           <tr>
             <td>{index + 1}</td>
             <td><img src={imageUrl} className="imageUrl" alt="" /></td>
@@ -110,7 +110,7 @@ const RowTable = ({ user, index }) => {
                 name="type"
                 data={account}
                 Value={type}
-                onChange={(e) => onChangeSelect(e,id)}
+                onChange={(e) => onChangeSelect(e, id)}
               />
             </td>
             <td>{do_number}</td>
@@ -188,7 +188,7 @@ const UserModalManage = ({ onClick }) => {
               ) : (
                   <p style={{ textAlign: "center" }}>
                     Bạn chưa giới thiệu được thành viên nào
-                </p>
+                  </p>
                 )}
             </React.Fragment>
           )}
@@ -199,10 +199,10 @@ const UserModalManage = ({ onClick }) => {
 };
 
 const IntroducedRowTable = ({ info }) => {
-  const { create_on, email,university,  name, imageUrl } = info;
+  const { create_on, email, university, name, imageUrl } = info;
   return (
     <tr>
-      <td><img src={imageUrl} alt="" className="imageUrl"/></td>
+      <td><img src={imageUrl} alt="" className="imageUrl" /></td>
       <td>{email}</td>
       <td>{name}</td>
       <td>{university}</td>
@@ -213,7 +213,8 @@ const IntroducedRowTable = ({ info }) => {
 
 class UserManage extends Component {
   state = {
-    status: false
+    status: false,
+    total: 0
   };
 
   componentDidMount() {
@@ -235,6 +236,7 @@ class UserManage extends Component {
           pageMainNumber: 1
         })
       );
+      this.setState({ total: json.data.length })
     }
   }
 
@@ -278,23 +280,23 @@ class UserManage extends Component {
     }
   };
 
-  onChangeSelect = async (event,id) => {
+  onChangeSelect = async (event, id) => {
     const { value } = event.target;
     var json = await axios({
       method: "POST",
       url: `${API}/login-google/updateAccount`,
-      data: { id: id,type:value }
+      data: { id: id, type: value }
     }).catch(err => {
       console.error(err);
     });
-    if(json){
-      const {message,status} = json.data;
+    if (json) {
+      const { message, status } = json.data;
       alert(message)
     }
   }
 
   render() {
-    const { status } = this.state;
+    const { status, total } = this.state;
     return (
       <React.Fragment>
         <UserManageContext.Provider
@@ -309,6 +311,7 @@ class UserManage extends Component {
           <div className="table-fx-left">
             <Breadcrumb home={"Manage"} manage={"User Management"} />
             <ContentManage>
+              <p>Tổng số người dùng: {total}</p>
               <HeaderTable />
               <ContentTable />
             </ContentManage>

@@ -19,7 +19,11 @@ class PersonManage extends Component {
       url: `${API}/personal/selectPerson`,
     })
       .then((json) => {
-        let data = json.data.map((item, index) => {
+        let data = json.data
+        data.sort((a, b) => {
+          return b.create_time - a.create_time;
+        });
+        data = data.map((item, index) => {
           let dayNow = Math.floor((Date.now() - item.create_time) / 1000 / 60 / 60 / 24);
           let day = 0;
           if (item.useDay - dayNow > 0) day = item.useDay - dayNow;
@@ -29,9 +33,7 @@ class PersonManage extends Component {
             stt: index + 1,
           };
         });
-        data.sort((a, b) => {
-          return b.create_time - a.create_time;
-        });
+
         this.setState({
           data,
         });
@@ -47,7 +49,7 @@ class PersonManage extends Component {
     return `${a.getDate()}-${a.getMonth() +
       1}-${a.getFullYear()} ${a.getHours()}:${a.getMinutes()}`;
   };
-  
+
   render() {
     const columns = [
       {
