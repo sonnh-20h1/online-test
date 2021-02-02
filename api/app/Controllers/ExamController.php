@@ -63,9 +63,7 @@ class ExamController extends Controller{
     public function getExamBySubjectId($request,$response,$args){
         $id = $args['id'];
         $params = $request->getParams();
-        $search = isset($params['search'])?$params['search']:'';
-        $page = isset($params['page'])?$params['page']:1;
-        $CountPerPage = 20;
+        $search = isset($params['search'])?$params['search']:'';  
 
         $token = isset($params['token']) ? $params['token'] : '';
         $account = $this->database->select($this->tableNameAccountGoogle,'*',['accessToken' => $token]);
@@ -92,16 +90,12 @@ class ExamController extends Controller{
                 "[>]subjects" => "SUBID"
             ],'*',[
                 'exam.SUBID' => $id,
-                'exam.EXAMTEXT[~]' => $search,
-                "LIMIT" => [($page - 1)*$CountPerPage, $CountPerPage]
+                'exam.EXAMTEXT[~]' => $search
             ]);
             $data = [];
             $title = $this->GetSubjectId($id);
             if(!empty($result) && !empty($title)){
-                $data =[
-                    'CountPerPage' => $CountPerPage,
-                    'pageSize' => $count,
-                    'page' => (int)$page,
+                $data =[  
                     'title' => $title[0],
                     'exams' => $result,
                     'permisson' => $permisson
@@ -109,9 +103,6 @@ class ExamController extends Controller{
                 echo json_encode($data);exit;
             }else{
                 $data =[
-                    'CountPerPage' => $CountPerPage,
-                    'pageSize' => $count,
-                    'page' => (int)$page,
                     'title' => $title[0],
                     'exams' => ''
                 ];

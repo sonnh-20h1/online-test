@@ -55,15 +55,6 @@ const ShowListSubject = () => {
                 )}
                 <SearchExam />
                 <ListExams Exams={ListExamBySubject.exams} type={type} />
-                <Row style={{ textAlign: "center" }}>
-                  <Pagination
-                    activePage={ListExamBySubject.page}
-                    itemsCountPerPage={ListExamBySubject.CountPerPage}
-                    totalItemsCount={ListExamBySubject.pageSize}
-                    pageRangeDisplayed={5}
-                    onChange={handlePageChange}
-                  />
-                </Row>
               </div>
             ) : (
               <div className="page__wrapper">
@@ -335,7 +326,7 @@ class SubjectDetail extends Component {
                       <div className="item_item green">
                         <div className="item__brief-wrapper">
                           <h3>Bộ đề VIP</h3>
-                          <a onClick={() => this.handleFilter(3)}>
+                          <a onClick={() => this.handleFilter(4)}>
                             Xem chi tiết
                           </a>
                         </div>
